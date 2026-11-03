@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BridgeIQ employer view</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#F5F6F8}
+a{color:#0B6B63}a:hover{color:#084F49}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F5F6F8; color: #14212B; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 15px; line-height: 1.45">
+
+  <header style="background: #14212B; color: #FFFFFF">
+    <div style="max-width: 1360px; margin: 0 auto; padding: 14px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px">
+      <div style="display: flex; align-items: center; gap: 12px">
+        <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><circle cx="9" cy="14" r="6" fill="none" stroke="#7FD1C7" stroke-width="2.5"></circle><circle cx="19" cy="14" r="6" fill="none" stroke="#FFFFFF" stroke-width="2.5"></circle></svg>
+        <div style="font-weight: 700; font-size: 19px; letter-spacing: -0.01em">BridgeIQ</div>
+        <div style="font-size: 13px; color: #C7D0D8; padding-left: 12px; border-left: 1px solid #3A4A57">Employer view</div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px; font-size: 12px">
+        <span style="padding: 4px 10px; border-radius: 999px; background: #243441; color: #DCE3E9">Synthetic demo data</span>
+        <span style="padding: 4px 10px; border-radius: 999px; background: #243441; color: #DCE3E9">EU Data Zone · Sweden Central</span>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width: 1360px; margin: 0 auto; padding: 24px; box-sizing: border-box; display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+
+    <section aria-labelledby="jobs-h" style="flex: 1 1 250px; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+      <h2 id="jobs-h" style="margin: 0 0 4px; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #55636F">Your open roles</h2>
+      <sc-for list="{{jobs}}" as="j" hint-placeholder-count="3">
+        <button type="button" onClick="{{j.pick}}" style="{{j.cardStyle}}">
+          <span style="display: block; font-weight: 600; font-size: 15px; color: #14212B">{{j.title}}</span>
+          <span style="display: block; font-size: 13px; color: #55636F; margin-top: 2px">{{j.employer}} · {{j.location}}</span>
+          <span style="display: flex; gap: 8px; margin-top: 10px; font-size: 12px; color: #55636F">
+            <span>{{j.count}} matches</span>
+            <span style="color: #8A4B00; font-weight: 600">{{j.gemCount}} hidden gems</span>
+          </span>
+        </button>
+      </sc-for>
+      <p style="margin: 6px 2px 0; font-size: 12px; color: #55636F">Candidates are ranked by competence overlap with each role, not by job title.</p>
+    </section>
+
+    <section aria-labelledby="cands-h" style="flex: 1 1 340px; min-width: 0; background: #FFFFFF; border: 1px solid #DDE2E8; border-radius: 12px; padding: 18px">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px">
+        <h2 id="cands-h" style="margin: 0; font-size: 18px; font-weight: 600">{{job.title}}</h2>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #55636F">{{job.id}}</span>
+      </div>
+      <div style="margin-top: 12px; font-size: 12px; font-weight: 600; color: #55636F">Must-have competences (JobTech)</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px">
+        <sc-for list="{{job.reqs}}" as="r" hint-placeholder-count="5">
+          <span style="font-size: 12px; padding: 3px 9px; border-radius: 6px; background: #EEF1F4; color: #14212B">{{r}}</span>
+        </sc-for>
+      </div>
+
+      <label style="display: flex; align-items: center; gap: 8px; margin-top: 16px; font-size: 13px; color: #14212B; min-height: 32px; cursor: pointer">
+        <input type="checkbox" checked="{{gemsOnly}}" onChange="{{toggleGems}}" style="width: 18px; height: 18px; accent-color: #0B6B63">
+        Show only hidden gems
+      </label>
+
+      <ol style="list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px">
+        <sc-for list="{{cands}}" as="c" hint-placeholder-count="3">
+          <li>
+            <button type="button" onClick="{{c.pick}}" style="{{c.cardStyle}}">
+              <span style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px">
+                <span style="display: flex; gap: 10px; align-items: flex-start">
+                  <span style="flex: none; width: 28px; height: 28px; border-radius: 50%; background: #14212B; color: #FFFFFF; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center">{{c.rank}}</span>
+                  <span>
+                    <span style="display: block; font-weight: 600; color: #14212B">{{c.alias}}</span>
+                    <span style="display: block; font-size: 13px; color: #55636F">Own title: {{c.headline}}</span>
+                  </span>
+                </span>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 20px; font-weight: 500; color: #0B6B63">{{c.compositePct}}</span>
+              </span>
+              <sc-if value="{{c.gem}}" hint-placeholder-val="{{true}}">
+                <span style="display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; padding: 4px 10px; border-radius: 999px; background: #FCEFD9; color: #8A4B00; font-size: 12px; font-weight: 600">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12l4 6-10 12L2 9z"></path><path d="M2 9h20"></path></svg>
+                  {{c.badge}}
+                </span>
+              </sc-if>
+              <span style="display: block; margin-top: 8px; font-size: 12px; color: #55636F">{{c.atsLine}}</span>
+            </button>
+          </li>
+        </sc-for>
+      </ol>
+      <sc-if value="{{noCands}}" hint-placeholder-val="{{false}}">
+        <p style="font-size: 13px; color: #55636F">No hidden gems for this role yet.</p>
+      </sc-if>
+    </section>
+
+    <section aria-labelledby="detail-h" style="flex: 999 1 460px; min-width: 0; background: #FFFFFF; border: 1px solid #DDE2E8; border-radius: 12px; padding: 22px">
+      <sc-if value="{{hasSel}}" hint-placeholder-val="{{true}}">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: flex-start">
+          <div>
+            <h2 id="detail-h" style="margin: 0; font-size: 22px; font-weight: 700">{{sel.alias}}</h2>
+            <div style="font-size: 14px; color: #55636F; margin-top: 2px">Own title: {{sel.headline}} · {{sel.years}} years experience</div>
+          </div>
+          <button type="button" onClick="{{toggleShortlist}}" style="{{shortlistStyle}}">{{shortlistLabel}}</button>
+        </div>
+
+        <p style="margin: 16px 0 0; font-size: 15px; color: #14212B">{{sel.summary}}</p>
+        <div style="margin-top: 8px; font-size: 13px; color: #0B6B63; font-weight: 600">Transferable story: {{sel.story}}</div>
+
+        <h3 style="margin: 24px 0 10px; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #55636F">How the score is built</h3>
+        <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px">
+          <sc-for list="{{bars}}" as="b" hint-placeholder-count="3">
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 13px"><span>{{b.label}}</span><span style="font-family: 'IBM Plex Mono', monospace">{{b.pct}}</span></div>
+              <div style="height: 8px; background: #E4E8EE; border-radius: 4px; margin-top: 6px; overflow: hidden"><div style="{{b.fill}}"></div></div>
+              <div style="font-size: 11px; color: #55636F; margin-top: 4px">{{b.note}}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="margin-top: 10px; font-size: 12px; color: #55636F; font-family: 'IBM Plex Mono', monospace">composite = 0.6 × overlap + 0.4 × semantic = {{sel.compositePct}}</div>
+
+        <h3 style="margin: 26px 0 10px; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #55636F">Evidence chain</h3>
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <sc-for list="{{sel.evidence}}" as="e" hint-placeholder-count="3">
+            <div style="border: 1px solid #DDE2E8; border-radius: 10px; overflow: hidden">
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 8px 12px; background: #F5F6F8; font-size: 12px">
+                <span style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px"><span style="font-weight: 600">{{e.concept}}</span><sc-if value="{{e.hidden}}" hint-placeholder-val="{{false}}"><span style="padding: 2px 8px; border-radius: 999px; background: #FCEFD9; color: #8A4B00; font-weight: 600">Hidden competence · not named in the CV</span></sc-if></span>
+                <span style="display: inline-flex; align-items: center; gap: 4px; color: #0B6B63; font-weight: 600">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>
+                  Quotes verified
+                </span>
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0">
+                <div style="padding: 10px 12px; border-right: 1px solid #DDE2E8">
+                  <div style="font-size: 11px; font-weight: 600; color: #55636F; text-transform: uppercase; letter-spacing: 0.05em">Job ad says</div>
+                  <div style="font-size: 14px; margin-top: 4px">“{{e.jd}}”</div>
+                  <div style="font-size: 12px; color: #55636F; margin-top: 2px">{{e.jdEn}}</div>
+                </div>
+                <div style="padding: 10px 12px">
+                  <div style="font-size: 11px; font-weight: 600; color: #55636F; text-transform: uppercase; letter-spacing: 0.05em">Candidate did</div>
+                  <div style="font-size: 14px; margin-top: 4px">“{{e.cv}}”</div>
+                </div>
+              </div>
+              <div style="padding: 8px 12px; border-top: 1px solid #DDE2E8; font-size: 13px; color: #14212B">{{e.why}}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <h3 style="margin: 26px 0 10px; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #55636F">Gap to close · {{sel.gapPct}}</h3>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <sc-for list="{{sel.gaps}}" as="g" hint-placeholder-count="1">
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 10px; background: #FFF8EC; border: 1px solid #F1DDB8">
+              <span style="font-weight: 600; color: #8A4B00; font-size: 14px">{{g.label}}</span>
+              <span style="font-size: 11px; padding: 2px 8px; border-radius: 999px; background: #FFFFFF; color: #8A4B00; border: 1px solid #F1DDB8">{{g.effort}}</span>
+              <span style="flex: 1 1 100%; font-size: 13px; color: #14212B">{{g.strategy}}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <p style="margin: 22px 0 0; padding-top: 14px; border-top: 1px solid #DDE2E8; font-size: 12px; color: #55636F">BridgeIQ recommends and explains. A person makes every hiring decision. Names, age, gender and nationality are hidden from matching.</p>
+      </sc-if>
+      <sc-if value="{{noSel}}" hint-placeholder-val="{{false}}">
+        <p style="color: #55636F">Pick a candidate to see the evidence.</p>
+      </sc-if>
+    </section>
+
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1360,"height":1180}}'>
+var JOBS = [
+  { id: "job-077", title: "Reliability Engineer, Industrial IoT", employer: "Nordvik Automation AB", location: "Västerås",
+    reqs: ["Hög tillgänglighet", "Distribuerade system", "Incidenthantering", "Linux", "NIS2-direktivet"],
+    cands: [
+      { alias: "Candidate 017", headline: "IoT Reliability Engineer", years: 5, cov: 0.80, sem: 0.88, tsim: 0.92,
+        summary: "A conventional match: five years running IoT fleets with strong Linux and monitoring skills, lighter on leading major incidents.",
+        story: "IoT reliability → IoT reliability (same field)",
+        evidence: [
+          { concept: "Hög tillgänglighet", jd: "Du ansvarar för driftsäkerhet och tillgänglighet i våra IoT-plattformar.", jdEn: "You own reliability and availability of our IoT platforms.", cv: "Kept a 40,000-device sensor fleet above 99.9% availability.", why: "Directly the same responsibility at a comparable scale." },
+          { concept: "Linux", jd: "God vana av Linux i produktionsmiljö.", jdEn: "Solid experience with Linux in production.", cv: "Maintained embedded Linux images and OTA updates for gateways.", why: "Hands-on production Linux on edge hardware." },
+          { concept: "Distribuerade system", jd: "Erfarenhet av distribuerade system i produktion.", jdEn: "Experience with distributed systems in production.", cv: "Operated an MQTT broker cluster across two regions.", why: "Multi-region messaging is a distributed production system." }
+        ],
+        gaps: [ { label: "Incidenthantering", effort: "weeks", strategy: "Shadow the on-call lead for two incident reviews and take ownership of one post-mortem." } ] },
+      { alias: "Candidate 042", headline: "Senior Core Network Engineer (Telecom)", years: 10, cov: 0.85, sem: 0.78, tsim: 0.21,
+        summary: "Ten years running carrier-grade packet core at five-nines availability maps directly to the uptime and incident-response needs of this role.",
+        story: "Telecom core-network reliability → industrial IoT uptime",
+        evidence: [
+          { concept: "Hög tillgänglighet", jd: "Du ansvarar för driftsäkerhet och tillgänglighet i våra IoT-plattformar.", jdEn: "You own reliability and availability of our IoT platforms.", hidden: true, cv: "Kept a national 4G/5G packet core at 99.999% uptime for six years.", why: "Five-nines on national infrastructure exceeds the platform uptime target." },
+          { concept: "Distribuerade system", jd: "Erfarenhet av distribuerade system i produktion.", jdEn: "Experience with distributed systems in production.", cv: "Operated geo-redundant core clusters across three data centres.", why: "Geo-redundant clustering is distributed systems work in production." },
+          { concept: "Incidenthantering", jd: "Du leder incidenthantering och rotorsaksanalys.", jdEn: "You lead incident management and root-cause analysis.", cv: "Led the 24/7 on-call rotation and wrote root-cause reports for major outages.", why: "Has led exactly this process under strict telecom SLAs." }
+        ],
+        gaps: [ { label: "NIS2-direktivet", effort: "days", strategy: "Take a two-day NIS2 fundamentals course and map past telecom security compliance work to NIS2 articles in the CV." } ] },
+      { alias: "Candidate 088", headline: "Wind Turbine Service Technician", years: 7, cov: 0.76, sem: 0.70, tsim: 0.30,
+        summary: "Seven years keeping remote turbines online through SCADA monitoring and fast fault response, with practical Linux scripting.",
+        story: "Wind-farm uptime → connected-factory uptime",
+        evidence: [
+          { concept: "Hög tillgänglighet", jd: "Du ansvarar för driftsäkerhet och tillgänglighet i våra IoT-plattformar.", jdEn: "You own reliability and availability of our IoT platforms.", hidden: true, cv: "Raised turbine availability from 94% to 98.5% across a 60-unit park.", why: "Measured, sustained availability gains on connected industrial assets." },
+          { concept: "Incidenthantering", jd: "Du leder incidenthantering och rotorsaksanalys.", jdEn: "You lead incident management and root-cause analysis.", cv: "Ran fault triage for SCADA alarms and logged root causes in the CMMS.", why: "Structured triage and root-cause logging on live alarms." },
+          { concept: "Linux", jd: "God vana av Linux i produktionsmiljö.", jdEn: "Solid experience with Linux in production.", cv: "Wrote Bash scripts to pull logs from turbine controllers running Linux.", why: "Practical production Linux, though at script level." }
+        ],
+        gaps: [ { label: "Distribuerade system", effort: "months", strategy: "Complete a cloud fundamentals certification and build a small two-node monitoring setup as a portfolio piece." } ] }
+    ] },
+  { id: "job-012", title: "OT Security Specialist", employer: "Kraftlinje Energi AB", location: "Luleå",
+    reqs: ["Informationssäkerhet", "Nätverkssäkerhet", "Industriella styrsystem", "Riskanalys", "NIS2-direktivet"],
+    cands: [
+      { alias: "Candidate 063", headline: "Signals Officer (Armed Forces)", years: 9, cov: 0.82, sem: 0.74, tsim: 0.18,
+        summary: "Nine years securing field communication networks under formal risk frameworks; strong fit for protecting critical energy infrastructure.",
+        story: "Military communications security → energy-grid OT security",
+        evidence: [
+          { concept: "Nätverkssäkerhet", jd: "Du säkrar nätverk mellan kontrollrum och ställverk.", jdEn: "You secure networks between control rooms and substations.", hidden: true, cv: "Designed and hardened encrypted radio and IP links for brigade command posts.", why: "Securing links between command sites and the field is the same pattern." },
+          { concept: "Riskanalys", jd: "Du genomför riskanalyser enligt etablerade ramverk.", jdEn: "You run risk assessments using established frameworks.", cv: "Produced formal threat and risk assessments before every deployment.", why: "Regular, framework-based risk assessment is routine work for them." },
+          { concept: "Informationssäkerhet", jd: "Erfarenhet av ledningssystem för informationssäkerhet.", jdEn: "Experience with information security management systems.", cv: "Owned classified-information handling procedures for a 300-person unit.", why: "Ran an information-security regime with audits and procedures." }
+        ],
+        gaps: [ { label: "Industriella styrsystem", effort: "weeks", strategy: "Complete an IEC 62443 introduction and a hands-on PLC security lab." } ] },
+      { alias: "Candidate 029", headline: "Cybersecurity Analyst", years: 4, cov: 0.70, sem: 0.86, tsim: 0.81,
+        summary: "Four years in IT security operations; solid on network security and ISMS, new to industrial control systems and risk ownership.",
+        story: "IT SOC analyst → OT security",
+        evidence: [
+          { concept: "Nätverkssäkerhet", jd: "Du säkrar nätverk mellan kontrollrum och ställverk.", jdEn: "You secure networks between control rooms and substations.", cv: "Tuned firewall and IDS rules for a 2,000-user corporate network.", why: "Relevant network defence, though in an IT setting." },
+          { concept: "Informationssäkerhet", jd: "Erfarenhet av ledningssystem för informationssäkerhet.", jdEn: "Experience with information security management systems.", cv: "Supported ISO 27001 certification evidence collection.", why: "Direct ISMS experience." },
+          { concept: "NIS2-direktivet", jd: "Kunskap om NIS2 och krav på samhällsviktig verksamhet.", jdEn: "Knowledge of NIS2 and requirements on essential services.", cv: "Mapped company controls to NIS2 requirements in a gap assessment.", why: "Already applied NIS2 in practice." }
+        ],
+        gaps: [ { label: "Industriella styrsystem", effort: "weeks", strategy: "Take a SCADA fundamentals course and visit a substation with the OT team in the first month." }, { label: "Riskanalys", effort: "weeks", strategy: "Lead one risk assessment end to end with a senior reviewer." } ] },
+      { alias: "Candidate 051", headline: "Railway Signalling Engineer", years: 8, cov: 0.78, sem: 0.69, tsim: 0.27,
+        summary: "Eight years on safety-critical signalling systems with formal hazard analysis; knows industrial control networks from the inside.",
+        story: "Rail signalling safety → grid control-system security",
+        evidence: [
+          { concept: "Industriella styrsystem", jd: "Erfarenhet av SCADA- och styrsystem.", jdEn: "Experience with SCADA and control systems.", cv: "Commissioned interlocking controllers and their SCADA supervision for 14 stations.", why: "Hands-on with industrial control systems in critical infrastructure." },
+          { concept: "Riskanalys", jd: "Du genomför riskanalyser enligt etablerade ramverk.", jdEn: "You run risk assessments using established frameworks.", cv: "Wrote hazard logs and risk assessments to EN 50126 for every change.", why: "Formal, standards-based risk analysis on safety-critical systems." },
+          { concept: "Nätverkssäkerhet", jd: "Du säkrar nätverk mellan kontrollrum och ställverk.", jdEn: "You secure networks between control rooms and substations.", hidden: true, cv: "Segmented the signalling network from the station IT network.", why: "Network segmentation between control and IT is core OT security." }
+        ],
+        gaps: [ { label: "NIS2-direktivet", effort: "days", strategy: "Complete a short NIS2 course and note how rail safety audits map to NIS2 obligations." } ] }
+    ] },
+  { id: "job-150", title: "Production Planner", employer: "Ståhlberg Components AB", location: "Jönköping",
+    reqs: ["Produktionsplanering", "Lagerstyrning", "Affärssystem (ERP)", "Lean", "Leverantörskontakter"],
+    cands: [
+      { alias: "Candidate 036", headline: "Production Planner", years: 3, cov: 0.74, sem: 0.84, tsim: 0.97,
+        summary: "Three years planning a single assembly line in ERP; a safe, conventional match with limited Lean and supplier experience.",
+        story: "Production planning → production planning (same field)",
+        evidence: [
+          { concept: "Produktionsplanering", jd: "Du planerar produktionen för tre monteringslinor.", jdEn: "You plan production for three assembly lines.", cv: "Planned weekly schedules for one assembly line of 40 operators.", why: "Same task, smaller scope." },
+          { concept: "Affärssystem (ERP)", jd: "Van användare av affärssystem, gärna SAP.", jdEn: "Experienced ERP user, preferably SAP.", cv: "Daily planning in SAP PP, including MRP runs.", why: "Direct SAP planning experience." },
+          { concept: "Lagerstyrning", jd: "Du optimerar lagernivåer och materialflöde.", jdEn: "You optimise stock levels and material flow.", cv: "Adjusted safety stock levels for 120 components.", why: "Hands-on inventory control." }
+        ],
+        gaps: [ { label: "Lean", effort: "weeks", strategy: "Take a Lean Green Belt course and run one improvement project in the first quarter." } ] },
+      { alias: "Candidate 091", headline: "Humanitarian Logistics Coordinator", years: 6, cov: 0.81, sem: 0.76, tsim: 0.33,
+        summary: "Six years planning supply flows under tight constraints, with ERP-based stock control and a large supplier network.",
+        story: "Humanitarian supply chains → factory material planning",
+        evidence: [
+          { concept: "Lagerstyrning", jd: "Du optimerar lagernivåer och materialflöde.", jdEn: "You optimise stock levels and material flow.", hidden: true, cv: "Managed stock for four regional warehouses and cut stock-outs by 35%.", why: "Measured inventory optimisation across several sites." },
+          { concept: "Leverantörskontakter", jd: "Du har löpande kontakt med leverantörer.", jdEn: "You are in regular contact with suppliers.", cv: "Negotiated delivery schedules with 60+ suppliers across three countries.", why: "Supplier coordination at larger scale than the role needs." },
+          { concept: "Affärssystem (ERP)", jd: "Van användare av affärssystem, gärna SAP.", jdEn: "Experienced ERP user, preferably SAP.", cv: "Ran purchasing and stock reports in Microsoft Dynamics 365.", why: "Solid ERP use; SAP specifics can be learned quickly." }
+        ],
+        gaps: [ { label: "Produktionsplanering", effort: "weeks", strategy: "Shadow the line planners for two weeks and complete a SAP PP basics course." } ] },
+      { alias: "Candidate 074", headline: "Restaurant Operations Manager", years: 8, cov: 0.79, sem: 0.72, tsim: 0.12,
+        summary: "Eight years running high-volume kitchens: daily capacity planning, waste reduction and supplier management that transfer directly to a production floor.",
+        story: "Kitchen operations → production planning",
+        evidence: [
+          { concept: "Produktionsplanering", jd: "Du planerar produktionen för tre monteringslinor.", jdEn: "You plan production for three assembly lines.", hidden: true, cv: "Planned daily prep and staffing for three kitchens serving 1,200 covers.", why: "Capacity and sequence planning across three parallel lines." },
+          { concept: "Lean", jd: "Du driver förbättringsarbete enligt Lean.", jdEn: "You drive Lean improvement work.", hidden: true, cv: "Cut food waste by 28% by redesigning prep flow and batch sizes.", why: "Flow redesign and batch sizing are Lean in practice." },
+          { concept: "Leverantörskontakter", jd: "Du har löpande kontakt med leverantörer.", jdEn: "You are in regular contact with suppliers.", cv: "Managed 25 suppliers and renegotiated delivery windows.", why: "Ongoing supplier management with measurable results." }
+        ],
+        gaps: [ { label: "Affärssystem (ERP)", effort: "weeks", strategy: "Complete a SAP introduction course and practise MRP runs in a sandbox." } ] }
+    ] }
+];
+
+function pct(x) { return Math.round(x * 100) + "%"; }
+function isGem(c) { return c.cov >= 0.75 && c.tsim < 0.45; }
+function composite(c) { return 0.6 * c.cov + 0.4 * c.sem; }
+function sorted(job) { return job.cands.slice().sort(function (a, b) { return composite(b) - composite(a); }); }
+function barFill(x, color) { return "height: 100%; width: " + Math.round(x * 100) + "%; background: " + color + "; border-radius: 4px"; }
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { jobId: "job-077", alias: "Candidate 042", gemsOnly: false, shortlist: {} };
+  }
+  renderVals() {
+    var self = this;
+    var st = this.state;
+    var job = JOBS.find(function (j) { return j.id === st.jobId; }) || JOBS[0];
+
+    var jobs = JOBS.map(function (j) {
+      var on = j.id === job.id;
+      return {
+        title: j.title, employer: j.employer, location: j.location,
+        count: j.cands.length,
+        gemCount: j.cands.filter(isGem).length,
+        cardStyle: "display: block; width: 100%; text-align: left; padding: 14px; border-radius: 10px; cursor: pointer; background: " + (on ? "#F0F8F7" : "#FFFFFF") + "; border: " + (on ? "2px solid #0B6B63" : "1px solid #DDE2E8") + "; margin: " + (on ? "0" : "1px"),
+        pick: function () {
+          var first = sorted(j)[0];
+          var firstGem = sorted(j).filter(isGem)[0];
+          self.setState({ jobId: j.id, alias: (st.gemsOnly && firstGem ? firstGem : first).alias });
+        }
+      };
+    });
+
+    var list = sorted(job);
+    var shown = st.gemsOnly ? list.filter(isGem) : list;
+    var cands = shown.map(function (c) {
+      var on = c.alias === st.alias;
+      var gem = isGem(c);
+      return {
+        alias: c.alias, headline: c.headline,
+        rank: list.indexOf(c) + 1,
+        compositePct: pct(composite(c)),
+        gem: gem,
+        badge: "Hidden Gem: " + pct(c.cov) + " Competence Overlap",
+        atsLine: c.tsim >= 0.45 ? "Would also be found by a job-title search" : "Missed by a job-title search: title similarity " + pct(c.tsim),
+        cardStyle: "display: block; width: 100%; text-align: left; padding: 12px 14px; border-radius: 10px; cursor: pointer; background: " + (on ? "#F0F8F7" : "#FFFFFF") + "; border: " + (on ? "2px solid #0B6B63" : "1px solid #DDE2E8") + "; margin: " + (on ? "0" : "1px"),
+        pick: function () { self.setState({ alias: c.alias }); }
+      };
+    });
+
+    var selRaw = shown.find(function (c) { return c.alias === st.alias; });
+    var sel = selRaw ? {
+      alias: selRaw.alias, headline: selRaw.headline, years: selRaw.years,
+      summary: selRaw.summary, story: selRaw.story,
+      evidence: selRaw.evidence, gaps: selRaw.gaps,
+      compositePct: pct(composite(selRaw)),
+      gapPct: pct(1 - selRaw.cov) + " of must-have competences"
+    } : { alias: "", headline: "", years: 0, summary: "", story: "", evidence: [], gaps: [], compositePct: "", gapPct: "" };
+
+    var bars = selRaw ? [
+      { label: "Competence overlap", pct: pct(selRaw.cov), fill: barFill(selRaw.cov, "#0B6B63"), note: "Share of the role's JobTech competences" },
+      { label: "Semantic fit", pct: pct(selRaw.sem), fill: barFill(selRaw.sem, "#3C7DD9"), note: "Hybrid search similarity" },
+      { label: "Title similarity", pct: pct(selRaw.tsim), fill: barFill(selRaw.tsim, "#B76E00"), note: "Not scored. Low means a hidden gem" }
+    ] : [];
+
+    var key = job.id + "|" + (selRaw ? selRaw.alias : "");
+    var listed = !!st.shortlist[key];
+
+    return {
+      jobs: jobs,
+      job: { id: job.id, title: job.title, reqs: job.reqs },
+      cands: cands,
+      noCands: cands.length === 0,
+      gemsOnly: st.gemsOnly,
+      toggleGems: function () {
+        var next = !st.gemsOnly;
+        var pool = next ? list.filter(isGem) : list;
+        var keep = pool.find(function (c) { return c.alias === st.alias; });
+        self.setState({ gemsOnly: next, alias: keep ? keep.alias : (pool[0] ? pool[0].alias : "") });
+      },
+      hasSel: !!selRaw,
+      noSel: !selRaw,
+      sel: sel,
+      bars: bars,
+      shortlistLabel: listed ? "Shortlisted for interview" : "Shortlist for interview",
+      shortlistStyle: "min-height: 44px; padding: 0 18px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; " + (listed ? "background: #FFFFFF; color: #0B6B63; border: 2px solid #0B6B63" : "background: #0B6B63; color: #FFFFFF; border: 2px solid #0B6B63"),
+      toggleShortlist: function () {
+        var s = Object.assign({}, st.shortlist);
+        s[key] = !s[key];
+        self.setState({ shortlist: s });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

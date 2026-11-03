@@ -7,12 +7,16 @@
 
 ---
 
-## 🚀 Latest Release: v0.2.0-beta (Pitch Demo Center & 100 Cosmos DB Profiles)
+## 🚀 Latest Release: v0.3.0-rc1 (Claude Prototype Employer Screen & Multi-Dimensional Selection Engine)
 
-- **Flagship Pitch Demonstration Center**: Added top-level interactive showcase featuring 3 representative archetypes (Amara the Global Hidden Gem, Marcus the Volunteer Career Switcher, and Samira the Non-Traditional Coder) with automated pre-click judge briefing cards and spoken pitch talking tracks.
-- **Full Cosmos DB Profile Integration**: Dynamic browsing across all 100 official Microsoft synthetic candidate profiles from Azure Storage, grounding against 1,248 Arbetsförmedlingen JobTech taxonomy concepts.
-- **End-to-End Explainable RAG & Interview Probes**: Machine-verified quote evidence linking candidate CVs to job requirements, low-barrier gap bridging roadmaps, and recruiter interview probes.
-- **Azure OpenAI gpt-5-mini Hardening**: Fully calibrated for Sweden Central Azure OpenAI `chat` deployment and Azure AI Search hybrid vector retrieval.
+- **Claude Prototype-Inspired 3-Column Employer Decision Screen**: Full implementation of the 3-column talent radar layout (`Your Open Roles` -> `Ranked Candidate Pool & Hidden Gem Filter` -> `Deep-Dive Quantitative Decision & Evidence Center`).
+- **Multi-Dimensional Quantitative Representation**: Replaced black-box AI scores with auditable, colored metric progress bars and deterministic mathematical formula display:
+  - *Competence Coverage* ($Cov$, Teal `#0B6B63`): Share of required JobTech taxonomy concepts grounded in CV.
+  - *Semantic Fit* ($Sem$, Blue `#3C7DD9`): Vector cosine similarity.
+  - *Title Similarity* ($TSim$, Amber `#B76E00`): Inverted transfer metric highlighting cross-domain hidden gems.
+  - *Deterministic Formula*: $S_{\text{comp}} = 0.6 \times Cov + 0.4 \times Sem$.
+- **Actionable Candidate Selection & Shortlisting Workflow**: Interactive shortlist button with persistent session tracking (`st.session_state["employer_shortlist"]`), dual-quote verifiable evidence chains, gap-bridging ramp-up effort badges (`days`/`weeks`/`months`), and side-by-side Traditional ATS vs. BridgeIQ comparison matrix.
+- **Flagship Pitch Demonstration Center**: 3 strategic archetypes (Amara the Global Hidden Gem, Marcus the Volunteer Pivot, Samira the Self-Taught Dev) with automated judge talking points and 100 Cosmos DB candidate profiles.
 
 ---
 

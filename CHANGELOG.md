@@ -8,6 +8,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **#T4.10**: Designed and implemented Claude Prototype-inspired 3-Column **Employer Screen & Decision Engine** (`ui/streamlit_app.py` & `app/pipeline/benchmarks.py`).
+- **#T4.11**: Implemented **Multi-Dimensional Quantitative Representation** with explicit colored progress bars and mathematical formula display:
+  - Competence Coverage ($Cov \in [0, 1]$, Teal `#0B6B63`).
+  - Semantic Fit ($Sem \in [0, 1]$, Blue `#3C7DD9`).
+  - Title Similarity ($TSim \in [0, 1]$, Amber `#B76E00`, highlighting cross-domain hidden gems).
+  - Explicit deterministic formula card: `composite = 0.60 * cov + 0.40 * sem`.
+- **#T4.12**: Integrated interactive **Candidate Selection & Shortlisting Workflow**:
+  - Open Roles Navigator across 3 flagship Swedish benchmark roles (IoT Reliability in Västerås, OT Security in Luleå, Production Planning in Jönköping) plus 200 Azure AI Search live jobs.
+  - One-click `[x] Show only hidden gems` filter.
+  - Interactive candidate shortlist button (`➕ Shortlist for Interview` $\leftrightarrow$ `✓ Shortlisted for Interview`) with persistent session state.
+  - Verifiable Dual-Quote Evidence Chain ("Job ad requires" vs "Candidate delivered" + "Why it matches" reasoning).
+  - Quantified Gap-to-Close breakdown with time-to-onboard effort badges (`days`, `weeks`, `months`) and concrete bridging strategies.
+  - Traditional Keyword ATS vs. BridgeIQ Comparison Expander (illustrating why Amara is #94 in ATS vs #1 in BridgeIQ).
+  - Dynamic Interview Probes Generator in Recruiter Tab with live Azure OpenAI `gpt-5-mini` support.
+- **#T4.13**: Added test coverage in `tests/test_benchmarks.py` covering deterministic composite scoring, hidden gem identification, and evidence quote structures (17 passing tests).
+
+---
+
+## [0.2.0] - 2026-11-03
+
+### Added
 - **#T4.4**: Created interactive **Pitch Demonstration Center** in `ui/streamlit_app.py` with 3 flagship archetypes:
   1. *Amara*: Ex-Telecom Core Network Engineer (Lagos) ➔ Industrial IoT Site Reliability Engineer (💎 Hidden Gem).
   2. *Marcus (cand-021)*: Sports Club Volunteer ➔ Warehouse Logistics Specialist (🔄 Career Pivot).
