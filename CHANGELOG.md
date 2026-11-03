@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - **#T4.7**: Removed custom `temperature` parameters in `app/pipeline/extract.py`, `app/pipeline/explain.py`, and `app/pipeline/probes.py` to ensure complete compatibility with Azure OpenAI `gpt-5-mini` deployment.
+- **#T4.8**: Resolved `ModuleNotFoundError: No module named 'app'` by explicitly configuring `PYTHONPATH="/app"` in `Dockerfile`, `start.sh`, and injecting workspace root into `sys.path` in `ui/streamlit_app.py`.
 
 ---
 

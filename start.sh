@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+export PYTHONPATH="/app:${PYTHONPATH}"
+
 echo "Starting BridgeIQ Backend API (Uvicorn on port 8000)..."
 uvicorn app.main:app --host 0.0.0.0 --port 8000 &
 
