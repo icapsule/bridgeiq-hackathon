@@ -3,6 +3,7 @@ FROM python:3.11-slim
 WORKDIR /app
 
 ENV PYTHONPATH="/app"
+ENV AZURE_CLIENT_ID="e30be7ef-2179-4700-b542-f2f4abbd1d20"
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \

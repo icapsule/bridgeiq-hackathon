@@ -1,3 +1,5 @@
+import os
+
 from azure.cosmos import CosmosClient
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
 from azure.search.documents import SearchClient
@@ -11,7 +13,12 @@ class AzureClients:
     _instance = None
 
     def __init__(self):
-        self.credential = DefaultAzureCredential()
+        client_id = os.getenv("AZURE_CLIENT_ID") or settings.azure_client_id
+        if client_id:
+            os.environ["AZURE_CLIENT_ID"] = client_id
+            self.credential = DefaultAzureCredential(managed_identity_client_id=client_id)
+        else:
+            self.credential = DefaultAzureCredential()
 
         # Azure OpenAI
         token_provider = get_bearer_token_provider(

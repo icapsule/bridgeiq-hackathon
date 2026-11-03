@@ -4,6 +4,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
+    # Azure Managed Identity
+    azure_client_id: str | None = "e30be7ef-2179-4700-b542-f2f4abbd1d20"
+
     # Azure OpenAI
     azure_openai_endpoint: str = "https://aispire-t04-ai-grhkzgybcisec.openai.azure.com/"
     azure_openai_api_version: str = "2024-02-01"

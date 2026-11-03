@@ -2,6 +2,7 @@
 set -e
 
 export PYTHONPATH="/app:${PYTHONPATH}"
+export AZURE_CLIENT_ID="e30be7ef-2179-4700-b542-f2f4abbd1d20"
 
 echo "Starting BridgeIQ Backend API (Uvicorn on port 8000)..."
 uvicorn app.main:app --host 0.0.0.0 --port 8000 &
