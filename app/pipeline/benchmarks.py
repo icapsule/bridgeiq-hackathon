@@ -484,3 +484,4 @@ def get_benchmark_role(job_id: str) -> Optional[Dict[str, Any]]:
 def list_benchmark_roles() -> List[Dict[str, Any]]:
     """Return all benchmark roles."""
     return BENCHMARK_ROLES
+
