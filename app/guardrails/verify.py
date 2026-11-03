@@ -1,5 +1,4 @@
 import re
-from typing import Tuple
 
 
 def normalize_whitespace(text: str) -> str:
@@ -7,7 +6,7 @@ def normalize_whitespace(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip().lower()
 
 
-def verify_quote(quote: str, source_text: str) -> Tuple[bool, int]:
+def verify_quote(quote: str, source_text: str) -> tuple[bool, int]:
     """
     Checks if quote is present verbatim (ignoring case & whitespace variance) in source_text.
     Returns (is_found, char_start).

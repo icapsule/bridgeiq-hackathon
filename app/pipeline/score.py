@@ -1,11 +1,11 @@
-from typing import List, Tuple
+
 from app.models import JobRequirement, ScoreBreakdown
 
 
 def calculate_coverage(
-    candidate_concept_ids: List[str],
-    job_requirements: List[JobRequirement]
-) -> Tuple[float, List[str], List[str]]:
+    candidate_concept_ids: list[str],
+    job_requirements: list[JobRequirement]
+) -> tuple[float, list[str], list[str]]:
     """
     Computes coverage score based on weighted requirement satisfaction:
     - must: weight 1.0
@@ -19,8 +19,8 @@ def calculate_coverage(
     candidate_set = set(candidate_concept_ids)
     total_weight = 0.0
     matched_weight = 0.0
-    matched_concepts: List[str] = []
-    missing_concepts: List[str] = []
+    matched_concepts: list[str] = []
+    missing_concepts: list[str] = []
 
     for req in job_requirements:
         weight = 1.0 if req.importance == "must" else 0.4
@@ -41,7 +41,7 @@ def compute_match_scores(
     coverage: float,
     semantic_score: float,
     title_similarity: float
-) -> Tuple[ScoreBreakdown, bool, str | None]:
+) -> tuple[ScoreBreakdown, bool, str | None]:
     """
     Calculates deterministic composite score:
     composite = 0.6 * coverage + 0.4 * semantic

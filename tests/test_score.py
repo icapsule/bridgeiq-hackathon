@@ -1,5 +1,5 @@
-from app.pipeline.score import calculate_coverage, compute_match_scores
 from app.models import JobRequirement
+from app.pipeline.score import calculate_coverage, compute_match_scores
 
 
 def test_calculate_coverage_weighted():

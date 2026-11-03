@@ -1,8 +1,10 @@
 from __future__ import annotations
+
 from datetime import datetime
 from enum import Enum
 from typing import Literal
-from pydantic import BaseModel, Field, conlist, confloat
+
+from pydantic import BaseModel, Field, confloat, conlist
 
 Score = confloat(ge=0.0, le=1.0)
 
