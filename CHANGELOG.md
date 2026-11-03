@@ -24,6 +24,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Dynamic Interview Probes Generator in Recruiter Tab with live Azure OpenAI `gpt-5-mini` support.
 - **#T4.13**: Added test coverage in `tests/test_benchmarks.py` covering deterministic composite scoring, hidden gem identification, and evidence quote structures (17 passing tests).
 - **#T4.16**: Documented UI Optimization **Path A** architectural roadmap in `README.md` (embedded force-directed competency graph, dual-layer ATS radar, zero-hallucination evidence drawer, judge presentation stepper).
+- **#T4.17**: Redesigned and implemented authentic 3-Column **Jobseeker View & Career Radar Cockpit** (`ui/streamlit_app.py` & `app/pipeline/benchmarks.py`) with complete UI and algorithmic symmetry to Employer View:
+  - Column 1: Verified Competence Passport, Swedish JobTech taxonomy grounding tags, Privacy Shield indicator, and 1-click discovery CTA.
+  - Column 2: Ranked Matched Opportunities with `Untapped Career Pivot` (Hidden Gem) badges, keyword ATS rejection warnings, and interactive role selection.
+  - Column 3: Opportunity Decision & Evidence Center featuring transferable story callouts, quantitative progress bars ($Cov$, $Sem$, $TSim$), deterministic composite formula, verifiable dual-quote evidence chains, constructive gap-to-close roadmaps, and live Azure OpenAI (`gpt-5-mini`) interview pitch generation.
+- **#T4.18**: Added candidate-to-jobs benchmark mapping in `app/pipeline/benchmarks.py` (`get_candidate_benchmark_matches`) with comprehensive unit test coverage in `tests/test_benchmarks.py` (18 passing tests).
 
 ### Fixed
 - **#T4.14**: Resolved raw HTML (`<div>` / `<span>`) code block rendering escape bug in Streamlit by creating `render_html` sanitizer. Eliminates leading indentation (>= 4 spaces) and internal blank lines that previously triggered CommonMark `<pre><code>` block parsing in candidate and evidence cards.

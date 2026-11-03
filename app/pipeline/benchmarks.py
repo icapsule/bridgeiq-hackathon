@@ -485,3 +485,335 @@ def list_benchmark_roles() -> List[Dict[str, Any]]:
     """Return all benchmark roles."""
     return BENCHMARK_ROLES
 
+
+def get_candidate_benchmark_matches(candidate_key: str) -> List[Dict[str, Any]]:
+    """
+    Returns symmetric benchmark matches from the Jobseeker's perspective.
+    Maps a candidate to their top matched open roles with dual quotes, gap bridging strategies,
+    and deterministic composite scores.
+    """
+    cand_lower = candidate_key.lower()
+
+    # Candidate 1: Amara (Global Telecom HA -> Industrial IoT / OT Security)
+    if "amara" in cand_lower or "042" in cand_lower or "persona 1" in cand_lower or "001" in cand_lower:
+        matches = [
+            {
+                "job_id": "job-077",
+                "title": "Reliability Engineer, Industrial IoT",
+                "employer": "Nordvik Automation AB",
+                "location": "Västerås",
+                "sector": "Industrial Tech & IoT",
+                "cov": 0.85,
+                "sem": 0.78,
+                "tsim": 0.21,
+                "story": "Ten years maintaining carrier-grade packet core availability (99.999% uptime) maps directly to industrial IoT platform reliability.",
+                "evidence": [
+                    {
+                        "concept": "Hög tillgänglighet",
+                        "jd": "Du ansvarar för driftsäkerhet och tillgänglighet i våra IoT-plattformar.",
+                        "jdEn": "You own reliability and availability of our IoT platforms.",
+                        "hidden": True,
+                        "cv": "Kept a national 4G/5G packet core at 99.999% uptime for six years across multi-region infrastructure.",
+                        "why": "Five-nines on national critical infrastructure exceeds the platform uptime target.",
+                    },
+                    {
+                        "concept": "Distribuerade system",
+                        "jd": "Erfarenhet av distribuerade system i produktion.",
+                        "jdEn": "Experience with distributed systems in production.",
+                        "hidden": False,
+                        "cv": "Operated geo-redundant core clusters across three data centres with automated failover.",
+                        "why": "Geo-redundant clustering is distributed systems work in production.",
+                    },
+                    {
+                        "concept": "Incidenthantering",
+                        "jd": "Du leder incidenthantering och rotorsaksanalys.",
+                        "jdEn": "You lead incident management and root-cause analysis.",
+                        "hidden": False,
+                        "cv": "Led the 24/7 on-call rotation and authored root-cause post-mortems for major network outages.",
+                        "why": "Has led incident response under strict telecom SLAs.",
+                    },
+                ],
+                "gaps": [
+                    {
+                        "label": "NIS2-direktivet",
+                        "effort": "days",
+                        "strategy": "Complete a 2-day NIS2 regulatory workshop and map past telecom security compliance audits to NIS2 articles.",
+                    }
+                ],
+            },
+            {
+                "job_id": "job-012",
+                "title": "OT Security Specialist",
+                "employer": "Kraftlinje Energi AB",
+                "location": "Luleå",
+                "sector": "Energy & Critical Infrastructure",
+                "cov": 0.76,
+                "sem": 0.72,
+                "tsim": 0.19,
+                "story": "Carrier network IPsec encryption and mission-critical failover transfers to energy grid substation protection.",
+                "evidence": [
+                    {
+                        "concept": "Nätverkssäkerhet",
+                        "jd": "Du säkrar nätverk mellan kontrollrum och ställverk.",
+                        "jdEn": "You secure networks between control rooms and substations.",
+                        "hidden": True,
+                        "cv": "Hardened encrypted radio and IP links for multi-region core routing nodes.",
+                        "why": "Securing distributed nodes against unauthorized intrusion is the exact same topological pattern.",
+                    },
+                    {
+                        "concept": "Riskanalys",
+                        "jd": "Du genomför riskanalyser enligt etablerade ramverk.",
+                        "jdEn": "You run risk assessments using established frameworks.",
+                        "hidden": False,
+                        "cv": "Authored comprehensive threat assessments for nationwide telecommunications failover.",
+                        "why": "Regular framework-based risk assessment was routine under national telecommunications oversight.",
+                    },
+                ],
+                "gaps": [
+                    {
+                        "label": "Industriella styrsystem (IEC 62443)",
+                        "effort": "weeks",
+                        "strategy": "Complete an IEC 62443 introduction and hands-on PLC security lab.",
+                    }
+                ],
+            },
+            {
+                "job_id": "job-150",
+                "title": "Production Planner & Systems Coordinator",
+                "employer": "Ståhlberg Components AB",
+                "location": "Jönköping",
+                "sector": "Manufacturing & Logistics",
+                "cov": 0.58,
+                "sem": 0.62,
+                "tsim": 0.15,
+                "story": "NOC capacity forecasting and multi-vendor coordination transfers to discrete manufacturing line scheduling.",
+                "evidence": [
+                    {
+                        "concept": "Produktionsplanering",
+                        "jd": "Du planerar produktionen för tre monteringslinor.",
+                        "jdEn": "You plan production for three assembly lines.",
+                        "hidden": False,
+                        "cv": "Managed multi-year capacity planning and resource allocation across national network clusters.",
+                        "why": "Long-term capacity and queue scheduling across parallel processing pipelines.",
+                    }
+                ],
+                "gaps": [
+                    {
+                        "label": "Affärssystem (ERP/SAP)",
+                        "effort": "weeks",
+                        "strategy": "Complete SAP PP fundamentals course and practise MRP production scheduling.",
+                    }
+                ],
+            },
+        ]
+
+    # Candidate 2: Marcus (Volunteer Logistics -> Production Planner & Warehouse)
+    elif "marcus" in cand_lower or "021" in cand_lower or "091" in cand_lower or "persona 2" in cand_lower:
+        matches = [
+            {
+                "job_id": "job-150",
+                "title": "Production Planner",
+                "employer": "Ståhlberg Components AB",
+                "location": "Jönköping",
+                "sector": "Manufacturing & Logistics",
+                "cov": 0.81,
+                "sem": 0.76,
+                "tsim": 0.33,
+                "story": "Equipment receipt, shelf labeling, FIFO sequencing, and volunteer checklists directly power production scheduling.",
+                "evidence": [
+                    {
+                        "concept": "Produktionsplanering",
+                        "jd": "Du planerar produktionen för tre monteringslinor.",
+                        "jdEn": "You plan production for three assembly lines.",
+                        "hidden": True,
+                        "cv": "Planned weekly equipment distribution schedules and volunteer shift allocations for club events.",
+                        "why": "Capacity and sequence planning across parallel demand streams.",
+                    },
+                    {
+                        "concept": "Lagerstyrning",
+                        "jd": "Du optimerar lagernivåer och materialflöde.",
+                        "jdEn": "You optimise stock levels and material flow.",
+                        "hidden": False,
+                        "cv": "Received equipment, counted against manifests, and labeled shelves for quick volunteer retrieval.",
+                        "why": "Structured inventory receiving, verification, and location-based storage.",
+                    },
+                    {
+                        "concept": "Lean",
+                        "jd": "Du driver förbättringsarbete enligt Lean.",
+                        "jdEn": "You drive Lean improvement work.",
+                        "hidden": True,
+                        "cv": "Created step-by-step checklists so new volunteers could repeat warehouse tasks without defects.",
+                        "why": "Standardized work instructions (SOP) are the foundation of Lean 5S.",
+                    },
+                ],
+                "gaps": [
+                    {
+                        "label": "Affärssystem (ERP/SAP)",
+                        "effort": "weeks",
+                        "strategy": "Complete an introductory SAP PP/MM course and practise MRP runs in a sandbox.",
+                    }
+                ],
+            },
+            {
+                "job_id": "job-077",
+                "title": "Industrial Equipment Coordinator",
+                "employer": "Nordvik Automation AB",
+                "location": "Västerås",
+                "sector": "Industrial Tech & IoT",
+                "cov": 0.65,
+                "sem": 0.62,
+                "tsim": 0.22,
+                "story": "Tool tracking, checklist maintenance, and safety verification transfer to automated cell tool staging.",
+                "evidence": [
+                    {
+                        "concept": "Incidenthantering",
+                        "jd": "Du leder incidenthantering och rotorsaksanalys.",
+                        "jdEn": "You lead incident management and root-cause analysis.",
+                        "hidden": False,
+                        "cv": "Maintained safety logs and equipment incident reports for club sports facilities.",
+                        "why": "Basic incident logging and corrective action follow-up.",
+                    }
+                ],
+                "gaps": [
+                    {
+                        "label": "Linux",
+                        "effort": "weeks",
+                        "strategy": "Complete basic Linux command-line training for telemetry devices.",
+                    }
+                ],
+            },
+            {
+                "job_id": "job-012",
+                "title": "Facility Security Coordinator",
+                "employer": "Kraftlinje Energi AB",
+                "location": "Luleå",
+                "sector": "Energy & Critical Infrastructure",
+                "cov": 0.54,
+                "sem": 0.50,
+                "tsim": 0.15,
+                "story": "Physical inventory access protocols transfer to substation site security and visitor verification.",
+                "evidence": [
+                    {
+                        "concept": "Informationssäkerhet",
+                        "jd": "Erfarenhet av ledningssystem för informationssäkerhet.",
+                        "jdEn": "Experience with information security management systems.",
+                        "hidden": False,
+                        "cv": "Enforced equipment checkout authorization logs and locked key storage.",
+                        "why": "Physical access control principles and custodial record keeping.",
+                    }
+                ],
+                "gaps": [
+                    {
+                        "label": "Industriella styrsystem",
+                        "effort": "months",
+                        "strategy": "Complete foundational industrial facility safety certification.",
+                    }
+                ],
+            },
+        ]
+
+    # Candidate 3: Samira (Self-Taught Python Automation -> QA / OT Security)
+    else:
+        matches = [
+            {
+                "job_id": "job-012",
+                "title": "OT Security Specialist (QA & Testing)",
+                "employer": "Kraftlinje Energi AB",
+                "location": "Luleå",
+                "sector": "Energy & Critical Infrastructure",
+                "cov": 0.78,
+                "sem": 0.68,
+                "tsim": 0.24,
+                "story": "Self-taught Python test automation, network segmentation experiments, and Git discipline map to automated OT compliance testing.",
+                "evidence": [
+                    {
+                        "concept": "Nätverkssäkerhet",
+                        "jd": "Du säkrar nätverk mellan kontrollrum och ställverk.",
+                        "jdEn": "You secure networks between control rooms and substations.",
+                        "hidden": True,
+                        "cv": "Segmented the signalling network from the station IT network in a test lab.",
+                        "why": "Network segmentation between control networks and standard IT is core OT defense.",
+                    },
+                    {
+                        "concept": "Riskanalys",
+                        "jd": "Du genomför riskanalyser enligt etablerade ramverk.",
+                        "jdEn": "You run risk assessments using established frameworks.",
+                        "hidden": False,
+                        "cv": "Wrote Python scripts to simulate unexpected data packets and stress-test firewall rule sets.",
+                        "why": "Automated security penetration and boundary validation.",
+                    },
+                ],
+                "gaps": [
+                    {
+                        "label": "NIS2-direktivet",
+                        "effort": "days",
+                        "strategy": "Complete a short NIS2 compliance course and link test scripts to NIS2 audit requirements.",
+                    }
+                ],
+            },
+            {
+                "job_id": "job-077",
+                "title": "Reliability Engineer, Industrial IoT",
+                "employer": "Nordvik Automation AB",
+                "location": "Västerås",
+                "sector": "Industrial Tech & IoT",
+                "cov": 0.70,
+                "sem": 0.66,
+                "tsim": 0.26,
+                "story": "Automated test writing and data cleansing scripts map directly to IoT telemetry QA pipelines.",
+                "evidence": [
+                    {
+                        "concept": "Linux",
+                        "jd": "God vana av Linux i produktionsmiljö.",
+                        "jdEn": "Solid experience with Linux in production.",
+                        "hidden": False,
+                        "cv": "Automated file processing, log validation, and duplicate row detection in Linux environments.",
+                        "why": "Solid command-line automation and script-based data validation.",
+                    }
+                ],
+                "gaps": [
+                    {
+                        "label": "Distribuerade system",
+                        "effort": "weeks",
+                        "strategy": "Deploy a multi-container Docker testing harness to master distributed telemetry flow.",
+                    }
+                ],
+            },
+            {
+                "job_id": "job-150",
+                "title": "Production Data Analyst",
+                "employer": "Ståhlberg Components AB",
+                "location": "Jönköping",
+                "sector": "Manufacturing & Logistics",
+                "cov": 0.60,
+                "sem": 0.58,
+                "tsim": 0.18,
+                "story": "Data deduplication, manifest reconciliation, and Python pipeline automation power ERP data hygiene.",
+                "evidence": [
+                    {
+                        "concept": "Lagerstyrning",
+                        "jd": "Du optimerar lagernivåer och materialflöde.",
+                        "jdEn": "You optimise stock levels and material flow.",
+                        "hidden": False,
+                        "cv": "Scripted automatic verification of CSV inventory tables against database entries.",
+                        "why": "Automated inventory data integrity verification.",
+                    }
+                ],
+                "gaps": [
+                    {
+                        "label": "Affärssystem (ERP/SAP)",
+                        "effort": "weeks",
+                        "strategy": "Practise SAP MM data export and batch processing workflows.",
+                    }
+                ],
+            },
+        ]
+
+    for m in matches:
+        m["composite"] = compute_candidate_composite(m["cov"], m["sem"])
+        m["hidden_gem"] = is_hidden_gem(m["cov"], m["tsim"])
+        m["reqs"] = get_benchmark_role(m["job_id"])["reqs"] if get_benchmark_role(m["job_id"]) else []
+
+    matches.sort(key=lambda x: x["composite"], reverse=True)
+    return matches
+

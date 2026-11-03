@@ -1,6 +1,7 @@
 from app.pipeline.benchmarks import (
     compute_candidate_composite,
     get_benchmark_role,
+    get_candidate_benchmark_matches,
     is_hidden_gem,
     list_benchmark_roles,
 )
@@ -51,3 +52,22 @@ def test_evidence_quotes_structure():
         assert "why" in ev
     assert len(cand042["gaps"]) == 1
     assert cand042["gaps"][0]["effort"] == "days"
+
+
+def test_candidate_benchmark_matches():
+    amara_matches = get_candidate_benchmark_matches("Amara")
+    assert len(amara_matches) == 3
+    assert amara_matches[0]["job_id"] == "job-077"
+    assert amara_matches[0]["hidden_gem"] is True
+    assert amara_matches[0]["composite"] == 0.822
+
+    marcus_matches = get_candidate_benchmark_matches("Marcus")
+    assert len(marcus_matches) == 3
+    assert marcus_matches[0]["job_id"] == "job-150"
+    assert marcus_matches[0]["hidden_gem"] is True
+
+    samira_matches = get_candidate_benchmark_matches("Samira")
+    assert len(samira_matches) == 3
+    assert samira_matches[0]["job_id"] == "job-012"
+    assert samira_matches[0]["hidden_gem"] is True
+
