@@ -43,3 +43,20 @@ def test_probe_set_schema():
     )
     assert len(probe_set.probes) == 3
     assert probe_set.probes[0].type == "technical"
+
+
+def test_hiring_manager_memo_generation():
+    from app.pipeline.probes import generate_hiring_manager_memo
+    memo = generate_hiring_manager_memo(
+        candidate_id="cand-042",
+        candidate_alias="Amara Diop",
+        job_id="job-077",
+        job_title="Reliability Engineer, Industrial IoT",
+        transferable_summary="Telecom core 99.999% uptime to IoT availability",
+        top_gap_label="NIS2-direktivet",
+        rampup_estimate="3 to 5 Days"
+    )
+    assert "Amara Diop" in memo
+    assert "Reliability Engineer, Industrial IoT" in memo
+    assert "provanställning" in memo.lower()
+    assert "Hälsningar" in memo

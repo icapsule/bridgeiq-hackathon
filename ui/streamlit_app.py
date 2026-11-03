@@ -19,7 +19,7 @@ from app.pipeline.benchmarks import (
     get_candidate_benchmark_matches,
     is_hidden_gem,
 )
-from app.pipeline.probes import generate_interview_probes
+from app.pipeline.probes import generate_hiring_manager_memo, generate_interview_probes
 
 # Page Configuration
 st.set_page_config(
@@ -1154,88 +1154,279 @@ with tab_employer:
 
 # ----------------- TAB 3: Recruiter -----------------
 with tab_recruiter:
-    st.markdown("### 💼 Automated Interview Probes (Explainable AI Interview Guide)")
-    st.write("Tailored behavioral and technical probes generated for the hiring manager and recruiter to verify transferable competence and assess ramp-up feasibility.")
+    # Header with Live Badges & Regulatory Framing
+    render_html("""
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 1rem;">
+        <div>
+            <h2 style="margin: 0; font-size: 1.5rem; font-weight: 700;">💼 Title-Agnostic Recruiter Copilot & Transferability Assessor</h2>
+            <div style="font-size: 0.85rem; color: #64748b; margin-top: 2px;">
+                Equipping Talent Acquisition Partners with explainable STAR probes, objective rubrics, and hiring manager pitch briefs.
+            </div>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <span style="background: #EEF2FF; color: #4338CA; padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; border: 1px solid #C7D2FE;">
+                🛡️ EU AI Act Art. 14 (Human-in-the-Loop)
+            </span>
+            <span style="background: #F0FDF4; color: #166534; padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; border: 1px solid #BBF7D0;">
+                🇸🇪 Swedish Provanställning De-risked
+            </span>
+            <span style="background: #FFFBEB; color: #B45309; padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; border: 1px solid #FDE68A;">
+                ⚡ Azure OpenAI (gpt-5-mini)
+            </span>
+        </div>
+    </div>
+    """)
 
     # Target Candidate options
     recruiter_options = [
-        "Candidate 042 (Amara) — IoT Reliability Engineer (Gap: NIS2-direktivet)",
-        "Candidate 051 (Samira) — OT Security Specialist (Gap: NIS2-direktivet)",
-        "Candidate 074 (Marcus) — Production Planner (Gap: Affärssystem ERP/SAP)",
-        "Candidate 063 — OT Security Specialist (Gap: Industriella styrsystem)"
+        "Candidate 042 (Amara) ➔ Industrial IoT SRE (Västerås GridTech)",
+        "Candidate 051 (Samira) ➔ OT Security Specialist (Luleå CyberGrid)",
+        "Candidate 074 (Marcus) ➔ Production Planner (Jönköping Assembly)",
+        "Candidate 063 (Defense Tech) ➔ OT Security Specialist (Luleå CyberGrid)",
     ]
 
     selected_recruiter_target = st.selectbox(
-        "Select Interview Candidate to Generate Tailored Probes:",
+        "👤 Active Candidate & Target Role Evaluation Session:",
         recruiter_options,
-        index=0
+        index=0,
     )
 
     if "Amara" in selected_recruiter_target or "042" in selected_recruiter_target:
         c_id = "cand-042"
+        c_alias = "Amara Diop"
         j_id = "job-077"
         j_title = "Reliability Engineer, Industrial IoT"
+        j_employer = "Västerås GridTech AB"
         trans_sum = "Telecom packet core 99.999% uptime transferred to industrial IoT platform availability"
         top_gap = "NIS2-direktivet"
+        rampup_est = "3 to 5 Days"
+        rampup_plan = "Complete 4-hour open-source Swedish MSB NIS2 Industrial Cybersecurity Foundation module."
+        swe_equiv = "Telia / Ericsson Carrier Core Network Engineering"
+        risk_verdict = "Low Risk · Zero architectural deficiency. 100% bridgeable during Week 1 of 6-month probation (Provanställning)."
     elif "Samira" in selected_recruiter_target or "051" in selected_recruiter_target:
         c_id = "cand-051"
+        c_alias = "Samira Khan"
         j_id = "job-012"
         j_title = "OT Security Specialist"
+        j_employer = "Luleå CyberGrid AB"
         trans_sum = "Railway safety-critical signalling network segmentation transferred to energy grid OT SCADA security"
         top_gap = "NIS2-direktivet"
+        rampup_est = "1 to 2 Weeks"
+        rampup_plan = "Review ENISA / MSB energy sub-station network zoning directives and IEC 62443 standard."
+        swe_equiv = "Trafikverket Railway Safety-Critical Signalling Systems"
+        risk_verdict = "Low Risk · Safety-critical mind-set is already proven in railway signaling. Safe for probation."
     elif "Marcus" in selected_recruiter_target or "074" in selected_recruiter_target:
         c_id = "cand-074"
+        c_alias = "Marcus Lindqvist"
         j_id = "job-150"
         j_title = "Production Planner"
+        j_employer = "Jönköping Assembly Solutions"
         trans_sum = "High-volume kitchen capacity planning and food waste Lean reduction transferred to factory assembly planning"
-        top_gap = "Affärssystem (ERP)"
+        top_gap = "Affärssystem (ERP/SAP)"
+        rampup_est = "2 to 3 Weeks"
+        rampup_plan = "Hands-on ERP sandbox onboarding module for manufacturing work order scheduling."
+        swe_equiv = "Commercial Kitchen Lean Operations (Scandic / Sodexo Large-Scale Facilities)"
+        risk_verdict = "Medium-Low Risk · Practical bottleneck management skills easily map to software ERP workflow."
     else:
         c_id = "cand-063"
+        c_alias = "Candidate 063"
         j_id = "job-012"
         j_title = "OT Security Specialist"
+        j_employer = "Luleå CyberGrid AB"
         trans_sum = "Military communication link encryption and field threat assessments transferred to energy substation security"
         top_gap = "Industriella styrsystem"
+        rampup_est = "2 Weeks"
+        rampup_plan = "Complete industrial SCADA and PLC protocol fundamentals refresher."
+        swe_equiv = "Försvarsmakten Tactical Communication Defense"
+        risk_verdict = "Low Risk · High-stakes defensive security discipline transfers seamlessly."
 
-    render_html(f"""
-    <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 12px 16px; margin: 12px 0;">
-        <div style="font-weight: 700; color: #1E293B; font-size: 0.95rem;">Target Role: {j_title} (ID: {j_id})</div>
-        <div style="font-size: 0.85rem; color: #475569; margin-top: 3px;"><strong>Transferable Bridge:</strong> {trans_sum}</div>
-        <div style="font-size: 0.85rem; color: #8A4B00; margin-top: 3px;"><strong>Identified Skill Gap to Probe:</strong> <code>{top_gap}</code></div>
-    </div>
-    """)
+    # 2-Panel High-Contrast Architecture
+    col_brief, col_probes = st.columns([1.1, 1.9])
 
-    if st.button("🔄 Generate Live Probes via Azure OpenAI (gpt-5-mini)", type="primary"):
-        with st.spinner("Calling Azure OpenAI Sweden Central to craft structured interview probes..."):
-            try:
-                probes = generate_interview_probes(
+    # ===== COLUMN 1: Pre-Interview Intelligence & Line Manager Pitch (Features 5 & 6) =====
+    with col_brief:
+        render_html("<div style='font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;'>Pre-Interview Intelligence</div>")
+
+        # Card 1: Candidate Transferability Brief
+        render_html(f"""
+        <div style="background: white; border: 1px solid #DDE2E8; border-radius: 10px; padding: 14px; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <span style="background: #E6F4F1; color: #0B6B63; font-weight: 700; font-size: 0.72rem; padding: 2px 8px; border-radius: 4px;">
+                        💎 HIDDEN GEM APPLICANT
+                    </span>
+                    <h4 style="margin: 6px 0 2px 0; color: #14212B; font-size: 1.05rem;">{c_alias} ({c_id})</h4>
+                    <div style="font-size: 0.82rem; color: #64748b;">Target: {j_title} · {j_employer}</div>
+                </div>
+            </div>
+            <div style="margin-top: 10px; padding: 8px 10px; background: #F8FAFC; border-radius: 6px; border: 1px solid #EDF2F7; font-size: 0.8rem;">
+                <strong style="color: #475569;">🇸🇪 Swedish Industrial Equivalence:</strong><br/>
+                <span style="color: #0B6B63; font-weight: 600;">{swe_equiv}</span>
+            </div>
+            <div style="margin-top: 8px; font-size: 0.82rem; color: #334155; line-height: 1.4;">
+                <strong>Transferable Core:</strong> {trans_sum}
+            </div>
+        </div>
+        """)
+
+        # Card 2: Feature 5 — 6-Month Probation (Provanställning) De-risking
+        render_html(f"""
+        <div style="background: white; border: 1px solid #DDE2E8; border-radius: 10px; padding: 14px; margin-bottom: 12px;">
+            <div style="font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">
+                Feature 5: 6-Month Probation (Provanställning) Safety
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 0.85rem; font-weight: 600; color: #1E293B;">Identified Skill Gap:</span>
+                <span style="background: #FEF3C7; color: #92400E; font-weight: 700; font-size: 0.75rem; padding: 2px 8px; border-radius: 999px;">
+                    <code>{top_gap}</code>
+                </span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 0.85rem; font-weight: 600; color: #1E293B;">Ramp-up Feasibility:</span>
+                <span style="background: #DCFCE7; color: #166534; font-weight: 700; font-size: 0.75rem; padding: 2px 8px; border-radius: 999px;">
+                    ⚡ {rampup_est} (Low Risk)
+                </span>
+            </div>
+            <div style="font-size: 0.8rem; color: #475569; line-height: 1.4; margin-bottom: 8px;">
+                <strong>Targeted Action:</strong> {rampup_plan}
+            </div>
+            <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 6px; padding: 8px 10px; font-size: 0.78rem; color: #166534; line-height: 1.4;">
+                {risk_verdict}
+            </div>
+        </div>
+        """)
+
+        # Card 3: Feature 6 — 1-Click Hiring Manager Pitch Brief (Sälja in-memo)
+        render_html("""
+        <div style="font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin: 12px 0 6px 0;">
+            Feature 6: Hiring Manager Pitch Memo (Sälja In)
+        </div>
+        """)
+
+        memo_key = f"recruiter_memo_{c_id}_{j_id}"
+        if st.button("📑 Generate Line Manager Memo (gpt-5-mini)", key=f"btn_memo_{c_id}", use_container_width=True):
+            with st.spinner("Generating Swedish TA alignment memo for engineering manager..."):
+                st.session_state[memo_key] = generate_hiring_manager_memo(
                     candidate_id=c_id,
+                    candidate_alias=c_alias,
                     job_id=j_id,
                     job_title=j_title,
                     transferable_summary=trans_sum,
-                    top_gap_label=top_gap
+                    top_gap_label=top_gap,
+                    rampup_estimate=rampup_est,
                 )
-                st.session_state["cached_probes_" + c_id] = probes
-            except Exception as e:
-                st.error(f"Error generating probes: {e}")
 
-    # Fallback to pre-generated or cached probes
-    active_probes = st.session_state.get("cached_probes_" + c_id)
-    if not active_probes:
-        active_probes = generate_interview_probes(
-            candidate_id=c_id,
-            job_id=j_id,
-            job_title=j_title,
-            transferable_summary=trans_sum,
-            top_gap_label=top_gap
+        if memo_key not in st.session_state:
+            # Generate default fallback memo
+            st.session_state[memo_key] = generate_hiring_manager_memo(
+                candidate_id=c_id,
+                candidate_alias=c_alias,
+                job_id=j_id,
+                job_title=j_title,
+                transferable_summary=trans_sum,
+                top_gap_label=top_gap,
+                rampup_estimate=rampup_est,
+            )
+
+        st.text_area(
+            "Ready-to-Send Internal Memo (Copy & Paste to Slack/Email):",
+            value=st.session_state[memo_key],
+            height=180,
+            key=f"memo_text_{c_id}"
         )
+        st.caption("💡 *Send this concise briefing directly to the engineering hiring manager to secure the technical round.*")
 
-    for i, p in enumerate(active_probes.probes):
-        probe_badge_color = "#0B6B63" if p.type == "transferable" else "#B76E00"
-        with st.expander(f"Probe {i+1}: {p.type.upper()} · Focus: {p.targets_concept}", expanded=(i==0)):
-            st.markdown("**Interview Question:**")
-            st.markdown(f"> *\"{p.question}\"*")
-            st.markdown("**What Good Looks Like (Scoring Rubric for Recruiter):**")
-            st.info(f"💡 {p.what_good_looks_like}")
+    # ===== COLUMN 2: Competency-Based STAR Interview Probes (Features 2 & 3) =====
+    with col_probes:
+        render_html("<div style='font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;'>Live Competency-Based Interview Probes (STAR Method)</div>")
+
+        # Probe Generation CTA Bar
+        col_btn, col_info = st.columns([1.1, 1.9])
+        with col_btn:
+            if st.button("🔄 Regenerate STAR Probes (gpt-5-mini)", type="primary", use_container_width=True):
+                with st.spinner("Calling Azure OpenAI Sweden Central to craft structured STAR probes..."):
+                    try:
+                        probes = generate_interview_probes(
+                            candidate_id=c_id,
+                            job_id=j_id,
+                            job_title=j_title,
+                            transferable_summary=trans_sum,
+                            top_gap_label=top_gap
+                        )
+                        st.session_state["cached_probes_" + c_id] = probes
+                    except Exception as e:
+                        st.error(f"Error generating probes: {e}")
+        with col_info:
+            render_html("""
+            <div style="font-size: 0.82rem; color: #64748b; padding-top: 6px;">
+                Strictly aligns with Swedish <em>Kompetensbaserad intervjumetodik</em>. Zero demographic questions.
+            </div>
+            """)
+
+        # Fallback to pre-generated or cached probes
+        active_probes = st.session_state.get("cached_probes_" + c_id)
+        if not active_probes:
+            active_probes = generate_interview_probes(
+                candidate_id=c_id,
+                job_id=j_id,
+                job_title=j_title,
+                transferable_summary=trans_sum,
+                top_gap_label=top_gap
+            )
+            st.session_state["cached_probes_" + c_id] = active_probes
+
+        # Probes loop with Feature 3 (What Good Looks Like & Anti-BS Rubrics)
+        for i, p in enumerate(active_probes.probes):
+            if p.type == "technical":
+                badge_type = "TECHNICAL · PAST MASTERY"
+                badge_color = "#0B6B63"
+                badge_bg = "#E6F4F1"
+                red_flag = "Vaguely reciting networking definitions without citing exact uptime SLAs, throughput metrics, or incident recovery steps."
+            elif p.type == "situational":
+                badge_type = "SITUATIONAL · DOMAIN TRANSFER"
+                badge_color = "#1E40AF"
+                badge_bg = "#DBEAFE"
+                red_flag = "Assuming industrial environments operate like commodity cloud servers, ignoring physical safety boundaries and edge latency."
+            else:
+                badge_type = "GAP · LEARNING AGILITY"
+                badge_color = "#92400E"
+                badge_bg = "#FEF3C7"
+                red_flag = "Claiming 'I learn quickly' without outlining concrete technical standards (e.g. MSB guidelines) or hands-on audit workflows."
+
+            with st.expander(f"Probe {i+1}: {badge_type} · Focus: {p.targets_concept}", expanded=(i==0)):
+                render_html(f"""
+                <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
+                    <span style="background: {badge_bg}; color: {badge_color}; font-weight: 700; font-size: 0.75rem; padding: 3px 8px; border-radius: 4px;">
+                        {badge_type}
+                    </span>
+                    <span style="font-size: 0.82rem; color: #64748b;">Target Concept: <strong>{p.targets_concept}</strong></span>
+                </div>
+                """)
+
+                st.markdown("**Structured STAR Interview Question:**")
+                st.markdown(f"> *\"{p.question}\"*")
+
+                render_html(f"""
+                <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 10px 12px; margin: 10px 0;">
+                    <div style="font-size: 0.8rem; font-weight: 700; color: #166534; margin-bottom: 3px;">
+                        💡 WHAT GOOD LOOKS LIKE (Objective Scoring Rubric):
+                    </div>
+                    <div style="font-size: 0.82rem; color: #14532D; line-height: 1.4;">
+                        {p.what_good_looks_like}
+                    </div>
+                </div>
+                <div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 8px; padding: 10px 12px; margin: 6px 0 10px 0;">
+                    <div style="font-size: 0.8rem; font-weight: 700; color: #92400E; margin-bottom: 3px;">
+                        ⚠️ RED FLAGS & BUZZWORD WARNINGS (Anti-BS Rubric):
+                    </div>
+                    <div style="font-size: 0.82rem; color: #78350F; line-height: 1.4;">
+                        {red_flag}
+                    </div>
+                </div>
+                """)
+
+        render_html("<hr style='margin: 1.2rem 0;'/>")
+        st.caption("⚖️ *BridgeIQ empowers human recruiters with explainable competence probes. In accordance with EU AI Act Article 14, automated tools assist inquiry; humans conduct interviews and decide hiring progression.*")
 
 # ----------------- TAB 4: Live Data Inspection -----------------
 with tab_data:
