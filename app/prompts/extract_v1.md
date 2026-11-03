@@ -11,3 +11,4 @@ Rules:
    - Generate 1 to 3 English search terms (`search_terms_en`).
 3. Never infer or mention demographic traits: do not include candidate age, gender, race, nationality, religion, health, or marital status.
 4. Output must strictly conform to the provided JSON schema.
+

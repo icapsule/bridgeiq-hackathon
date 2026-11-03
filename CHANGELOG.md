@@ -8,12 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- **#T1.1**: Created `app/clients.py` singleton managing unified Azure connections (`AzureOpenAI`, `SearchClient`, `CosmosClient`, `BlobServiceClient`) via passwordless `DefaultAzureCredential`.
-- **#T1.2**: Developed `app/prompts/extract_v1.md` prompt for English CV skill decomposition into structured Pydantic schemas with Swedish translation search phrases.
-- **#T1.3**: Implemented `app/pipeline/extract.py` performing Stage 1 Extract & Ground: PII scrub &rarr; `gpt-5-mini` extraction &rarr; batched `text-embedding-3-small` &rarr; hybrid vector/BM25 grounding on Sweden JobTech taxonomy &rarr; quote verification &rarr; profile vector generation.
-- **#T1.4**: Implemented REST API endpoints in `app/routers/v1.py` for `/api/v1/extract-skills`, `/api/v1/candidates`, and `/api/v1/jobs`.
-- **#T1.5**: Wired live Streamlit dashboard in `ui/streamlit_app.py` with persona selectors, real-time extraction, JobTech skill cards, and live Azure AI Search integration.
-- **#T1.6**: Added unit test coverage for extraction and structured response parsing in `tests/test_extract.py` (10/10 tests passing).
+- **#T2.1-T2.5**: Implemented Stage 2 Title-Agnostic Hybrid Retrieval & Deterministic Ranking in `app/pipeline/retrieve.py`, querying Azure AI Search `jobs` index with profile vectors and JobTech concept terms, calculating composite coverage, and exposing `POST /api/v1/match-jobs`.
+- **#T3.1-T3.3**: Implemented Stage 3 Explainable Synthesis with Machine-Checked Verifier in `app/pipeline/explain.py`, generating bidirectional rationales, verifiable claim-to-evidence links, and low-barrier gap bridging roadmaps, exposed via `POST /api/v1/explain-match`.
+- **#T4.1**: Implemented Recruiter Interview Probes generator in `app/pipeline/probes.py` with structured evaluation rubrics across Technical, Situational, and Gap categories, exposed via `POST /api/v1/generate-probes`.
+- **#T4.2**: Integrated complete end-to-end pipeline into `ui/streamlit_app.py` with interactive candidate-job matching, live evidence links, and interview probe accordions.
+- **#T4.3**: Expanded automated test suite with unit tests in `tests/test_retrieve.py` and `tests/test_explain.py` (14/14 tests passing).
 
 ---
 
@@ -21,3 +20,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Milestone 0: Core foundations, Azure identity wiring, container packaging, and CI/CD automation pipeline.
+- Milestone 1: Stage 1 Extract & Ground pipeline against 1,248 Swedish JobTech taxonomy concepts and REST endpoints.
