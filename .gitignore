@@ -12,7 +12,7 @@ env/
 # Sensitive & Secret Files (STRICT ZERO-LEAK)
 .env
 .env.*
-*.env
+!.env.example
 *.pem
 *.key
 *.secret
