@@ -8,11 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- **#T2.1-T2.5**: Implemented Stage 2 Title-Agnostic Hybrid Retrieval & Deterministic Ranking in `app/pipeline/retrieve.py`, querying Azure AI Search `jobs` index with profile vectors and JobTech concept terms, calculating composite coverage, and exposing `POST /api/v1/match-jobs`.
-- **#T3.1-T3.3**: Implemented Stage 3 Explainable Synthesis with Machine-Checked Verifier in `app/pipeline/explain.py`, generating bidirectional rationales, verifiable claim-to-evidence links, and low-barrier gap bridging roadmaps, exposed via `POST /api/v1/explain-match`.
-- **#T4.1**: Implemented Recruiter Interview Probes generator in `app/pipeline/probes.py` with structured evaluation rubrics across Technical, Situational, and Gap categories, exposed via `POST /api/v1/generate-probes`.
-- **#T4.2**: Integrated complete end-to-end pipeline into `ui/streamlit_app.py` with interactive candidate-job matching, live evidence links, and interview probe accordions.
-- **#T4.3**: Expanded automated test suite with unit tests in `tests/test_retrieve.py` and `tests/test_explain.py` (14/14 tests passing).
+- **#T4.4**: Created interactive **Pitch Demonstration Center** in `ui/streamlit_app.py` with 3 flagship archetypes:
+  1. *Amara*: Ex-Telecom Core Network Engineer (Lagos) ➔ Industrial IoT Site Reliability Engineer (💎 Hidden Gem).
+  2. *Marcus (cand-021)*: Sports Club Volunteer ➔ Warehouse Logistics Specialist (🔄 Career Pivot).
+  3. *Samira (cand-051)*: Self-Taught Python Scripting ➔ Junior QA Automation / Developer (⚡ Skills Over Degrees).
+- **#T4.5**: Added automatic **Pre-Click Demonstration Briefing & Judge Talking Points** in the UI, providing presenters with immediate ATS blindspot breakdowns, BridgeIQ breakthrough evidence, and spoken talking tracks before executing live runs.
+- **#T4.6**: Integrated dynamic loader for all 100 official Microsoft Cosmos DB synthetic candidate profiles from Azure Blob Storage (`candidates.json`) with persistent results caching.
+
+### Fixed
+- **#T4.7**: Removed custom `temperature` parameters in `app/pipeline/extract.py`, `app/pipeline/explain.py`, and `app/pipeline/probes.py` to ensure complete compatibility with Azure OpenAI `gpt-5-mini` deployment.
 
 ---
 

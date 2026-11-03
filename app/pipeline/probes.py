@@ -66,7 +66,6 @@ Return JSON format:
             {"role": "user", "content": user_prompt},
         ],
         response_format={"type": "json_object"},
-        temperature=0.2,
     )
 
     raw_text = response.choices[0].message.content or "{}"

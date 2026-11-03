@@ -7,12 +7,12 @@
 
 ---
 
-## 🚀 Latest Release: v0.1.0-alpha (Foundations & CI/CD)
+## 🚀 Latest Release: v0.2.0-beta (Pitch Demo Center & 100 Cosmos DB Profiles)
 
-- **4-Stage Bounded Agentic RAG Architecture**: Designed deterministic, schema-constrained data contracts for candidate skill extraction, taxonomy grounding, title-agnostic hybrid matching, and explainability synthesis.
-- **Title-Agnostic Hidden Gem Detection**: Deterministic code scoring (`0.6 * coverage + 0.4 * semantic`) paired with automatic `Hidden Gem` badges for candidates with high competence overlap ($\ge 75\%$) and low title similarity ($< 45\%$).
-- **Cloud-Native CI/CD Pipeline**: Automated GitHub Actions running Ruff linting, Pytest test suites, and Docker container builds published to GitHub Container Registry (`ghcr.io`).
-- **Zero-Key Security Architecture**: Native integration with Azure Managed Identity (`DefaultAzureCredential`) across Azure OpenAI (`gpt-5-mini`), Azure AI Search, and Azure Cosmos DB.
+- **Flagship Pitch Demonstration Center**: Added top-level interactive showcase featuring 3 representative archetypes (Amara the Global Hidden Gem, Marcus the Volunteer Career Switcher, and Samira the Non-Traditional Coder) with automated pre-click judge briefing cards and spoken pitch talking tracks.
+- **Full Cosmos DB Profile Integration**: Dynamic browsing across all 100 official Microsoft synthetic candidate profiles from Azure Storage, grounding against 1,248 Arbetsförmedlingen JobTech taxonomy concepts.
+- **End-to-End Explainable RAG & Interview Probes**: Machine-verified quote evidence linking candidate CVs to job requirements, low-barrier gap bridging roadmaps, and recruiter interview probes.
+- **Azure OpenAI gpt-5-mini Hardening**: Fully calibrated for Sweden Central Azure OpenAI `chat` deployment and Azure AI Search hybrid vector retrieval.
 
 ---
 

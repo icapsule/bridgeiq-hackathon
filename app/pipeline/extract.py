@@ -71,7 +71,6 @@ Return JSON with key 'skills', where each item has:
             {"role": "user", "content": user_prompt},
         ],
         response_format={"type": "json_object"},
-        temperature=0.1,
     )
 
     raw_json_str = response.choices[0].message.content or "{}"
