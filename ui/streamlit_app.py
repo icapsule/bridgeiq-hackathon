@@ -30,6 +30,13 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+
+def render_html(html_str: str) -> None:
+    """Renders raw HTML in Streamlit cleanly without indentation or blank lines triggering markdown code blocks."""
+    lines = [line.strip() for line in html_str.strip().splitlines() if line.strip()]
+    st.markdown("\n".join(lines), unsafe_allow_html=True)
+
+
 # Custom Styling (Glassmorphism & Clean Typography)
 st.markdown("""
 <style>
@@ -421,7 +428,7 @@ with tab_jobseeker:
 
     with col_p1:
         p1 = HERO_PERSONAS[p_keys[0]]
-        st.markdown(f"""
+        render_html(f"""
         <div class="persona-card">
             <div>
                 <span class="badge-archetype">{p1['archetype']}</span>
@@ -432,14 +439,14 @@ with tab_jobseeker:
                 </p>
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
         if st.button("👉 Select Amara (Hero Demo)", key="btn_hero_1", use_container_width=True):
             st.session_state["chosen_persona_label"] = p_keys[0]
             st.session_state["chosen_cv"] = p1["cv_text"]
 
     with col_p2:
         p2 = HERO_PERSONAS[p_keys[1]]
-        st.markdown(f"""
+        render_html(f"""
         <div class="persona-card">
             <div>
                 <span class="badge-archetype">{p2['archetype']}</span>
@@ -450,14 +457,14 @@ with tab_jobseeker:
                 </p>
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
         if st.button("👉 Select Marcus (cand-021)", key="btn_hero_2", use_container_width=True):
             st.session_state["chosen_persona_label"] = p_keys[1]
             st.session_state["chosen_cv"] = p2["cv_text"]
 
     with col_p3:
         p3 = HERO_PERSONAS[p_keys[2]]
-        st.markdown(f"""
+        render_html(f"""
         <div class="persona-card">
             <div>
                 <span class="badge-archetype">{p3['archetype']}</span>
@@ -468,12 +475,12 @@ with tab_jobseeker:
                 </p>
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
         if st.button("👉 Select Samira (cand-051)", key="btn_hero_3", use_container_width=True):
             st.session_state["chosen_persona_label"] = p_keys[2]
             st.session_state["chosen_cv"] = p3["cv_text"]
 
-    st.markdown("<hr style='margin: 1.5rem 0;'/>", unsafe_allow_html=True)
+    render_html("<hr style='margin: 1.5rem 0;'/>")
 
     # Build Full Dropdown Options with 3 Heroes at the top
     dropdown_options = list(HERO_PERSONAS.keys())
@@ -518,7 +525,7 @@ with tab_jobseeker:
         active_label = st.session_state.get("chosen_persona_label", "")
         if active_label in HERO_PERSONAS:
             active_info = HERO_PERSONAS[active_label]
-            st.markdown(f"""
+            render_html(f"""
             <div class="briefing-card">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
                     <strong style="color: #312e81; font-size: 1rem;">💡 Demo Talking Points for Judges ({active_info['short_name']})</strong>
@@ -533,16 +540,16 @@ with tab_jobseeker:
                     </div>
                 </div>
             </div>
-            """, unsafe_allow_html=True)
+            """)
         else:
-            st.markdown("""
+            render_html("""
             <div class="briefing-card">
                 <strong style="color: #312e81;">💡 Demo Guidance:</strong>
                 <p style="font-size: 0.85rem; color: #475569; margin: 0.3rem 0 0 0;">
                     This profile is loaded directly from Microsoft's Cosmos DB dataset. BridgeIQ will scrub any Swedish PII, extract transferable competence, ground against 1,248 Arbetsförmedlingen concepts, and perform title-agnostic hybrid matching.
                 </p>
             </div>
-            """, unsafe_allow_html=True)
+            """)
 
         cv_input = st.text_area(
             "Candidate Background / CV Content",
@@ -592,17 +599,17 @@ with tab_jobseeker:
 
             with st.expander("🔍 View Grounded JobTech Competencies", expanded=False):
                 for s in graph.skills:
-                    st.markdown(f"""
+                    render_html(f"""
                     <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.6rem; margin-bottom: 0.4rem;">
                         <strong>{s.raw_text}</strong> &rarr; <span class="concept-tag">{s.concept_label or 'Unmapped'} ({round(s.confidence * 100)}%)</span>
                         <div style="font-size: 0.8rem; color: #64748b;">Category: {s.category.value if hasattr(s.category, 'value') else s.category} | Concept ID: <code>{s.concept_id or 'N/A'}</code></div>
                     </div>
-                    """, unsafe_allow_html=True)
+                    """)
 
             st.markdown("#### 🎯 Title-Agnostic Matched Jobs (Top Fits)")
             for i, m in enumerate(matches):
                 badge_html = f'<span class="badge-gem">💎 {m.badge}</span>' if m.badge else ''
-                st.markdown(f"""
+                render_html(f"""
                 <div class="gem-card">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         {badge_html}
@@ -615,7 +622,7 @@ with tab_jobseeker:
                         <span><strong>Title Similarity:</strong> {round(m.scores.title_similarity * 100)}%</span>
                     </div>
                 </div>
-                """, unsafe_allow_html=True)
+                """)
 
                 # Stage 3 Explainability synthesis for top hit
                 if i == 0:
@@ -644,13 +651,13 @@ with tab_jobseeker:
                         
                         st.markdown("##### 📜 Machine-Verified Evidence Chain:")
                         for ev in rationale.evidence_chain:
-                            st.markdown(f"""
+                            render_html(f"""
                             <div class="evidence-box">
                                 <strong>JD Requirement:</strong> <em>"{ev.jd_clause}"</em><br/>
                                 <strong>Your Evidence:</strong> <span style="color: #059669;">"{ev.candidate_evidence}"</span><br/>
                                 <small style="color: #64748b;">✓ Concept: {ev.concept_label} — {ev.explanation}</small>
                             </div>
-                            """, unsafe_allow_html=True)
+                            """)
 
                         if rationale.gaps:
                             st.markdown("##### 🎯 Low-Barrier Gap Bridging Roadmap:")
@@ -674,7 +681,7 @@ with tab_employer:
     shortlist_total = len(st.session_state["employer_shortlist"])
 
     # Header with Live Metrics & Compliance Badge
-    st.markdown(f"""
+    render_html(f"""
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 1rem;">
         <div>
             <h2 style="margin: 0; font-size: 1.5rem; font-weight: 700;">🏢 Title-Agnostic Talent Radar & Decision Engine</h2>
@@ -692,14 +699,14 @@ with tab_employer:
             </span>
         </div>
     </div>
-    """, unsafe_allow_html=True)
+    """)
 
     # 3-Column Architecture inspired by Claude Prototype
     col_roles, col_cands, col_details = st.columns([1.05, 1.35, 1.9])
 
     # ===== COLUMN 1: Open Roles Navigation =====
     with col_roles:
-        st.markdown("<div style='font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;'>Your Open Roles</div>", unsafe_allow_html=True)
+        render_html("<div style='font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;'>Your Open Roles</div>")
 
         for r in BENCHMARK_ROLES:
             is_active = r["id"] == st.session_state["active_role_id"]
@@ -707,7 +714,7 @@ with tab_employer:
             border_col = "#0B6B63" if is_active else "#DDE2E8"
             bg_col = "#F0F8F7" if is_active else "#FFFFFF"
 
-            st.markdown(f"""
+            render_html(f"""
             <div style="background: {bg_col}; border: {2 if is_active else 1}px solid {border_col}; border-radius: 10px; padding: 12px 14px; margin-bottom: 8px;">
                 <div style="font-weight: 600; font-size: 0.95rem; color: #14212B;">{r['title']}</div>
                 <div style="font-size: 0.82rem; color: #64748b; margin-top: 2px;">{r['employer']} · {r['location']}</div>
@@ -716,7 +723,7 @@ with tab_employer:
                     <span style="color: #8A4B00; font-weight: 700;">💎 {gems_in_role} hidden gems</span>
                 </div>
             </div>
-            """, unsafe_allow_html=True)
+            """)
 
             btn_label = f"✓ Active: {r['title'][:20]}..." if is_active else f"👉 Select {r['title'][:20]}..."
             if st.button(btn_label, key=f"btn_role_{r['id']}", use_container_width=True):
@@ -745,7 +752,8 @@ with tab_employer:
 
     # ===== COLUMN 2: Candidate Pool & Filter Controls =====
     with col_cands:
-        st.markdown(f"""
+        req_tags = "".join([f'<span style="font-size: 0.78rem; padding: 2px 8px; border-radius: 6px; background: #EEF1F4; color: #14212B; font-weight: 500;">{req}</span>' for req in active_role['reqs']])
+        render_html(f"""
         <div style="background: white; border: 1px solid #DDE2E8; border-radius: 10px; padding: 14px; margin-bottom: 12px;">
             <div style="display: flex; justify-content: space-between; align-items: baseline;">
                 <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700; color: #14212B;">{active_role['title']}</h3>
@@ -753,10 +761,10 @@ with tab_employer:
             </div>
             <div style="margin-top: 8px; font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Must-Have Competences (JobTech):</div>
             <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px;">
-                {''.join([f'<span style="font-size: 0.78rem; padding: 2px 8px; border-radius: 6px; background: #EEF1F4; color: #14212B; font-weight: 500;">{req}</span>' for req in active_role['reqs']])}
+                {req_tags}
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        """)
 
         # Filter Checkbox
         gems_only = st.checkbox(
@@ -786,20 +794,10 @@ with tab_employer:
                 card_border = "#0B6B63" if is_selected else "#DDE2E8"
                 card_bg = "#F0F8F7" if is_selected else "#FFFFFF"
 
-                badge_html = f"""
-                <div class="badge-gem-amber">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 3h12l4 6-10 12L2 9z"></path></svg>
-                    Hidden Gem: {cov_pct} Competence Overlap
-                </div>
-                """ if gem else ""
+                badge_html = f'<div class="badge-gem-amber"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 3h12l4 6-10 12L2 9z"></path></svg> Hidden Gem: {cov_pct} Competence Overlap</div>' if gem else ""
+                ats_text = f"<div class='ats-warning-text'>⚠️ Missed by keyword ATS: title similarity {tsim_pct}</div>" if gem else f"<div class='ats-normal-text'>✓ Found by conventional title search (sim {tsim_pct})</div>"
 
-                ats_text = (
-                    f"<div class='ats-warning-text'>⚠️ Missed by keyword ATS: title similarity {tsim_pct}</div>"
-                    if gem
-                    else f"<div class='ats-normal-text'>✓ Found by conventional title search (sim {tsim_pct})</div>"
-                )
-
-                st.markdown(f"""
+                render_html(f"""
                 <div style="background: {card_bg}; border: {2 if is_selected else 1}px solid {card_border}; border-radius: 10px; padding: 12px; margin-bottom: 8px;">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                         <div style="display: flex; gap: 8px; align-items: flex-start;">
@@ -814,7 +812,7 @@ with tab_employer:
                     {badge_html}
                     {ats_text}
                 </div>
-                """, unsafe_allow_html=True)
+                """)
 
                 btn_select_label = "✓ Selected" if is_selected else f"Inspect {c['alias'].split(' ')[0]} {c['alias'].split(' ')[1]}"
                 if st.button(btn_select_label, key=f"btn_cand_pick_{c['alias']}", use_container_width=True):
@@ -837,12 +835,12 @@ with tab_employer:
             # Header & Shortlist Action Button
             top_c1, top_c2 = st.columns([1.6, 1.2])
             with top_c1:
-                st.markdown(f"""
+                render_html(f"""
                 <h2 style="margin: 0; font-size: 1.4rem; font-weight: 700; color: #14212B;">{active_cand['alias']}</h2>
                 <div style="font-size: 0.85rem; color: #64748b; margin-top: 2px;">
                     <strong>Own Past Title:</strong> {active_cand['headline']} · <strong>{active_cand['years']} yrs exp</strong>
                 </div>
-                """, unsafe_allow_html=True)
+                """)
             with top_c2:
                 btn_shortlist_label = "✓ Shortlisted for Interview" if is_shortlisted else "➕ Shortlist for Interview"
                 if st.button(btn_shortlist_label, key=f"btn_shortlist_action_{shortlist_key}", type="primary" if not is_shortlisted else "secondary", use_container_width=True):
@@ -859,17 +857,17 @@ with tab_employer:
                     st.rerun()
 
             # Transferable Story & Summary
-            st.markdown(f"""
+            render_html(f"""
             <div class="story-banner">
                 🔀 <strong>Transferable Narrative:</strong> {active_cand['story']}
             </div>
             <p style="font-size: 0.9rem; color: #1e293b; margin: 0.5rem 0 1rem 0; line-height: 1.45;">
                 {active_cand['summary']}
             </p>
-            """, unsafe_allow_html=True)
+            """)
 
             # Quantitative Score Breakdown ("How the score is built")
-            st.markdown("<div style='font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;'>How the Score is Built (Transparent Engineering)</div>", unsafe_allow_html=True)
+            render_html("<div style='font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;'>How the Score is Built (Transparent Engineering)</div>")
 
             cov_val = active_cand["cov"]
             sem_val = active_cand["sem"]
@@ -878,49 +876,49 @@ with tab_employer:
 
             mb1, mb2, mb3 = st.columns(3)
             with mb1:
-                st.markdown(f"""
+                render_html(f"""
                 <div style="font-size: 0.8rem; font-weight: 600; display: flex; justify-content: space-between;">
                     <span>Competence overlap</span>
                     <strong style="color: #0B6B63;">{round(cov_val * 100)}%</strong>
                 </div>
                 <div class="metric-bar-bg"><div class="metric-bar-fill" style="width: {round(cov_val * 100)}%; background: #0B6B63;"></div></div>
                 <div style="font-size: 0.72rem; color: #64748b; margin-top: 4px;">Share of role's JobTech competences</div>
-                """, unsafe_allow_html=True)
+                """)
 
             with mb2:
-                st.markdown(f"""
+                render_html(f"""
                 <div style="font-size: 0.8rem; font-weight: 600; display: flex; justify-content: space-between;">
                     <span>Semantic fit</span>
                     <strong style="color: #3C7DD9;">{round(sem_val * 100)}%</strong>
                 </div>
                 <div class="metric-bar-bg"><div class="metric-bar-fill" style="width: {round(sem_val * 100)}%; background: #3C7DD9;"></div></div>
                 <div style="font-size: 0.72rem; color: #64748b; margin-top: 4px;">Hybrid search similarity</div>
-                """, unsafe_allow_html=True)
+                """)
 
             with mb3:
-                st.markdown(f"""
+                render_html(f"""
                 <div style="font-size: 0.8rem; font-weight: 600; display: flex; justify-content: space-between;">
                     <span>Title similarity</span>
                     <strong style="color: #B76E00;">{round(tsim_val * 100)}%</strong>
                 </div>
                 <div class="metric-bar-bg"><div class="metric-bar-fill" style="width: {round(tsim_val * 100)}%; background: #B76E00;"></div></div>
                 <div style="font-size: 0.72rem; color: #8A4B00; margin-top: 4px;">Not scored. Low = hidden gem!</div>
-                """, unsafe_allow_html=True)
+                """)
 
-            st.markdown(f"""
+            render_html(f"""
             <div style="background: #F8FAFC; border: 1px dashed #CBD5E1; border-radius: 6px; padding: 6px 12px; margin-top: 10px; font-family: monospace; font-size: 0.82rem; color: #475569;">
                 formula: composite = 0.60 × overlap ({round(cov_val * 100)}%) + 0.40 × semantic ({round(sem_val * 100)}%) = <strong style="color: #0B6B63;">{round(comp_val * 100)}%</strong>
             </div>
-            """, unsafe_allow_html=True)
+            """)
 
             # Verifiable Evidence Chain ("Evidence Chain")
-            st.markdown("<div style='font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin: 18px 0 8px 0;'>Verifiable Evidence Chain (Zero-Hallucination Quotes)</div>", unsafe_allow_html=True)
+            render_html("<div style='font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin: 18px 0 8px 0;'>Verifiable Evidence Chain (Zero-Hallucination Quotes)</div>")
 
             for ev in active_cand["evidence"]:
                 hidden_badge = """<span style="padding: 2px 8px; border-radius: 999px; background: #FCEFD9; color: #8A4B00; font-size: 0.7rem; font-weight: 700;">Hidden competence · not named in CV</span>""" if ev.get("hidden") else ""
                 jd_en = f"<div style='font-size: 0.75rem; color: #64748b; margin-top: 2px;'>{ev['jdEn']}</div>" if ev.get("jdEn") else ""
 
-                st.markdown(f"""
+                render_html(f"""
                 <div class="quote-card">
                     <div class="quote-card-header">
                         <div style="display: flex; align-items: center; gap: 8px;">
@@ -947,15 +945,15 @@ with tab_employer:
                         <strong>Why it matches:</strong> {ev['why']}
                     </div>
                 </div>
-                """, unsafe_allow_html=True)
+                """)
 
             # Gap to Close Section
             gap_pct = f"{round((1 - cov_val) * 100)}%"
-            st.markdown(f"<div style='font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin: 18px 0 8px 0;'>Gap to Close · {gap_pct} of Must-Have Competences</div>", unsafe_allow_html=True)
+            render_html(f"<div style='font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin: 18px 0 8px 0;'>Gap to Close · {gap_pct} of Must-Have Competences</div>")
 
             for g in active_cand.get("gaps", []):
                 effort_cls = f"effort-pill-{g['effort']}" if g['effort'] in ["days", "weeks", "months"] else "effort-pill-weeks"
-                st.markdown(f"""
+                render_html(f"""
                 <div class="gap-card-box">
                     <strong style="color: #8A4B00; font-size: 0.9rem;">{g['label']}</strong>
                     <span class="{effort_cls}">Estimated ramp-up: {g['effort']}</span>
@@ -963,7 +961,7 @@ with tab_employer:
                         <strong>Onboarding strategy:</strong> {g['strategy']}
                     </div>
                 </div>
-                """, unsafe_allow_html=True)
+                """)
 
             # Traditional ATS vs BridgeIQ Comparison Expander
             with st.expander("📊 Compare vs. Traditional Keyword ATS (Workday / Taleo)", expanded=False):
@@ -977,7 +975,7 @@ with tab_employer:
                 """)
 
             # Handoff Action
-            st.markdown("<hr style='margin: 1rem 0;'/>", unsafe_allow_html=True)
+            render_html("<hr style='margin: 1rem 0;'/>")
             st.caption("⚖️ *BridgeIQ recommends and explains. A human decision-maker retains full authority over hiring decisions. Names, age, gender, and nationality are strictly hidden from matching algorithms to prevent demographic bias.*")
         else:
             st.info("👈 Pick a candidate from the list to inspect their transparent score breakdown and evidence chain.")
@@ -1026,13 +1024,13 @@ with tab_recruiter:
         trans_sum = "Military communication link encryption and field threat assessments transferred to energy substation security"
         top_gap = "Industriella styrsystem"
 
-    st.markdown(f"""
+    render_html(f"""
     <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 12px 16px; margin: 12px 0;">
         <div style="font-weight: 700; color: #1E293B; font-size: 0.95rem;">Target Role: {j_title} (ID: {j_id})</div>
         <div style="font-size: 0.85rem; color: #475569; margin-top: 3px;"><strong>Transferable Bridge:</strong> {trans_sum}</div>
         <div style="font-size: 0.85rem; color: #8A4B00; margin-top: 3px;"><strong>Identified Skill Gap to Probe:</strong> <code>{top_gap}</code></div>
     </div>
-    """, unsafe_allow_html=True)
+    """)
 
     if st.button("🔄 Generate Live Probes via Azure OpenAI (gpt-5-mini)", type="primary"):
         with st.spinner("Calling Azure OpenAI Sweden Central to craft structured interview probes..."):
