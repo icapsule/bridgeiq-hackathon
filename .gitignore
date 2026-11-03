@@ -1,0 +1,47 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments & Virtual Envs
+.venv/
+venv/
+ENV/
+env/
+
+# Sensitive & Secret Files (STRICT ZERO-LEAK)
+.env
+.env.*
+*.env
+*.pem
+*.key
+*.secret
+Docs/Microsoft Login.md
+**/Microsoft Login.md
+*Login*.md
+
+# OS generated
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.ruff_cache/
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker / Build artifacts
+dist/
+build/
+*.egg-info/
