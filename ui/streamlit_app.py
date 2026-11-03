@@ -409,10 +409,9 @@ st.title("💎 BridgeIQ — Hidden Talent Intelligence")
 st.caption("Avanade · Accenture · Microsoft AISpire Hackathon | Team 04 · Sweden Central (EU Data Zone)")
 
 # Navigation Tabs
-tab_jobseeker, tab_employer, tab_recruiter, tab_data = st.tabs([
-    "👤 Jobseeker (Extract, Ground & Match)",
-    "🏢 Employer (Hidden Gem Radar)",
-    "💼 Recruiter (Transfer Probes)",
+tab_jobseeker, tab_recruiter, tab_data = st.tabs([
+    "👤 Jobseeker (Career Radar & Apply)",
+    "💼 Recruiter Workspace (Search & Interview Dashboard)",
     "📊 Connected Azure Assets (100 Profiles & 1,248 Concepts)"
 ])
 
@@ -980,474 +979,659 @@ Generate 3 concise, highly convincing interview talking points (1 sentence each)
         else:
             st.info("👈 Pick an opportunity from the list to inspect your transparent score breakdown and evidence chain.")
 
-# ----------------- TAB 2: Employer -----------------
-with tab_employer:
-    # Initialize session state for Employer screen
+# ----------------- TAB 2: Recruiter Workspace (Search & Interview Dashboard) -----------------
+with tab_recruiter:
+    # Initialize session state for Recruiter Workspace
     if "active_role_id" not in st.session_state:
         st.session_state["active_role_id"] = "job-077"
     if "active_cand_alias" not in st.session_state:
         st.session_state["active_cand_alias"] = "Candidate 042 (Amara)"
     if "employer_shortlist" not in st.session_state:
-        st.session_state["employer_shortlist"] = {}
+        # Pre-seed with Amara and Samira for immediate interactive demonstration
+        st.session_state["employer_shortlist"] = {
+            "job-077|Candidate 042 (Amara)": {
+                "role_id": "job-077",
+                "role_title": "Reliability Engineer, Industrial IoT",
+                "employer": "Västerås GridTech AB",
+                "location": "Västerås",
+                "candidate_alias": "Candidate 042 (Amara)",
+                "headline": "Telecom Packet Core Engineer (Lagos)",
+                "years": 7,
+                "cov": 0.85,
+                "sem": 0.78,
+                "tsim": 0.21,
+                "composite": 0.82
+            },
+            "job-012|Candidate 051 (Samira)": {
+                "role_id": "job-012",
+                "role_title": "OT Security Specialist",
+                "employer": "Luleå CyberGrid AB",
+                "location": "Luleå",
+                "candidate_alias": "Candidate 051 (Samira)",
+                "headline": "Railway Signalling Telecom Engineer",
+                "years": 6,
+                "cov": 0.76,
+                "sem": 0.72,
+                "tsim": 0.19,
+                "composite": 0.74
+            }
+        }
     if "gems_only_filter" not in st.session_state:
         st.session_state["gems_only_filter"] = False
 
     shortlist_total = len(st.session_state["employer_shortlist"])
 
-    # Header with Live Metrics & Compliance Badge
+    # Header with Live Shortlist Indicator (Regulatory badges moved to Tab 3 per UX optimization)
     render_html(f"""
-    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 1rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 0.75rem;">
         <div>
-            <h2 style="margin: 0; font-size: 1.5rem; font-weight: 700;">🏢 Title-Agnostic Talent Radar & Decision Engine</h2>
-            <div style="color: #64748b; font-size: 0.9rem;">Rank applicants by verified Arbetsförmedlingen JobTech competence overlap rather than rigid job titles.</div>
+            <h2 style="margin: 0; font-size: 1.5rem; font-weight: 700; color: #0F172A;">💼 Recruiter Workspace & Candidate Sourcing</h2>
+            <div style="color: #64748b; font-size: 0.9rem;">Rank applicants by verified JobTech competence overlap and run structured STAR interview evaluations.</div>
         </div>
-        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-            <span style="padding: 4px 12px; border-radius: 999px; background: #EEF2FF; color: #4338CA; font-weight: 600; font-size: 0.85rem; border: 1px solid #C7D2FE;">
-                🎯 Shortlisted for Interview: {shortlist_total}
-            </span>
-            <span style="padding: 4px 12px; border-radius: 999px; background: #F0FDF4; color: #166534; font-weight: 600; font-size: 0.85rem; border: 1px solid #BBF7D0;">
-                🇸🇪 Sweden Central · EU Data Zone
-            </span>
-            <span style="padding: 4px 12px; border-radius: 999px; background: #F8FAFC; color: #475569; font-weight: 600; font-size: 0.85rem; border: 1px solid #E2E8F0;">
-                🛡️ EU AI Act Compliant
+        <div>
+            <span style="padding: 6px 14px; border-radius: 999px; background: #EEF2FF; color: #4338CA; font-weight: 700; font-size: 0.85rem; border: 1px solid #C7D2FE;">
+                🎯 Total Shortlisted: {shortlist_total}
             </span>
         </div>
     </div>
     """)
 
-    # 3-Column Architecture inspired by Claude Prototype
-    col_roles, col_cands, col_details = st.columns([1.05, 1.35, 1.9])
+    # Sub-view Navigation Toggle
+    mode_options = [
+        "🔍 Sourcing & Candidate Search",
+        f"📋 Shortlist & Interview Dashboard ({shortlist_total})"
+    ]
+    if st.session_state.get("jump_to_interview_dashboard"):
+        default_mode_idx = 1
+        st.session_state["jump_to_interview_dashboard"] = False
+    else:
+        default_mode_idx = st.session_state.get("recruiter_view_mode_idx", 0)
 
-    # ===== COLUMN 1: Open Roles Navigation =====
-    with col_roles:
-        render_html("<div style='font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;'>Your Open Roles</div>")
+    selected_mode = st.radio(
+        "Recruiter Navigation Mode:",
+        mode_options,
+        index=default_mode_idx,
+        horizontal=True,
+        label_visibility="collapsed"
+    )
+    st.session_state["recruiter_view_mode_idx"] = 0 if selected_mode.startswith("🔍") else 1
 
-        for r in BENCHMARK_ROLES:
-            is_active = r["id"] == st.session_state["active_role_id"]
-            gems_in_role = sum(1 for c in r["cands"] if is_hidden_gem(c["cov"], c["tsim"]))
-            border_col = "#0B6B63" if is_active else "#DDE2E8"
-            bg_col = "#F0F8F7" if is_active else "#FFFFFF"
+    render_html("<div style='margin-bottom: 1rem;'></div>")
 
-            render_html(f"""
-            <div style="background: {bg_col}; border: {2 if is_active else 1}px solid {border_col}; border-radius: 10px; padding: 12px 14px; margin-bottom: 8px;">
-                <div style="font-weight: 600; font-size: 0.95rem; color: #14212B;">{r['title']}</div>
-                <div style="font-size: 0.82rem; color: #64748b; margin-top: 2px;">{r['employer']} · {r['location']}</div>
-                <div style="display: flex; gap: 10px; margin-top: 8px; font-size: 0.8rem;">
-                    <span style="color: #475569;">{len(r['cands'])} matches</span>
-                    <span style="color: #8A4B00; font-weight: 700;">💎 {gems_in_role} hidden gems</span>
-                </div>
-            </div>
-            """)
-
-            btn_label = f"✓ Active: {r['title'][:20]}..." if is_active else f"👉 Select {r['title'][:20]}..."
-            if st.button(btn_label, key=f"btn_role_{r['id']}", use_container_width=True):
-                st.session_state["active_role_id"] = r["id"]
-                # Default to first candidate
-                sorted_cands = sorted(r["cands"], key=lambda c: compute_candidate_composite(c["cov"], c["sem"]), reverse=True)
-                if sorted_cands:
-                    st.session_state["active_cand_alias"] = sorted_cands[0]["alias"]
-                st.rerun()
-
-        with st.expander("🌐 Or Browse 200 Live Roles (Azure Search)", expanded=False):
-            try:
-                clients = AzureClients.get()
-                live_jobs = list(clients.search_jobs.search(
-                    search_text="*",
-                    select=["id", "title", "sector", "municipality", "taxonomy_ids"],
-                    top=10
-                ))
-                for lj in live_jobs:
-                    st.caption(f"• **{lj['title']}** ({lj.get('municipality', 'Sweden')}) - `ID: {lj['id']}`")
-            except Exception:
-                st.caption("Connected to Swedish Azure AI Search index (`aispire-jobs-sweden`).")
-
-    # Fetch active role data
-    active_role = get_benchmark_role(st.session_state["active_role_id"]) or BENCHMARK_ROLES[0]
-
-    # ===== COLUMN 2: Candidate Pool & Filter Controls =====
-    with col_cands:
-        req_tags = "".join([f'<span style="font-size: 0.78rem; padding: 2px 8px; border-radius: 6px; background: #EEF1F4; color: #14212B; font-weight: 500;">{req}</span>' for req in active_role['reqs']])
-        render_html(f"""
-        <div style="background: white; border: 1px solid #DDE2E8; border-radius: 10px; padding: 14px; margin-bottom: 12px;">
-            <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700; color: #14212B;">{active_role['title']}</h3>
-                <code style="font-size: 0.75rem; color: #64748b;">{active_role['id']}</code>
-            </div>
-            <div style="margin-top: 8px; font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Must-Have Competences (JobTech):</div>
-            <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px;">
-                {req_tags}
-            </div>
-        </div>
-        """)
-
-        # Filter Checkbox
-        gems_only = st.checkbox(
-            "💎 Show only hidden gems (Cov ≥ 75% & Title Sim < 45%)",
-            value=st.session_state["gems_only_filter"],
-            key="cb_gems_only"
-        )
-        if gems_only != st.session_state["gems_only_filter"]:
-            st.session_state["gems_only_filter"] = gems_only
-            st.rerun()
-
-        # Sort and filter candidate pool
-        all_cands = active_role["cands"]
-        sorted_cands = sorted(all_cands, key=lambda c: compute_candidate_composite(c["cov"], c["sem"]), reverse=True)
-        display_cands = [c for c in sorted_cands if is_hidden_gem(c["cov"], c["tsim"])] if gems_only else sorted_cands
-
-        if not display_cands:
-            st.warning("No candidates match the 'Hidden Gems' filter for this role.")
-        else:
-            for rank_idx, c in enumerate(display_cands, start=1):
-                is_selected = c["alias"] == st.session_state["active_cand_alias"]
-                comp_pct = f"{round(compute_candidate_composite(c['cov'], c['sem']) * 100)}%"
-                cov_pct = f"{round(c['cov'] * 100)}%"
-                tsim_pct = f"{round(c['tsim'] * 100)}%"
-                gem = is_hidden_gem(c["cov"], c["tsim"])
-
-                card_border = "#0B6B63" if is_selected else "#DDE2E8"
-                card_bg = "#F0F8F7" if is_selected else "#FFFFFF"
-
-                badge_html = f'<div class="badge-gem-amber"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 3h12l4 6-10 12L2 9z"></path></svg> Hidden Gem: {cov_pct} Competence Overlap</div>' if gem else ""
-                ats_text = f"<div class='ats-warning-text'>⚠️ Missed by keyword ATS: title similarity {tsim_pct}</div>" if gem else f"<div class='ats-normal-text'>✓ Found by conventional title search (sim {tsim_pct})</div>"
-
-                render_html(f"""
-                <div style="background: {card_bg}; border: {2 if is_selected else 1}px solid {card_border}; border-radius: 10px; padding: 12px; margin-bottom: 8px;">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                        <div style="display: flex; gap: 8px; align-items: flex-start;">
-                            <span class="rank-circle">{rank_idx}</span>
-                            <div>
-                                <strong style="color: #14212B; font-size: 0.95rem;">{c['alias']}</strong>
-                                <div style="font-size: 0.8rem; color: #64748b;">Past title: {c['headline']}</div>
+    # =========================================================================
+    # SUB-VIEW 1: Sourcing & Candidate Search
+    # =========================================================================
+    if st.session_state["recruiter_view_mode_idx"] == 0:
+        # Display Active Shortlisted Profiles Bar if any exist
+        if st.session_state["employer_shortlist"]:
+            with st.expander(f"📋 Current Shortlisted Profiles ({len(st.session_state['employer_shortlist'])})", expanded=True):
+                st.caption("Active candidates earmarked for interview progression. Click 'Interview' to inspect their interview brief and STAR probes.")
+                s_keys = list(st.session_state["employer_shortlist"].keys())
+                s_cols = st.columns(min(len(s_keys), 3))
+                for s_idx, s_key in enumerate(s_keys):
+                    s_item = st.session_state["employer_shortlist"][s_key]
+                    target_c = s_cols[s_idx % len(s_cols)]
+                    with target_c:
+                        comp_pct = f"{round(s_item.get('composite', 0.8) * 100)}%"
+                        render_html(f"""
+                        <div style="background: white; border: 1px solid #C7D2FE; border-left: 4px solid #4338CA; border-radius: 8px; padding: 10px 12px; margin-bottom: 6px;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <div>
+                                    <div style="font-weight: 700; color: #1E293B; font-size: 0.9rem;">{s_item['candidate_alias']}</div>
+                                    <div style="font-size: 0.78rem; color: #64748B;">{s_item.get('headline', '')}</div>
+                                    <div style="font-size: 0.75rem; color: #4338CA; margin-top: 4px; font-weight: 600;">Role: {s_item.get('role_title', '')[:28]}...</div>
+                                </div>
+                                <span style="font-family: monospace; font-size: 1rem; font-weight: 700; color: #0B6B63;">{comp_pct}</span>
                             </div>
                         </div>
-                        <span style="font-family: monospace; font-size: 1.15rem; font-weight: 700; color: #0B6B63;">{comp_pct}</span>
+                        """)
+                        act_c1, act_c2 = st.columns([1.2, 1.0])
+                        with act_c1:
+                            if st.button("🎙️ Interview", key=f"btn_bar_interview_{s_key}", use_container_width=True):
+                                st.session_state["jump_to_interview_dashboard"] = True
+                                st.session_state["active_interview_cand_alias"] = s_item["candidate_alias"]
+                                st.rerun()
+                        with act_c2:
+                            if st.button("🗑️ Remove", key=f"btn_bar_del_{s_key}", use_container_width=True):
+                                del st.session_state["employer_shortlist"][s_key]
+                                st.rerun()
+
+        # 3-Column Architecture
+        col_roles, col_cands, col_details = st.columns([1.05, 1.35, 1.9])
+
+        # ===== COLUMN 1: Open Roles Navigation =====
+        with col_roles:
+            render_html("<div style='font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;'>Your Open Roles</div>")
+
+            for r in BENCHMARK_ROLES:
+                is_active = r["id"] == st.session_state["active_role_id"]
+                gems_in_role = sum(1 for c in r["cands"] if is_hidden_gem(c["cov"], c["tsim"]))
+                border_col = "#0B6B63" if is_active else "#DDE2E8"
+                bg_col = "#F0F8F7" if is_active else "#FFFFFF"
+
+                render_html(f"""
+                <div style="background: {bg_col}; border: {2 if is_active else 1}px solid {border_col}; border-radius: 10px; padding: 12px 14px; margin-bottom: 8px;">
+                    <div style="font-weight: 600; font-size: 0.95rem; color: #14212B;">{r['title']}</div>
+                    <div style="font-size: 0.82rem; color: #64748b; margin-top: 2px;">{r['employer']} · {r['location']}</div>
+                    <div style="display: flex; gap: 10px; margin-top: 8px; font-size: 0.8rem;">
+                        <span style="color: #475569;">{len(r['cands'])} matches</span>
+                        <span style="color: #8A4B00; font-weight: 700;">💎 {gems_in_role} hidden gems</span>
                     </div>
-                    {badge_html}
-                    {ats_text}
                 </div>
                 """)
 
-                btn_select_label = "✓ Selected" if is_selected else f"Inspect {c['alias'].split(' ')[0]} {c['alias'].split(' ')[1]}"
-                if st.button(btn_select_label, key=f"btn_cand_pick_{c['alias']}", use_container_width=True):
-                    st.session_state["active_cand_alias"] = c["alias"]
+                btn_label = f"✓ Active: {r['title'][:20]}..." if is_active else f"👉 Select {r['title'][:20]}..."
+                if st.button(btn_label, key=f"btn_role_{r['id']}", use_container_width=True):
+                    st.session_state["active_role_id"] = r["id"]
+                    # Default to first candidate
+                    sorted_cands = sorted(r["cands"], key=lambda c: compute_candidate_composite(c["cov"], c["sem"]), reverse=True)
+                    if sorted_cands:
+                        st.session_state["active_cand_alias"] = sorted_cands[0]["alias"]
                     st.rerun()
 
-    # Active Candidate lookup
-    active_cand = next((c for c in active_role["cands"] if c["alias"] == st.session_state["active_cand_alias"]), None)
-    if not active_cand and active_role["cands"]:
-        active_cand = active_role["cands"][0]
-        st.session_state["active_cand_alias"] = active_cand["alias"]
+            with st.expander("🌐 Or Browse 200 Live Roles (Azure Search)", expanded=False):
+                try:
+                    clients = AzureClients.get()
+                    live_jobs = list(clients.search_jobs.search(
+                        search_text="*",
+                        select=["id", "title", "sector", "municipality", "taxonomy_ids"],
+                        top=10
+                    ))
+                    for lj in live_jobs:
+                        st.caption(f"• **{lj['title']}** ({lj.get('municipality', 'Sweden')}) - `ID: {lj['id']}`")
+                except Exception:
+                    st.caption("Connected to Swedish Azure AI Search index (`aispire-jobs-sweden`).")
 
-    # ===== COLUMN 3: Deep-Dive Quantitative Decision & Evidence Center =====
-    with col_details:
-        if active_cand:
-            # Shortlist Key
-            shortlist_key = f"{active_role['id']}|{active_cand['alias']}"
-            is_shortlisted = shortlist_key in st.session_state["employer_shortlist"]
+        # Fetch active role data
+        active_role = get_benchmark_role(st.session_state["active_role_id"]) or BENCHMARK_ROLES[0]
 
-            # Header & Shortlist Action Button
-            top_c1, top_c2 = st.columns([1.6, 1.2])
-            with top_c1:
-                render_html(f"""
-                <h2 style="margin: 0; font-size: 1.4rem; font-weight: 700; color: #14212B;">{active_cand['alias']}</h2>
-                <div style="font-size: 0.85rem; color: #64748b; margin-top: 2px;">
-                    <strong>Own Past Title:</strong> {active_cand['headline']} · <strong>{active_cand['years']} yrs exp</strong>
-                </div>
-                """)
-            with top_c2:
-                btn_shortlist_label = "✓ Shortlisted for Interview" if is_shortlisted else "➕ Shortlist for Interview"
-                if st.button(btn_shortlist_label, key=f"btn_shortlist_action_{shortlist_key}", type="primary" if not is_shortlisted else "secondary", use_container_width=True):
-                    if is_shortlisted:
-                        del st.session_state["employer_shortlist"][shortlist_key]
-                    else:
-                        st.session_state["employer_shortlist"][shortlist_key] = {
-                            "role_id": active_role["id"],
-                            "role_title": active_role["title"],
-                            "candidate_alias": active_cand["alias"],
-                            "headline": active_cand["headline"],
-                            "composite": compute_candidate_composite(active_cand["cov"], active_cand["sem"])
-                        }
-                    st.rerun()
-
-            # Transferable Story & Summary
+        # ===== COLUMN 2: Candidate Pool & Filter Controls =====
+        with col_cands:
+            req_tags = "".join([f'<span style="font-size: 0.78rem; padding: 2px 8px; border-radius: 6px; background: #EEF1F4; color: #14212B; font-weight: 500;">{req}</span>' for req in active_role['reqs']])
             render_html(f"""
-            <div class="story-banner">
-                🔀 <strong>Transferable Narrative:</strong> {active_cand['story']}
-            </div>
-            <p style="font-size: 0.9rem; color: #1e293b; margin: 0.5rem 0 1rem 0; line-height: 1.45;">
-                {active_cand['summary']}
-            </p>
-            """)
-
-            # Quantitative Score Breakdown ("How the score is built")
-            render_html("<div style='font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;'>How the Score is Built (Transparent Engineering)</div>")
-
-            cov_val = active_cand["cov"]
-            sem_val = active_cand["sem"]
-            tsim_val = active_cand["tsim"]
-            comp_val = compute_candidate_composite(cov_val, sem_val)
-
-            mb1, mb2, mb3 = st.columns(3)
-            with mb1:
-                render_html(f"""
-                <div style="font-size: 0.8rem; font-weight: 600; display: flex; justify-content: space-between;">
-                    <span>Competence overlap</span>
-                    <strong style="color: #0B6B63;">{round(cov_val * 100)}%</strong>
+            <div style="background: white; border: 1px solid #DDE2E8; border-radius: 10px; padding: 14px; margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                    <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700; color: #14212B;">{active_role['title']}</h3>
+                    <code style="font-size: 0.75rem; color: #64748b;">{active_role['id']}</code>
                 </div>
-                <div class="metric-bar-bg"><div class="metric-bar-fill" style="width: {round(cov_val * 100)}%; background: #0B6B63;"></div></div>
-                <div style="font-size: 0.72rem; color: #64748b; margin-top: 4px;">Share of role's JobTech competences</div>
-                """)
-
-            with mb2:
-                render_html(f"""
-                <div style="font-size: 0.8rem; font-weight: 600; display: flex; justify-content: space-between;">
-                    <span>Semantic fit</span>
-                    <strong style="color: #3C7DD9;">{round(sem_val * 100)}%</strong>
+                <div style="margin-top: 8px; font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Must-Have Competences (JobTech):</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px;">
+                    {req_tags}
                 </div>
-                <div class="metric-bar-bg"><div class="metric-bar-fill" style="width: {round(sem_val * 100)}%; background: #3C7DD9;"></div></div>
-                <div style="font-size: 0.72rem; color: #64748b; margin-top: 4px;">Hybrid search similarity</div>
-                """)
-
-            with mb3:
-                render_html(f"""
-                <div style="font-size: 0.8rem; font-weight: 600; display: flex; justify-content: space-between;">
-                    <span>Title similarity</span>
-                    <strong style="color: #B76E00;">{round(tsim_val * 100)}%</strong>
-                </div>
-                <div class="metric-bar-bg"><div class="metric-bar-fill" style="width: {round(tsim_val * 100)}%; background: #B76E00;"></div></div>
-                <div style="font-size: 0.72rem; color: #8A4B00; margin-top: 4px;">Not scored. Low = hidden gem!</div>
-                """)
-
-            render_html(f"""
-            <div style="background: #F8FAFC; border: 1px dashed #CBD5E1; border-radius: 6px; padding: 6px 12px; margin-top: 10px; font-family: monospace; font-size: 0.82rem; color: #475569;">
-                formula: composite = 0.60 × overlap ({round(cov_val * 100)}%) + 0.40 × semantic ({round(sem_val * 100)}%) = <strong style="color: #0B6B63;">{round(comp_val * 100)}%</strong>
             </div>
             """)
 
-            # Verifiable Evidence Chain ("Evidence Chain")
-            render_html("<div style='font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin: 18px 0 8px 0;'>Verifiable Evidence Chain (Zero-Hallucination Quotes)</div>")
+            # Filter Checkbox
+            gems_only = st.checkbox(
+                "💎 Show only hidden gems (Cov ≥ 75% & Title Sim < 45%)",
+                value=st.session_state["gems_only_filter"],
+                key="cb_gems_only"
+            )
+            if gems_only != st.session_state["gems_only_filter"]:
+                st.session_state["gems_only_filter"] = gems_only
+                st.rerun()
 
-            for ev in active_cand["evidence"]:
-                hidden_badge = """<span style="padding: 2px 8px; border-radius: 999px; background: #FCEFD9; color: #8A4B00; font-size: 0.7rem; font-weight: 700;">Hidden competence · not named in CV</span>""" if ev.get("hidden") else ""
-                jd_en = f"<div style='font-size: 0.75rem; color: #64748b; margin-top: 2px;'>{ev['jdEn']}</div>" if ev.get("jdEn") else ""
+            # Sort and filter candidate pool
+            all_cands = active_role["cands"]
+            sorted_cands = sorted(all_cands, key=lambda c: compute_candidate_composite(c["cov"], c["sem"]), reverse=True)
+            display_cands = [c for c in sorted_cands if is_hidden_gem(c["cov"], c["tsim"])] if gems_only else sorted_cands
 
+            if not display_cands:
+                st.warning("No candidates match the 'Hidden Gems' filter for this role.")
+            else:
+                for rank_idx, c in enumerate(display_cands, start=1):
+                    is_selected = c["alias"] == st.session_state["active_cand_alias"]
+                    comp_pct = f"{round(compute_candidate_composite(c['cov'], c['sem']) * 100)}%"
+                    cov_pct = f"{round(c['cov'] * 100)}%"
+                    tsim_pct = f"{round(c['tsim'] * 100)}%"
+                    gem = is_hidden_gem(c["cov"], c["tsim"])
+
+                    card_border = "#0B6B63" if is_selected else "#DDE2E8"
+                    card_bg = "#F0F8F7" if is_selected else "#FFFFFF"
+
+                    badge_html = f'<div class="badge-gem-amber"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 3h12l4 6-10 12L2 9z"></path></svg> Hidden Gem: {cov_pct} Competence Overlap</div>' if gem else ""
+                    ats_text = f"<div class='ats-warning-text'>⚠️ Missed by keyword ATS: title similarity {tsim_pct}</div>" if gem else f"<div class='ats-normal-text'>✓ Found by conventional title search (sim {tsim_pct})</div>"
+
+                    render_html(f"""
+                    <div style="background: {card_bg}; border: {2 if is_selected else 1}px solid {card_border}; border-radius: 10px; padding: 12px; margin-bottom: 8px;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div style="display: flex; gap: 8px; align-items: flex-start;">
+                                <span class="rank-circle">{rank_idx}</span>
+                                <div>
+                                    <strong style="color: #14212B; font-size: 0.95rem;">{c['alias']}</strong>
+                                    <div style="font-size: 0.8rem; color: #64748b;">Past title: {c['headline']}</div>
+                                </div>
+                            </div>
+                            <span style="font-family: monospace; font-size: 1.15rem; font-weight: 700; color: #0B6B63;">{comp_pct}</span>
+                        </div>
+                        {badge_html}
+                        {ats_text}
+                    </div>
+                    """)
+
+                    btn_select_label = "✓ Selected" if is_selected else f"Inspect {c['alias'].split(' ')[0]} {c['alias'].split(' ')[1]}"
+                    if st.button(btn_select_label, key=f"btn_cand_pick_{c['alias']}", use_container_width=True):
+                        st.session_state["active_cand_alias"] = c["alias"]
+                        st.rerun()
+
+        # Active Candidate lookup
+        active_cand = next((c for c in active_role["cands"] if c["alias"] == st.session_state["active_cand_alias"]), None)
+        if not active_cand and active_role["cands"]:
+            active_cand = active_role["cands"][0]
+            st.session_state["active_cand_alias"] = active_cand["alias"]
+
+        # ===== COLUMN 3: Deep-Dive Quantitative Decision & Evidence Center =====
+        with col_details:
+            if active_cand:
+                # Shortlist Key
+                shortlist_key = f"{active_role['id']}|{active_cand['alias']}"
+                is_shortlisted = shortlist_key in st.session_state["employer_shortlist"]
+
+                # Header & Shortlist Action Button
+                top_c1, top_c2 = st.columns([1.6, 1.2])
+                with top_c1:
+                    render_html(f"""
+                    <h2 style="margin: 0; font-size: 1.4rem; font-weight: 700; color: #14212B;">{active_cand['alias']}</h2>
+                    <div style="font-size: 0.85rem; color: #64748b; margin-top: 2px;">
+                        <strong>Own Past Title:</strong> {active_cand['headline']} · <strong>{active_cand['years']} yrs exp</strong>
+                    </div>
+                    """)
+                with top_c2:
+                    btn_shortlist_label = "✓ Shortlisted for Interview" if is_shortlisted else "➕ Shortlist for Interview"
+                    if st.button(btn_shortlist_label, key=f"btn_shortlist_action_{shortlist_key}", type="primary" if not is_shortlisted else "secondary", use_container_width=True):
+                        if is_shortlisted:
+                            del st.session_state["employer_shortlist"][shortlist_key]
+                        else:
+                            st.session_state["employer_shortlist"][shortlist_key] = {
+                                "role_id": active_role["id"],
+                                "role_title": active_role["title"],
+                                "employer": active_role.get("employer", "Västerås GridTech AB"),
+                                "location": active_role.get("location", "Sweden"),
+                                "candidate_alias": active_cand["alias"],
+                                "headline": active_cand["headline"],
+                                "years": active_cand.get("years", 5),
+                                "cov": active_cand["cov"],
+                                "sem": active_cand["sem"],
+                                "tsim": active_cand["tsim"],
+                                "composite": compute_candidate_composite(active_cand["cov"], active_cand["sem"])
+                            }
+                        st.rerun()
+
+                # Transferable Story & Summary
                 render_html(f"""
-                <div class="quote-card">
-                    <div class="quote-card-header">
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <strong style="color: #14212B; font-size: 0.85rem;">{ev['concept']}</strong>
-                            {hidden_badge}
-                        </div>
-                        <span style="color: #0B6B63; font-weight: 600; font-size: 0.75rem; display: flex; align-items: center; gap: 4px;">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"></path></svg>
-                            Verified Grounded
-                        </span>
+                <div class="story-banner">
+                    🔀 <strong>Transferable Narrative:</strong> {active_cand['story']}
+                </div>
+                <p style="font-size: 0.9rem; color: #1e293b; margin: 0.5rem 0 1rem 0; line-height: 1.45;">
+                    {active_cand['summary']}
+                </p>
+                """)
+
+                # Quantitative Score Breakdown ("How the score is built")
+                render_html("<div style='font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;'>How the Score is Built (Transparent Engineering)</div>")
+
+                cov_val = active_cand["cov"]
+                sem_val = active_cand["sem"]
+                tsim_val = active_cand["tsim"]
+                comp_val = compute_candidate_composite(cov_val, sem_val)
+
+                mb1, mb2, mb3 = st.columns(3)
+                with mb1:
+                    render_html(f"""
+                    <div style="font-size: 0.8rem; font-weight: 600; display: flex; justify-content: space-between;">
+                        <span>Competence overlap</span>
+                        <strong style="color: #0B6B63;">{round(cov_val * 100)}%</strong>
                     </div>
-                    <div class="quote-grid">
-                        <div class="quote-col-left">
-                            <div style="font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Job ad requires:</div>
-                            <div style="font-size: 0.82rem; color: #1e293b; margin-top: 2px;">“{ev['jd']}”</div>
-                            {jd_en}
-                        </div>
-                        <div class="quote-col-right">
-                            <div style="font-size: 0.7rem; font-weight: 700; color: #0B6B63; text-transform: uppercase;">Candidate delivered:</div>
-                            <div style="font-size: 0.82rem; color: #064E3B; font-weight: 500; margin-top: 2px;">“{ev['cv']}”</div>
-                        </div>
+                    <div class="metric-bar-bg"><div class="metric-bar-fill" style="width: {round(cov_val * 100)}%; background: #0B6B63;"></div></div>
+                    <div style="font-size: 0.72rem; color: #64748b; margin-top: 4px;">Share of role's JobTech competences</div>
+                    """)
+                with mb2:
+                    render_html(f"""
+                    <div style="font-size: 0.8rem; font-weight: 600; display: flex; justify-content: space-between;">
+                        <span>Semantic fit</span>
+                        <strong style="color: #1E40AF;">{round(sem_val * 100)}%</strong>
                     </div>
-                    <div class="quote-why">
-                        <strong>Why it matches:</strong> {ev['why']}
+                    <div class="metric-bar-bg"><div class="metric-bar-fill" style="width: {round(sem_val * 100)}%; background: #1E40AF;"></div></div>
+                    <div style="font-size: 0.72rem; color: #64748b; margin-top: 4px;">Dense vector text-embedding-3-small</div>
+                    """)
+                with mb3:
+                    render_html(f"""
+                    <div style="font-size: 0.8rem; font-weight: 600; display: flex; justify-content: space-between;">
+                        <span>Title similarity</span>
+                        <strong style="color: {'#991B1B' if tsim_val < 0.45 else '#0B6B63'};">{round(tsim_val * 100)}%</strong>
                     </div>
+                    <div class="metric-bar-bg"><div class="metric-bar-fill" style="width: {round(tsim_val * 100)}%; background: {'#EF4444' if tsim_val < 0.45 else '#0B6B63'};"></div></div>
+                    <div style="font-size: 0.72rem; color: {'#991B1B' if tsim_val < 0.45 else '#64748b'}; margin-top: 4px;">{'Low = Untapped Career Pivot!' if tsim_val < 0.45 else 'Conventional match'}</div>
+                    """)
+
+                # Exact Formula display
+                formula_str = f"formula: composite = 0.60 * overlap ({round(cov_val*100)}%) + 0.40 * semantic ({round(sem_val*100)}%) = {round(comp_val*100)}%"
+                render_html(f"""
+                <div class="formula-box">
+                    <code>{formula_str}</code>
                 </div>
                 """)
 
-            # Gap to Close Section
-            gap_pct = f"{round((1 - cov_val) * 100)}%"
-            render_html(f"<div style='font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin: 18px 0 8px 0;'>Gap to Close · {gap_pct} of Must-Have Competences</div>")
+                # Dual-Quote Verifiable Evidence Chain
+                render_html("<div style='font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin: 18px 0 8px 0;'>Verifiable Evidence Chain (Why You Fit · Zero Hallucination)</div>")
 
-            for g in active_cand.get("gaps", []):
-                effort_cls = f"effort-pill-{g['effort']}" if g['effort'] in ["days", "weeks", "months"] else "effort-pill-weeks"
-                render_html(f"""
-                <div class="gap-card-box">
-                    <strong style="color: #8A4B00; font-size: 0.9rem;">{g['label']}</strong>
-                    <span class="{effort_cls}">Estimated ramp-up: {g['effort']}</span>
-                    <div style="flex: 1 1 100%; font-size: 0.82rem; color: #1e293b; margin-top: 4px;">
-                        <strong>Onboarding strategy:</strong> {g['strategy']}
+                for ev in active_cand.get("evidence", []):
+                    jd_en = f'<div style="font-size: 0.75rem; color: #64748b; font-style: italic; margin-top: 4px;">(EN: “{ev["jd_en"]}”)</div>' if "jd_en" in ev else ""
+                    render_html(f"""
+                    <div class="evidence-quote-box">
+                        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <strong style="color: #14212B; font-size: 0.88rem;">{ev['concept']}</strong>
+                                <span style="background: #FFFBEB; color: #B45309; font-size: 0.7rem; font-weight: 600; padding: 1px 6px; border-radius: 4px; border: 1px solid #FDE68A;">
+                                    Hidden competence · not in CV title
+                                </span>
+                            </div>
+                            <span style="color: #0B6B63; font-weight: 600; font-size: 0.75rem; display: flex; align-items: center; gap: 4px;">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"></path></svg>
+                                Verified Grounded
+                            </span>
+                        </div>
+                        <div class="quote-grid">
+                            <div class="quote-col-left">
+                                <div style="font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase;">Job ad requires:</div>
+                                <div style="font-size: 0.82rem; color: #1e293b; margin-top: 2px;">“{ev['jd']}”</div>
+                                {jd_en}
+                            </div>
+                            <div class="quote-col-right">
+                                <div style="font-size: 0.7rem; font-weight: 700; color: #0B6B63; text-transform: uppercase;">Candidate delivered:</div>
+                                <div style="font-size: 0.82rem; color: #064E3B; font-weight: 500; margin-top: 2px;">“{ev['cv']}”</div>
+                            </div>
+                        </div>
+                        <div class="quote-why">
+                            <strong>Why it matches:</strong> {ev['why']}
+                        </div>
                     </div>
-                </div>
-                """)
+                    """)
 
-            # Traditional ATS vs BridgeIQ Comparison Expander
-            with st.expander("📊 Compare vs. Traditional Keyword ATS (Workday / Taleo)", expanded=False):
-                st.markdown(f"""
-                | Comparison Metric | Traditional Keyword ATS | BridgeIQ Competence Engine |
-                |---|---|---|
-                | **Rank for {active_cand['alias'].split(' ')[0]}** | **#94 / 100** (Discarded at screening) | **#1 / 100** (Score: {round(comp_val * 100)}%) |
-                | **Filter Criteria** | Exact title match (`"{active_cand['headline']}"` $\\ne$ `"{active_role['title']}"`) | Grounded JobTech concepts overlap ({round(cov_val * 100)}%) |
-                | **Explainability** | Opaque boolean rejection | Verified dual-quote evidence chain |
-                | **Demographic Bias** | High risk (penalizes career switchers & foreign titles) | **Zero** (Names, age, gender scrubbed prior to matching) |
-                """)
+                # Gap to Close Section
+                gap_pct = f"{round((1 - cov_val) * 100)}%"
+                render_html(f"<div style='font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin: 18px 0 8px 0;'>Gap to Close · {gap_pct} of Must-Have Competences</div>")
 
-            # Handoff Action
-            render_html("<hr style='margin: 1rem 0;'/>")
-            st.caption("⚖️ *BridgeIQ recommends and explains. A human decision-maker retains full authority over hiring decisions. Names, age, gender, and nationality are strictly hidden from matching algorithms to prevent demographic bias.*")
-        else:
-            st.info("👈 Pick a candidate from the list to inspect their transparent score breakdown and evidence chain.")
+                for g in active_cand.get("gaps", []):
+                    effort_cls = f"effort-pill-{g['effort']}" if g['effort'] in ["days", "weeks", "months"] else "effort-pill-weeks"
+                    render_html(f"""
+                    <div class="gap-card-box">
+                        <strong style="color: #8A4B00; font-size: 0.9rem;">{g['label']}</strong>
+                        <span class="{effort_cls}">Estimated ramp-up: {g['effort']}</span>
+                        <div style="flex: 1 1 100%; font-size: 0.82rem; color: #1e293b; margin-top: 4px;">
+                            <strong>Onboarding strategy:</strong> {g['strategy']}
+                        </div>
+                    </div>
+                    """)
 
-# ----------------- TAB 3: Recruiter -----------------
-with tab_recruiter:
-    # Header with Live Badges & Regulatory Framing
-    render_html("""
-    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 1rem;">
-        <div>
-            <h2 style="margin: 0; font-size: 1.5rem; font-weight: 700;">💼 Title-Agnostic Recruiter Copilot & Transferability Assessor</h2>
-            <div style="font-size: 0.85rem; color: #64748b; margin-top: 2px;">
-                Equipping Talent Acquisition Partners with explainable STAR probes, objective rubrics, and hiring manager pitch briefs.
-            </div>
-        </div>
-        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-            <span style="background: #EEF2FF; color: #4338CA; padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; border: 1px solid #C7D2FE;">
-                🛡️ EU AI Act Art. 14 (Human-in-the-Loop)
-            </span>
-            <span style="background: #F0FDF4; color: #166534; padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; border: 1px solid #BBF7D0;">
-                🇸🇪 Swedish Provanställning De-risked
-            </span>
-            <span style="background: #FFFBEB; color: #B45309; padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; border: 1px solid #FDE68A;">
-                ⚡ Azure OpenAI (gpt-5-mini)
-            </span>
-        </div>
-    </div>
-    """)
+                # Traditional ATS vs BridgeIQ Comparison Expander
+                with st.expander("📊 Compare vs. Traditional Keyword ATS (Workday / Taleo)", expanded=False):
+                    st.markdown(f"""
+                    | Comparison Metric | Traditional Keyword ATS | BridgeIQ Competence Engine |
+                    |---|---|---|
+                    | **Rank for {active_cand['alias'].split(' ')[0]}** | **#94 / 100** (Discarded at screening) | **#1 / 100** (Score: {round(comp_val * 100)}%) |
+                    | **Filter Criteria** | Exact title match (`"{active_cand['headline']}"` $\\ne$ `"{active_role['title']}"`) | Grounded JobTech concepts overlap ({round(cov_val * 100)}%) |
+                    | **Explainability** | Opaque boolean rejection | Verified dual-quote evidence chain |
+                    | **Demographic Bias** | High risk (penalizes career switchers & foreign titles) | **Zero** (Names, age, gender scrubbed prior to matching) |
+                    """)
 
-    # Target Candidate options
-    recruiter_options = [
-        "Candidate 042 (Amara) ➔ Industrial IoT SRE (Västerås GridTech)",
-        "Candidate 051 (Samira) ➔ OT Security Specialist (Luleå CyberGrid)",
-        "Candidate 074 (Marcus) ➔ Production Planner (Jönköping Assembly)",
-        "Candidate 063 (Defense Tech) ➔ OT Security Specialist (Luleå CyberGrid)",
-    ]
+                # Handoff Action
+                render_html("<hr style='margin: 1rem 0;'/>")
+                st.caption("⚖️ *BridgeIQ recommends and explains. A human decision-maker retains full authority over hiring decisions. Names, age, gender, and nationality are strictly hidden from matching algorithms to prevent demographic bias.*")
+            else:
+                st.info("👈 Pick a candidate from the list to inspect their transparent score breakdown and evidence chain.")
 
-    selected_recruiter_target = st.selectbox(
-        "👤 Active Candidate & Target Role Evaluation Session:",
-        recruiter_options,
-        index=0,
-    )
-
-    if "Amara" in selected_recruiter_target or "042" in selected_recruiter_target:
-        c_id = "cand-042"
-        c_alias = "Amara Diop"
-        j_id = "job-077"
-        j_title = "Reliability Engineer, Industrial IoT"
-        j_employer = "Västerås GridTech AB"
-        trans_sum = "Telecom packet core 99.999% uptime transferred to industrial IoT platform availability"
-        top_gap = "NIS2-direktivet"
-        rampup_est = "3 to 5 Days"
-        rampup_plan = "Complete 4-hour open-source Swedish MSB NIS2 Industrial Cybersecurity Foundation module."
-        swe_equiv = "Telia / Ericsson Carrier Core Network Engineering"
-        risk_verdict = "Low Risk · Zero architectural deficiency. 100% bridgeable during Week 1 of 6-month probation (Provanställning)."
-    elif "Samira" in selected_recruiter_target or "051" in selected_recruiter_target:
-        c_id = "cand-051"
-        c_alias = "Samira Khan"
-        j_id = "job-012"
-        j_title = "OT Security Specialist"
-        j_employer = "Luleå CyberGrid AB"
-        trans_sum = "Railway safety-critical signalling network segmentation transferred to energy grid OT SCADA security"
-        top_gap = "NIS2-direktivet"
-        rampup_est = "1 to 2 Weeks"
-        rampup_plan = "Review ENISA / MSB energy sub-station network zoning directives and IEC 62443 standard."
-        swe_equiv = "Trafikverket Railway Safety-Critical Signalling Systems"
-        risk_verdict = "Low Risk · Safety-critical mind-set is already proven in railway signaling. Safe for probation."
-    elif "Marcus" in selected_recruiter_target or "074" in selected_recruiter_target:
-        c_id = "cand-074"
-        c_alias = "Marcus Lindqvist"
-        j_id = "job-150"
-        j_title = "Production Planner"
-        j_employer = "Jönköping Assembly Solutions"
-        trans_sum = "High-volume kitchen capacity planning and food waste Lean reduction transferred to factory assembly planning"
-        top_gap = "Affärssystem (ERP/SAP)"
-        rampup_est = "2 to 3 Weeks"
-        rampup_plan = "Hands-on ERP sandbox onboarding module for manufacturing work order scheduling."
-        swe_equiv = "Commercial Kitchen Lean Operations (Scandic / Sodexo Large-Scale Facilities)"
-        risk_verdict = "Medium-Low Risk · Practical bottleneck management skills easily map to software ERP workflow."
+    # =========================================================================
+    # SUB-VIEW 2: Shortlist & Interview Dashboard
+    # =========================================================================
     else:
-        c_id = "cand-063"
-        c_alias = "Candidate 063"
-        j_id = "job-012"
-        j_title = "OT Security Specialist"
-        j_employer = "Luleå CyberGrid AB"
-        trans_sum = "Military communication link encryption and field threat assessments transferred to energy substation security"
-        top_gap = "Industriella styrsystem"
-        rampup_est = "2 Weeks"
-        rampup_plan = "Complete industrial SCADA and PLC protocol fundamentals refresher."
-        swe_equiv = "Försvarsmakten Tactical Communication Defense"
-        risk_verdict = "Low Risk · High-stakes defensive security discipline transfers seamlessly."
+        render_html("""
+        <div style="margin-bottom: 1rem;">
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #0F172A;">📋 Requisition Pipeline & Shortlisted Profiles</h3>
+            <div style="font-size: 0.85rem; color: #64748B;">Candidate profiles earmarked for interview, grouped by active requisition.</div>
+        </div>
+        """)
 
-    # 2-Panel High-Contrast Architecture
-    col_brief, col_probes = st.columns([1.1, 1.9])
+        # Requisitions Grouping
+        for role in BENCHMARK_ROLES:
+            role_shortlisted = [
+                (s_key, item) for s_key, item in st.session_state["employer_shortlist"].items()
+                if item.get("role_id") == role["id"]
+            ]
 
-    # ===== COLUMN 1: Pre-Interview Intelligence & Line Manager Pitch (Features 5 & 6) =====
-    with col_brief:
-        render_html("<div style='font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;'>Pre-Interview Intelligence</div>")
-
-        # Card 1: Candidate Transferability Brief
-        render_html(f"""
-        <div style="background: white; border: 1px solid #DDE2E8; border-radius: 10px; padding: 14px; margin-bottom: 12px;">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <div>
-                    <span style="background: #E6F4F1; color: #0B6B63; font-weight: 700; font-size: 0.72rem; padding: 2px 8px; border-radius: 4px;">
-                        💎 HIDDEN GEM APPLICANT
+            render_html(f"""
+            <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 12px 16px; margin-top: 12px; margin-bottom: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                    <div>
+                        <span style="font-size: 0.72rem; font-weight: 700; color: #4338CA; text-transform: uppercase;">Requisition · {role['id']}</span>
+                        <h4 style="margin: 2px 0 0 0; font-size: 1.05rem; color: #0F172A;">{role['title']}</h4>
+                        <div style="font-size: 0.8rem; color: #64748B;">{role['employer']} · {role['location']}</div>
+                    </div>
+                    <span style="padding: 4px 10px; border-radius: 999px; background: {'#EEF2FF' if role_shortlisted else '#F1F5F9'}; color: {'#4338CA' if role_shortlisted else '#64748B'}; font-weight: 600; font-size: 0.8rem; border: 1px solid {'#C7D2FE' if role_shortlisted else '#E2E8F0'};">
+                        {len(role_shortlisted)} Shortlisted Profile{'s' if len(role_shortlisted) != 1 else ''}
                     </span>
-                    <h4 style="margin: 6px 0 2px 0; color: #14212B; font-size: 1.05rem;">{c_alias} ({c_id})</h4>
-                    <div style="font-size: 0.82rem; color: #64748b;">Target: {j_title} · {j_employer}</div>
                 </div>
             </div>
-            <div style="margin-top: 10px; padding: 8px 10px; background: #F8FAFC; border-radius: 6px; border: 1px solid #EDF2F7; font-size: 0.8rem;">
-                <strong style="color: #475569;">🇸🇪 Swedish Industrial Equivalence:</strong><br/>
-                <span style="color: #0B6B63; font-weight: 600;">{swe_equiv}</span>
-            </div>
-            <div style="margin-top: 8px; font-size: 0.82rem; color: #334155; line-height: 1.4;">
-                <strong>Transferable Core:</strong> {trans_sum}
-            </div>
-        </div>
-        """)
+            """)
 
-        # Card 2: Feature 5 — 6-Month Probation (Provanställning) De-risking
-        render_html(f"""
-        <div style="background: white; border: 1px solid #DDE2E8; border-radius: 10px; padding: 14px; margin-bottom: 12px;">
-            <div style="font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">
-                Feature 5: 6-Month Probation (Provanställning) Safety
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <span style="font-size: 0.85rem; font-weight: 600; color: #1E293B;">Identified Skill Gap:</span>
-                <span style="background: #FEF3C7; color: #92400E; font-weight: 700; font-size: 0.75rem; padding: 2px 8px; border-radius: 999px;">
-                    <code>{top_gap}</code>
-                </span>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <span style="font-size: 0.85rem; font-weight: 600; color: #1E293B;">Ramp-up Feasibility:</span>
-                <span style="background: #DCFCE7; color: #166534; font-weight: 700; font-size: 0.75rem; padding: 2px 8px; border-radius: 999px;">
-                    ⚡ {rampup_est} (Low Risk)
-                </span>
-            </div>
-            <div style="font-size: 0.8rem; color: #475569; line-height: 1.4; margin-bottom: 8px;">
-                <strong>Targeted Action:</strong> {rampup_plan}
-            </div>
-            <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 6px; padding: 8px 10px; font-size: 0.78rem; color: #166534; line-height: 1.4;">
-                {risk_verdict}
-            </div>
-        </div>
-        """)
+            if not role_shortlisted:
+                c_note, c_act = st.columns([2.5, 1.0])
+                with c_note:
+                    st.caption(f"No candidates shortlisted for {role['title']} yet.")
+                with c_act:
+                    if st.button(f"🔍 Sourcing for {role['title'][:16]}...", key=f"btn_dash_search_{role['id']}", use_container_width=True):
+                        st.session_state["recruiter_view_mode_idx"] = 0
+                        st.session_state["active_role_id"] = role["id"]
+                        st.rerun()
+            else:
+                for s_key, s_item in role_shortlisted:
+                    comp_pct = f"{round(s_item.get('composite', 0.8) * 100)}%"
+                    cov_pct = f"{round(s_item.get('cov', 0.8) * 100)}%"
+                    tsim_pct = f"{round(s_item.get('tsim', 0.2) * 100)}%"
 
-        # Card 3: Feature 6 — 1-Click Hiring Manager Pitch Brief (Sälja in-memo)
+                    render_html(f"""
+                    <div style="background: white; border: 1px solid #CBD5E1; border-radius: 8px; padding: 12px 14px; margin-bottom: 8px;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px;">
+                            <div>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <strong style="color: #0F172A; font-size: 0.98rem;">{s_item['candidate_alias']}</strong>
+                                    <span style="background: #E6F4F1; color: #0B6B63; font-weight: 700; font-size: 0.72rem; padding: 2px 8px; border-radius: 4px;">
+                                        💎 Match: {comp_pct}
+                                    </span>
+                                </div>
+                                <div style="font-size: 0.82rem; color: #475569; margin-top: 3px;">
+                                    <strong>Past Title:</strong> {s_item.get('headline', '')} · <strong>JobTech Overlap:</strong> {cov_pct} (ATS Title Sim: {tsim_pct})
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    """)
+                    act_c1, act_c2 = st.columns([1.6, 1.0])
+                    with act_c1:
+                        if st.button(f"🎙️ Launch Interview Copilot for {s_item['candidate_alias'].split(' ')[0]}", key=f"btn_eval_{s_key}", type="primary", use_container_width=True):
+                            st.session_state["active_interview_cand_alias"] = s_item["candidate_alias"]
+                            st.rerun()
+                    with act_c2:
+                        if st.button("🗑️ Remove from Shortlist", key=f"btn_del_short_{s_key}", use_container_width=True):
+                            del st.session_state["employer_shortlist"][s_key]
+                            st.rerun()
+
+        # Divider to Interview Copilot
+        render_html("<hr style='margin: 1.5rem 0;'/>")
+
+        # 3-Stage Interview Copilot Header
         render_html("""
-        <div style="font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin: 12px 0 6px 0;">
-            Feature 6: Hiring Manager Pitch Memo (Sälja In)
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 1rem;">
+            <div>
+                <h3 style="margin: 0; font-size: 1.35rem; font-weight: 700; color: #0F172A;">🎙️ Title-Agnostic Recruiter Copilot & Transferability Assessor</h3>
+                <div style="font-size: 0.85rem; color: #64748b; margin-top: 2px;">
+                    Equipping Talent Acquisition Partners with explainable STAR probes, objective rubrics, and hiring manager pitch briefs.
+                </div>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                <span style="background: #EEF2FF; color: #4338CA; padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; border: 1px solid #C7D2FE;">
+                    🛡️ EU AI Act Art. 14 (Human-in-the-Loop)
+                </span>
+                <span style="background: #F0FDF4; color: #166534; padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; border: 1px solid #BBF7D0;">
+                    🇸🇪 Swedish Provanställning De-risked
+                </span>
+                <span style="background: #FFFBEB; color: #B45309; padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; border: 1px solid #FDE68A;">
+                    ⚡ Azure OpenAI (gpt-5-mini)
+                </span>
+            </div>
         </div>
         """)
 
-        memo_key = f"recruiter_memo_{c_id}_{j_id}"
-        if st.button("📑 Generate Line Manager Memo (gpt-5-mini)", key=f"btn_memo_{c_id}", use_container_width=True):
-            with st.spinner("Generating Swedish TA alignment memo for engineering manager..."):
+        # Target Candidate options
+        recruiter_options = [
+            "Candidate 042 (Amara) ➔ Industrial IoT SRE (Västerås GridTech)",
+            "Candidate 051 (Samira) ➔ OT Security Specialist (Luleå CyberGrid)",
+            "Candidate 074 (Marcus) ➔ Production Planner (Jönköping Assembly)",
+            "Candidate 063 (Defense Tech) ➔ OT Security Specialist (Luleå CyberGrid)",
+        ]
+
+        active_target_alias = st.session_state.get("active_interview_cand_alias", "")
+        eval_idx = 0
+        if "Samira" in active_target_alias or "051" in active_target_alias:
+            eval_idx = 1
+        elif "Marcus" in active_target_alias or "074" in active_target_alias:
+            eval_idx = 2
+        elif "063" in active_target_alias:
+            eval_idx = 3
+
+        selected_recruiter_target = st.selectbox(
+            "👤 Active Candidate & Target Role Evaluation Session:",
+            recruiter_options,
+            index=eval_idx,
+            key="recruiter_target_select_box"
+        )
+
+        if "Amara" in selected_recruiter_target or "042" in selected_recruiter_target:
+            c_id = "cand-042"
+            c_alias = "Amara Diop"
+            j_id = "job-077"
+            j_title = "Reliability Engineer, Industrial IoT"
+            j_employer = "Västerås GridTech AB"
+            trans_sum = "Telecom packet core 99.999% uptime transferred to industrial IoT platform availability"
+            top_gap = "NIS2-direktivet"
+            rampup_est = "3 to 5 Days"
+            rampup_plan = "Complete 4-hour open-source Swedish MSB NIS2 Industrial Cybersecurity Foundation module."
+            swe_equiv = "Telia / Ericsson Carrier Core Network Engineering"
+            risk_verdict = "Low Risk · Zero architectural deficiency. 100% bridgeable during Week 1 of 6-month probation (Provanställning)."
+        elif "Samira" in selected_recruiter_target or "051" in selected_recruiter_target:
+            c_id = "cand-051"
+            c_alias = "Samira Khan"
+            j_id = "job-012"
+            j_title = "OT Security Specialist"
+            j_employer = "Luleå CyberGrid AB"
+            trans_sum = "Railway safety-critical signalling network segmentation transferred to energy grid OT SCADA security"
+            top_gap = "NIS2-direktivet"
+            rampup_est = "1 to 2 Weeks"
+            rampup_plan = "Review ENISA / MSB energy sub-station network zoning directives and IEC 62443 standard."
+            swe_equiv = "Trafikverket Railway Safety-Critical Signalling Systems"
+            risk_verdict = "Low Risk · Safety-critical mind-set is already proven in railway signaling. Safe for probation."
+        elif "Marcus" in selected_recruiter_target or "074" in selected_recruiter_target:
+            c_id = "cand-074"
+            c_alias = "Marcus Lindqvist"
+            j_id = "job-150"
+            j_title = "Production Planner"
+            j_employer = "Jönköping Assembly Solutions"
+            trans_sum = "High-volume kitchen capacity planning and food waste Lean reduction transferred to factory assembly planning"
+            top_gap = "Affärssystem (ERP/SAP)"
+            rampup_est = "2 to 3 Weeks"
+            rampup_plan = "Hands-on ERP sandbox onboarding module for manufacturing work order scheduling."
+            swe_equiv = "Commercial Kitchen Lean Operations (Scandic / Sodexo Large-Scale Facilities)"
+            risk_verdict = "Medium-Low Risk · Practical bottleneck management skills easily map to software ERP workflow."
+        else:
+            c_id = "cand-063"
+            c_alias = "Candidate 063"
+            j_id = "job-012"
+            j_title = "OT Security Specialist"
+            j_employer = "Luleå CyberGrid AB"
+            trans_sum = "Military communication link encryption and field threat assessments transferred to energy substation security"
+            top_gap = "Industriella styrsystem"
+            rampup_est = "2 Weeks"
+            rampup_plan = "Complete industrial SCADA and PLC protocol fundamentals refresher."
+            swe_equiv = "Försvarsmakten Tactical Communication Defense"
+            risk_verdict = "Low Risk · High-stakes defensive security discipline transfers seamlessly."
+
+        # 2-Panel High-Contrast Architecture
+        col_brief, col_probes = st.columns([1.1, 1.9])
+
+        # ===== COLUMN 1: Pre-Interview Intelligence & Line Manager Pitch (Features 5 & 6) =====
+        with col_brief:
+            render_html("<div style='font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;'>Pre-Interview Intelligence</div>")
+
+            # Card 1: Candidate Transferability Brief
+            render_html(f"""
+            <div style="background: white; border: 1px solid #DDE2E8; border-radius: 10px; padding: 14px; margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <span style="background: #E6F4F1; color: #0B6B63; font-weight: 700; font-size: 0.72rem; padding: 2px 8px; border-radius: 4px;">
+                            💎 HIDDEN GEM APPLICANT
+                        </span>
+                        <h4 style="margin: 6px 0 2px 0; color: #14212B; font-size: 1.05rem;">{c_alias} ({c_id})</h4>
+                        <div style="font-size: 0.82rem; color: #64748b;">Target: {j_title} · {j_employer}</div>
+                    </div>
+                </div>
+                <div style="margin-top: 10px; padding: 8px 10px; background: #F8FAFC; border-radius: 6px; border: 1px solid #EDF2F7; font-size: 0.8rem;">
+                    <strong style="color: #475569;">🇸🇪 Swedish Industrial Equivalence:</strong><br/>
+                    <span style="color: #0B6B63; font-weight: 600;">{swe_equiv}</span>
+                </div>
+                <div style="margin-top: 8px; font-size: 0.82rem; color: #334155; line-height: 1.4;">
+                    <strong>Transferable Core:</strong> {trans_sum}
+                </div>
+            </div>
+            """)
+
+            # Card 2: Feature 5 — 6-Month Probation (Provanställning) De-risking
+            render_html(f"""
+            <div style="background: white; border: 1px solid #DDE2E8; border-radius: 10px; padding: 14px; margin-bottom: 12px;">
+                <div style="font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">
+                    Feature 5: 6-Month Probation (Provanställning) Safety
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 0.85rem; font-weight: 600; color: #1E293B;">Identified Skill Gap:</span>
+                    <span style="background: #FEF3C7; color: #92400E; font-weight: 700; font-size: 0.75rem; padding: 2px 8px; border-radius: 999px;">
+                        <code>{top_gap}</code>
+                    </span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 0.85rem; font-weight: 600; color: #1E293B;">Ramp-up Feasibility:</span>
+                    <span style="background: #DCFCE7; color: #166534; font-weight: 700; font-size: 0.75rem; padding: 2px 8px; border-radius: 999px;">
+                        ⚡ {rampup_est} (Low Risk)
+                    </span>
+                </div>
+                <div style="font-size: 0.8rem; color: #475569; line-height: 1.4; margin-bottom: 8px;">
+                    <strong>Targeted Action:</strong> {rampup_plan}
+                </div>
+                <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 6px; padding: 8px 10px; font-size: 0.78rem; color: #166534; line-height: 1.4;">
+                    {risk_verdict}
+                </div>
+            </div>
+            """)
+
+            # Card 3: Feature 6 — 1-Click Hiring Manager Pitch Brief (Sälja in-memo)
+            render_html("""
+            <div style="font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin: 12px 0 6px 0;">
+                Feature 6: Hiring Manager Pitch Memo (Sälja In)
+            </div>
+            """)
+
+            memo_key = f"recruiter_memo_{c_id}_{j_id}"
+            if st.button("📑 Generate Line Manager Memo (gpt-5-mini)", key=f"btn_memo_{c_id}", use_container_width=True):
+                with st.spinner("Generating Swedish TA alignment memo for engineering manager..."):
+                    st.session_state[memo_key] = generate_hiring_manager_memo(
+                        candidate_id=c_id,
+                        candidate_alias=c_alias,
+                        job_id=j_id,
+                        job_title=j_title,
+                        transferable_summary=trans_sum,
+                        top_gap_label=top_gap,
+                        rampup_estimate=rampup_est,
+                    )
+
+            if memo_key not in st.session_state:
                 st.session_state[memo_key] = generate_hiring_manager_memo(
                     candidate_id=c_id,
                     candidate_alias=c_alias,
@@ -1458,121 +1642,127 @@ with tab_recruiter:
                     rampup_estimate=rampup_est,
                 )
 
-        if memo_key not in st.session_state:
-            # Generate default fallback memo
-            st.session_state[memo_key] = generate_hiring_manager_memo(
-                candidate_id=c_id,
-                candidate_alias=c_alias,
-                job_id=j_id,
-                job_title=j_title,
-                transferable_summary=trans_sum,
-                top_gap_label=top_gap,
-                rampup_estimate=rampup_est,
+            st.text_area(
+                "Ready-to-Send Internal Memo (Copy & Paste to Slack/Email):",
+                value=st.session_state[memo_key],
+                height=180,
+                key=f"memo_text_{c_id}"
             )
+            st.caption("💡 *Send this concise briefing directly to the engineering hiring manager to secure the technical round.*")
 
-        st.text_area(
-            "Ready-to-Send Internal Memo (Copy & Paste to Slack/Email):",
-            value=st.session_state[memo_key],
-            height=180,
-            key=f"memo_text_{c_id}"
-        )
-        st.caption("💡 *Send this concise briefing directly to the engineering hiring manager to secure the technical round.*")
+        # ===== COLUMN 2: Competency-Based STAR Interview Probes (Features 2 & 3) =====
+        with col_probes:
+            render_html("<div style='font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;'>Live Competency-Based Interview Probes (STAR Method)</div>")
 
-    # ===== COLUMN 2: Competency-Based STAR Interview Probes (Features 2 & 3) =====
-    with col_probes:
-        render_html("<div style='font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;'>Live Competency-Based Interview Probes (STAR Method)</div>")
-
-        # Probe Generation CTA Bar
-        col_btn, col_info = st.columns([1.1, 1.9])
-        with col_btn:
-            if st.button("🔄 Regenerate STAR Probes (gpt-5-mini)", type="primary", use_container_width=True):
-                with st.spinner("Calling Azure OpenAI Sweden Central to craft structured STAR probes..."):
-                    try:
-                        probes = generate_interview_probes(
-                            candidate_id=c_id,
-                            job_id=j_id,
-                            job_title=j_title,
-                            transferable_summary=trans_sum,
-                            top_gap_label=top_gap
-                        )
-                        st.session_state["cached_probes_" + c_id] = probes
-                    except Exception as e:
-                        st.error(f"Error generating probes: {e}")
-        with col_info:
-            render_html("""
-            <div style="font-size: 0.82rem; color: #64748b; padding-top: 6px;">
-                Strictly aligns with Swedish <em>Kompetensbaserad intervjumetodik</em>. Zero demographic questions.
-            </div>
-            """)
-
-        # Fallback to pre-generated or cached probes
-        active_probes = st.session_state.get("cached_probes_" + c_id)
-        if not active_probes:
-            active_probes = generate_interview_probes(
-                candidate_id=c_id,
-                job_id=j_id,
-                job_title=j_title,
-                transferable_summary=trans_sum,
-                top_gap_label=top_gap
-            )
-            st.session_state["cached_probes_" + c_id] = active_probes
-
-        # Probes loop with Feature 3 (What Good Looks Like & Anti-BS Rubrics)
-        for i, p in enumerate(active_probes.probes):
-            if p.type == "technical":
-                badge_type = "TECHNICAL · PAST MASTERY"
-                badge_color = "#0B6B63"
-                badge_bg = "#E6F4F1"
-                red_flag = "Vaguely reciting networking definitions without citing exact uptime SLAs, throughput metrics, or incident recovery steps."
-            elif p.type == "situational":
-                badge_type = "SITUATIONAL · DOMAIN TRANSFER"
-                badge_color = "#1E40AF"
-                badge_bg = "#DBEAFE"
-                red_flag = "Assuming industrial environments operate like commodity cloud servers, ignoring physical safety boundaries and edge latency."
-            else:
-                badge_type = "GAP · LEARNING AGILITY"
-                badge_color = "#92400E"
-                badge_bg = "#FEF3C7"
-                red_flag = "Claiming 'I learn quickly' without outlining concrete technical standards (e.g. MSB guidelines) or hands-on audit workflows."
-
-            with st.expander(f"Probe {i+1}: {badge_type} · Focus: {p.targets_concept}", expanded=(i==0)):
-                render_html(f"""
-                <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
-                    <span style="background: {badge_bg}; color: {badge_color}; font-weight: 700; font-size: 0.75rem; padding: 3px 8px; border-radius: 4px;">
-                        {badge_type}
-                    </span>
-                    <span style="font-size: 0.82rem; color: #64748b;">Target Concept: <strong>{p.targets_concept}</strong></span>
+            # Probe Generation CTA Bar
+            col_btn, col_info = st.columns([1.1, 1.9])
+            with col_btn:
+                if st.button("🔄 Regenerate STAR Probes (gpt-5-mini)", type="primary", use_container_width=True):
+                    with st.spinner("Calling Azure OpenAI Sweden Central to craft structured STAR probes..."):
+                        try:
+                            probes = generate_interview_probes(
+                                candidate_id=c_id,
+                                job_id=j_id,
+                                job_title=j_title,
+                                transferable_summary=trans_sum,
+                                top_gap_label=top_gap
+                            )
+                            st.session_state["cached_probes_" + c_id] = probes
+                        except Exception as e:
+                            st.error(f"Error generating probes: {e}")
+            with col_info:
+                render_html("""
+                <div style="font-size: 0.82rem; color: #64748b; padding-top: 6px;">
+                    Strictly aligns with Swedish <em>Kompetensbaserad intervjumetodik</em>. Zero demographic questions.
                 </div>
                 """)
 
-                st.markdown("**Structured STAR Interview Question:**")
-                st.markdown(f"> *\"{p.question}\"*")
+            # Fallback to pre-generated or cached probes
+            active_probes = st.session_state.get("cached_probes_" + c_id)
+            if not active_probes:
+                active_probes = generate_interview_probes(
+                    candidate_id=c_id,
+                    job_id=j_id,
+                    job_title=j_title,
+                    transferable_summary=trans_sum,
+                    top_gap_label=top_gap
+                )
+                st.session_state["cached_probes_" + c_id] = active_probes
 
-                render_html(f"""
-                <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 10px 12px; margin: 10px 0;">
-                    <div style="font-size: 0.8rem; font-weight: 700; color: #166534; margin-bottom: 3px;">
-                        💡 WHAT GOOD LOOKS LIKE (Objective Scoring Rubric):
-                    </div>
-                    <div style="font-size: 0.82rem; color: #14532D; line-height: 1.4;">
-                        {p.what_good_looks_like}
-                    </div>
-                </div>
-                <div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 8px; padding: 10px 12px; margin: 6px 0 10px 0;">
-                    <div style="font-size: 0.8rem; font-weight: 700; color: #92400E; margin-bottom: 3px;">
-                        ⚠️ RED FLAGS & BUZZWORD WARNINGS (Anti-BS Rubric):
-                    </div>
-                    <div style="font-size: 0.82rem; color: #78350F; line-height: 1.4;">
-                        {red_flag}
-                    </div>
-                </div>
-                """)
+            # Probes loop with Feature 3 (What Good Looks Like & Anti-BS Rubrics)
+            for i, p in enumerate(active_probes.probes):
+                if p.type == "technical":
+                    badge_type = "TECHNICAL · PAST MASTERY"
+                    badge_color = "#0B6B63"
+                    badge_bg = "#E6F4F1"
+                    red_flag = "Vaguely reciting networking definitions without citing exact uptime SLAs, throughput metrics, or incident recovery steps."
+                elif p.type == "situational":
+                    badge_type = "SITUATIONAL · DOMAIN TRANSFER"
+                    badge_color = "#1E40AF"
+                    badge_bg = "#DBEAFE"
+                    red_flag = "Assuming industrial environments operate like commodity cloud servers, ignoring physical safety boundaries and edge latency."
+                else:
+                    badge_type = "GAP · LEARNING AGILITY"
+                    badge_color = "#92400E"
+                    badge_bg = "#FEF3C7"
+                    red_flag = "Claiming 'I learn quickly' without outlining concrete technical standards (e.g. MSB guidelines) or hands-on audit workflows."
 
-        render_html("<hr style='margin: 1.2rem 0;'/>")
-        st.caption("⚖️ *BridgeIQ empowers human recruiters with explainable competence probes. In accordance with EU AI Act Article 14, automated tools assist inquiry; humans conduct interviews and decide hiring progression.*")
+                with st.expander(f"Probe {i+1}: {badge_type} · Focus: {p.targets_concept}", expanded=(i == 0)):
+                    render_html(f"""
+                    <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
+                        <span style="background: {badge_bg}; color: {badge_color}; font-weight: 700; font-size: 0.75rem; padding: 3px 8px; border-radius: 4px;">
+                            {badge_type}
+                        </span>
+                        <span style="font-size: 0.82rem; color: #64748b;">Target Concept: <strong>{p.targets_concept}</strong></span>
+                    </div>
+                    """)
 
-# ----------------- TAB 4: Live Data Inspection -----------------
+                    st.markdown("**Structured STAR Interview Question:**")
+                    st.markdown(f"> *\"{p.question}\"*")
+
+                    render_html(f"""
+                    <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 10px 12px; margin: 10px 0;">
+                        <div style="font-size: 0.8rem; font-weight: 700; color: #166534; margin-bottom: 3px;">
+                            💡 WHAT GOOD LOOKS LIKE (Objective Scoring Rubric):
+                        </div>
+                        <div style="font-size: 0.82rem; color: #14532D; line-height: 1.4;">
+                            {p.what_good_looks_like}
+                        </div>
+                    </div>
+                    <div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 8px; padding: 10px 12px; margin: 6px 0 10px 0;">
+                        <div style="font-size: 0.8rem; font-weight: 700; color: #92400E; margin-bottom: 3px;">
+                            ⚠️ RED FLAGS & BUZZWORD WARNINGS (Anti-BS Rubric):
+                        </div>
+                        <div style="font-size: 0.82rem; color: #78350F; line-height: 1.4;">
+                            {red_flag}
+                        </div>
+                    </div>
+                    """)
+
+            render_html("<hr style='margin: 1.2rem 0;'/>")
+            st.caption("⚖️ *BridgeIQ empowers human recruiters with explainable competence probes. In accordance with EU AI Act Article 14, automated tools assist inquiry; humans conduct interviews and decide hiring progression.*")
+
+# ----------------- TAB 3: Connected Azure Sandbox Assets -----------------
 with tab_data:
-    st.markdown("### 📊 Live Connected Azure Sandbox Assets (Team 04)")
+    render_html("""
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 1.2rem;">
+        <div>
+            <h2 style="margin: 0; font-size: 1.45rem; font-weight: 700; color: #0F172A;">📊 Connected Azure Sandbox Assets (Team 04)</h2>
+            <div style="font-size: 0.85rem; color: #64748B;">Production enterprise data infrastructure deployed in Sweden Central with full EU regulatory compliance.</div>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <span style="padding: 4px 12px; border-radius: 999px; background: #F0FDF4; color: #166534; font-weight: 600; font-size: 0.82rem; border: 1px solid #BBF7D0;">
+                🇸🇪 Sweden Central · EU Data Zone
+            </span>
+            <span style="padding: 4px 12px; border-radius: 999px; background: #F8FAFC; color: #475569; font-weight: 600; font-size: 0.82rem; border: 1px solid #E2E8F0;">
+                🛡️ EU AI Act Compliant
+            </span>
+            <span style="padding: 4px 12px; border-radius: 999px; background: #EEF2FF; color: #4338CA; font-weight: 600; font-size: 0.82rem; border: 1px solid #C7D2FE;">
+                ⚡ Azure OpenAI (gpt-5-mini)
+            </span>
+        </div>
+    </div>
+    """)
     col_a, col_b, col_c = st.columns(3)
     with col_a:
         st.markdown("#### 🇸🇪 Azure AI Search: Jobs")
