@@ -451,72 +451,6 @@ with tab_jobseeker:
     </div>
     """)
 
-    # 3 Top Pitch Persona Showcase Cards for Evaluators/Judges
-    col_p1, col_p2, col_p3 = st.columns(3)
-    p_keys = list(HERO_PERSONAS.keys())
-
-    with col_p1:
-        p1 = HERO_PERSONAS[p_keys[0]]
-        render_html(f"""
-        <div class="persona-card">
-            <div>
-                <span class="badge-archetype">{p1['archetype']}</span>
-                <h4 style="margin: 0.2rem 0; color: #1e1b4b;">1. {p1['short_name']}</h4>
-                <p style="font-size: 0.85rem; color: #4338ca; font-weight: 500;">{p1['leap']}</p>
-                <p style="font-size: 0.82rem; color: #475569; line-height: 1.4;">
-                    <strong>ATS Blindspot:</strong> {p1['ats_blindspot'][:110]}...
-                </p>
-            </div>
-        </div>
-        """)
-        if st.button("👉 Load Amara (Hero Demo)", key="btn_hero_1", use_container_width=True):
-            st.session_state["chosen_persona_label"] = p_keys[0]
-            st.session_state["chosen_cv"] = p1["cv_text"]
-            st.session_state["jobseeker_active_job_id"] = "job-077"
-            st.rerun()
-
-    with col_p2:
-        p2 = HERO_PERSONAS[p_keys[1]]
-        render_html(f"""
-        <div class="persona-card">
-            <div>
-                <span class="badge-archetype">{p2['archetype']}</span>
-                <h4 style="margin: 0.2rem 0; color: #1e1b4b;">2. {p2['short_name']}</h4>
-                <p style="font-size: 0.85rem; color: #4338ca; font-weight: 500;">{p2['leap']}</p>
-                <p style="font-size: 0.82rem; color: #475569; line-height: 1.4;">
-                    <strong>ATS Blindspot:</strong> {p2['ats_blindspot'][:110]}...
-                </p>
-            </div>
-        </div>
-        """)
-        if st.button("👉 Load Marcus (cand-021)", key="btn_hero_2", use_container_width=True):
-            st.session_state["chosen_persona_label"] = p_keys[1]
-            st.session_state["chosen_cv"] = p2["cv_text"]
-            st.session_state["jobseeker_active_job_id"] = "job-150"
-            st.rerun()
-
-    with col_p3:
-        p3 = HERO_PERSONAS[p_keys[2]]
-        render_html(f"""
-        <div class="persona-card">
-            <div>
-                <span class="badge-archetype">{p3['archetype']}</span>
-                <h4 style="margin: 0.2rem 0; color: #1e1b4b;">3. {p3['short_name']}</h4>
-                <p style="font-size: 0.85rem; color: #4338ca; font-weight: 500;">{p3['leap']}</p>
-                <p style="font-size: 0.82rem; color: #475569; line-height: 1.4;">
-                    <strong>ATS Blindspot:</strong> {p3['ats_blindspot'][:110]}...
-                </p>
-            </div>
-        </div>
-        """)
-        if st.button("👉 Load Samira (cand-051)", key="btn_hero_3", use_container_width=True):
-            st.session_state["chosen_persona_label"] = p_keys[2]
-            st.session_state["chosen_cv"] = p3["cv_text"]
-            st.session_state["jobseeker_active_job_id"] = "job-012"
-            st.rerun()
-
-    render_html("<hr style='margin: 1.2rem 0;'/>")
-
     # Build Full Dropdown Options with 3 Heroes at the top
     dropdown_options = list(HERO_PERSONAS.keys())
     dropdown_options.append("──────────────── 📂 All 100 Official Microsoft Cosmos DB Profiles ────────────────")
@@ -535,9 +469,9 @@ with tab_jobseeker:
         current_idx = dropdown_options.index(st.session_state["chosen_persona_label"])
 
     selected_option = st.selectbox(
-        "Active Candidate Identity (Select Demo Persona or 100 Cosmos DB Profiles):",
+        "👤 Active Candidate Account (Select Demo Persona or 100 Cosmos DB Profiles):",
         dropdown_options,
-        index=current_idx
+        index=current_idx,
     )
 
     if selected_option != st.session_state["chosen_persona_label"] and not selected_option.startswith("───"):

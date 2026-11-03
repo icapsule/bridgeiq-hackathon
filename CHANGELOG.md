@@ -30,6 +30,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Column 3: Opportunity Decision & Evidence Center featuring transferable story callouts, quantitative progress bars ($Cov$, $Sem$, $TSim$), deterministic composite formula, verifiable dual-quote evidence chains, constructive gap-to-close roadmaps, and live Azure OpenAI (`gpt-5-mini`) interview pitch generation.
 - **#T4.18**: Added candidate-to-jobs benchmark mapping in `app/pipeline/benchmarks.py` (`get_candidate_benchmark_matches`) with comprehensive unit test coverage in `tests/test_benchmarks.py` (18 passing tests).
 
+### Changed
+- **#T4.19**: Streamlined Jobseeker View layout by removing the redundant 3 top persona showcase cards, elevating the 3-column cockpit directly into the above-the-fold view and consolidating candidate switching into the unified identity selector (`ui/streamlit_app.py`).
+
 ### Fixed
 - **#T4.14**: Resolved raw HTML (`<div>` / `<span>`) code block rendering escape bug in Streamlit by creating `render_html` sanitizer. Eliminates leading indentation (>= 4 spaces) and internal blank lines that previously triggered CommonMark `<pre><code>` block parsing in candidate and evidence cards.
 
