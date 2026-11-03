@@ -23,3 +23,4 @@ def test_verify_quote_hallucinated():
     found, idx = verify_quote("Designed distributed microservices in Go", cv)
     assert found is False
     assert idx == -1
+

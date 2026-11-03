@@ -153,3 +153,4 @@ ruff check .
 
 ## 👥 Team 04 (AISpire Hackathon 2026)
 Built with ❤️ by Team 04 for Avanade · Accenture · Microsoft AISpire Hackathon.
+

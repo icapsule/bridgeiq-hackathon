@@ -23,15 +23,15 @@ class TaxonomyConcept(BaseModel):
     concept_id: str                      # JobTech concept id, e.g. "aBcD_123"
     preferred_label: str                 # Swedish label, e.g. "Hög tillgänglighet"
     label_en: str | None = None          # English label/translation if available
-    concept_type: str                    # e.g. "skill", "occupation-name"
-    broader_id: str | None = None        # parent concept, used for radar axes
+    concept_type: str = "skill"          # e.g. "skill", "occupation-name"
+    broader_id: str | None = None        # parent concept
 
 
 class JobRequirement(BaseModel):
     concept_id: str
     label: str
     importance: Literal["must", "nice"] = "must"
-    jd_clause: str                       # exact sentence from the JD that states it
+    jd_clause: str                       # exact sentence from the JD
 
 
 class JobPosting(BaseModel):
@@ -39,47 +39,83 @@ class JobPosting(BaseModel):
     title: str
     employer: str
     location: str | None = None
-    sector: str | None = None            # IT, manufacturing, connectivity, services
+    sector: str | None = None
     description: str
-    requirements: list[JobRequirement] = []   # precomputed in M1
+    requirements: list[JobRequirement] = []
+    taxonomy_ids: list[str] = []
     language: Literal["sv", "en"] = "sv"
+
+
+# ---------- Extraction Schemas (LLM Structured Outputs) ----------
+
+class RawExtractedSkill(BaseModel):
+    raw_text: str = Field(..., description="Concise statement of the skill or experience")
+    category: SkillCategory
+    years: float | None = Field(None, description="Estimated years of experience if mentioned")
+    evidence_quote: str = Field(..., description="Exact verbatim substring quote from the CV text")
+    search_terms_sv: list[str] = Field(
+        ...,
+        description="1 to 3 Swedish search phrases translating this skill for Swedish JobTech taxonomy search"
+    )
+    search_terms_en: list[str] = Field(
+        ...,
+        description="1 to 3 English keywords describing this skill"
+    )
+
+
+class LLMExtractResponse(BaseModel):
+    skills: list[RawExtractedSkill] = Field(..., max_length=25)
+
+
+class ExtractSkillsRequest(BaseModel):
+    cv_text: str
+    candidate_id: str | None = None
+    display_name: str | None = None
 
 
 # ---------- Candidate side ----------
 
 class Evidence(BaseModel):
     quote: str = Field(..., description="Verbatim substring of the CV text")
-    char_start: int | None = None        # filled by the verifier, not the LLM
+    char_start: int | None = None        # filled by the verifier
 
 
 class GroundedSkill(BaseModel):
-    raw_text: str                        # as written in the CV
+    raw_text: str
     category: SkillCategory
     concept_id: str | None = None        # None = could not ground (unmapped)
     concept_label: str | None = None
-    confidence: Score                    # combined score
+    confidence: Score                    # normalised matching score
     years: float | None = None
-    evidence: conlist(Evidence, min_length=1, max_length=5)
+    evidence: list[Evidence] = Field(default_factory=list)
 
 
 class CompetencyGraph(BaseModel):
     skills: list[GroundedSkill]
-    clusters: dict[str, list[str]] = {}  # broader concept label -> concept_ids
+    clusters: dict[str, list[str]] = {}  # broader category -> concept_ids
     unmapped_count: int = 0
 
 
 class CandidateProfile(BaseModel):
-    id: str                              # Cosmos id, e.g. "cand-042"
-    candidate_id: str                    # partition key (same value as id)
-    display_name: str                    # synthetic alias only, e.g. "Candidate 042"
+    id: str                              # Cosmos id, e.g. "candidate-001"
+    partition_key: str = "synthetic-candidates"
+    candidate_id: str                    # identifier
+    display_name: str                    # alias, e.g. "Candidate 101"
     source: Literal["starter", "pasted"] = "pasted"
-    headline: str | None = None          # non-standard title
+    headline: str | None = None
     past_titles: list[str] = []
-    cv_text: str                         # PII-scrubbed text
+    cv_text: str                         # scrubbed text
     competency_graph: CompetencyGraph | None = None
     profile_vector: list[float] | None = None   # 1536-dim
     created_at: datetime = Field(default_factory=datetime.utcnow)
     schema_version: int = 1
+
+
+class ExtractSkillsResponse(BaseModel):
+    candidate_id: str
+    display_name: str
+    competency_graph: CompetencyGraph
+    warnings: list[str] = []
 
 
 # ---------- Matching ----------
@@ -93,7 +129,8 @@ class ScoreBreakdown(BaseModel):
 
 class MatchResult(BaseModel):
     id: str                              # f"{candidate_id}__{job_id}"
-    candidate_id: str                    # partition key of `matches`
+    partition_key: str = "matches"
+    candidate_id: str                    # candidate id
     job_id: str
     job_title: str
     scores: ScoreBreakdown
@@ -136,7 +173,7 @@ class InterviewProbe(BaseModel):
     question: str
     type: Literal["technical", "situational", "gap"]
     targets_concept: str
-    what_good_looks_like: str            # 1–2 sentence rubric
+    what_good_looks_like: str
 
 
 class ProbeSet(BaseModel):

@@ -4,6 +4,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
+from app.routers.v1 import router as v1_router
 
 app = FastAPI(
     title="BridgeIQ API",
@@ -11,7 +12,7 @@ app = FastAPI(
     description="BridgeIQ: AI-Powered Hidden Talent Intelligence Box"
 )
 
-# CORS middleware for open internal communication
+# CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -30,6 +31,10 @@ async def add_timing_and_request_id(request: Request, call_next):
     return response
 
 
+# Mount Routers
+app.include_router(v1_router)
+
+
 @app.get("/healthz", tags=["Ops"])
 @app.get("/api/v1/healthz", tags=["Ops"])
 def health_check():
@@ -40,4 +45,5 @@ def health_check():
         "prompt_version": settings.prompt_version,
         "azure_openai_endpoint": settings.azure_openai_endpoint,
         "search_index_jobs": settings.search_index_jobs,
+        "search_index_taxonomy": settings.search_index_taxonomy,
     }

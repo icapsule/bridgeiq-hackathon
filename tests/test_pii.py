@@ -30,3 +30,4 @@ def test_scrub_pii():
     assert "19850512-5678" not in scrubbed
     assert "[REDACTED_EMAIL]" in scrubbed
     assert "[REDACTED_ID]" in scrubbed
+

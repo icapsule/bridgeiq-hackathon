@@ -8,15 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- **#T0.1**: Initialized public Git repository (`icapsule/bridgeiq-hackathon`) with strict zero-leak `.gitignore` protecting credentials.
-- **#T0.2**: Configured GitHub Actions CI/CD workflow (`.github/workflows/ci-cd.yml`) to automatically run Ruff linting, Pytest test suites, and Docker builds targeting GitHub Container Registry (`ghcr.io`).
-- **#T0.3**: Implemented Pydantic v2 core data contracts in `app/models.py` for JobTech taxonomy concepts, candidate competency graphs, deterministic match results, and explainability rationales.
-- **#T0.4**: Implemented deterministic scoring algorithm (`app/pipeline/score.py`) with weighted must-have coverage, composite calculation, and automated `Hidden Gem` detection (`coverage >= 0.75 AND title_similarity < 0.45`).
-- **#T0.5**: Added PII detection and redaction guardrail (`app/guardrails/pii.py`) targeting Swedish Personnummer, emails, and phone numbers.
-- **#T0.6**: Added quote substring claim verifier (`app/guardrails/verify.py`) to eliminate LLM citation hallucinations.
-- **#T0.7**: Built FastAPI service entrypoint (`app/main.py`) with `/healthz` liveness probes and execution timing middleware.
-- **#T0.8**: Created interactive multi-perspective Streamlit dashboard (`ui/streamlit_app.py`) covering Jobseeker, Employer, Recruiter, and Architecture views with modern Glassmorphic styling.
-- **#T0.9**: Engineered production `Dockerfile` and `start.sh` unifying FastAPI (port 8000) and Streamlit (port 8501) inside a single lightweight container.
+- **#T1.1**: Created `app/clients.py` singleton managing unified Azure connections (`AzureOpenAI`, `SearchClient`, `CosmosClient`, `BlobServiceClient`) via passwordless `DefaultAzureCredential`.
+- **#T1.2**: Developed `app/prompts/extract_v1.md` prompt for English CV skill decomposition into structured Pydantic schemas with Swedish translation search phrases.
+- **#T1.3**: Implemented `app/pipeline/extract.py` performing Stage 1 Extract & Ground: PII scrub &rarr; `gpt-5-mini` extraction &rarr; batched `text-embedding-3-small` &rarr; hybrid vector/BM25 grounding on Sweden JobTech taxonomy &rarr; quote verification &rarr; profile vector generation.
+- **#T1.4**: Implemented REST API endpoints in `app/routers/v1.py` for `/api/v1/extract-skills`, `/api/v1/candidates`, and `/api/v1/jobs`.
+- **#T1.5**: Wired live Streamlit dashboard in `ui/streamlit_app.py` with persona selectors, real-time extraction, JobTech skill cards, and live Azure AI Search integration.
+- **#T1.6**: Added unit test coverage for extraction and structured response parsing in `tests/test_extract.py` (10/10 tests passing).
 
 ---
 
