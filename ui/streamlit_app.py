@@ -421,11 +421,45 @@ with tab_jobseeker:
     # Initialize session state for Jobseeker view
     if "jobseeker_saved_jobs" not in st.session_state:
         st.session_state["jobseeker_saved_jobs"] = {}
+    if "jobseeker_applications" not in st.session_state:
+        st.session_state["jobseeker_applications"] = {}
     if "jobseeker_active_job_id" not in st.session_state:
         st.session_state["jobseeker_active_job_id"] = "job-077"
     if "jobseeker_gems_filter" not in st.session_state:
         st.session_state["jobseeker_gems_filter"] = False
 
+    # Build Full Dropdown Options with 3 Heroes at the top
+    dropdown_options = list(HERO_PERSONAS.keys())
+    dropdown_options.append("──────────────── 📂 All 100 Official Microsoft Cosmos DB Profiles ────────────────")
+    for cand in all_db_candidates:
+        preview = cand.get("background_text", "")[:65].replace("\n", " ")
+        dropdown_options.append(f"{cand['id']}: {preview}...")
+    dropdown_options.append("✍️ Custom Candidate (Enter free-form CV text)")
+
+    # Manage selected candidate in session state
+    if "chosen_persona_label" not in st.session_state:
+        st.session_state["chosen_persona_label"] = dropdown_options[0]
+        st.session_state["chosen_cv"] = HERO_PERSONAS[dropdown_options[0]]["cv_text"]
+
+    current_idx = 0
+    if st.session_state["chosen_persona_label"] in dropdown_options:
+        current_idx = dropdown_options.index(st.session_state["chosen_persona_label"])
+
+    active_label = st.session_state.get("chosen_persona_label", dropdown_options[0])
+
+    # Persona metadata lookup
+    if active_label in HERO_PERSONAS:
+        p_info = HERO_PERSONAS[active_label]
+        cand_short = p_info["short_name"]
+        cand_archetype = p_info["archetype"]
+        cand_headline = p_info["leap"].split("➔")[0].strip()
+    else:
+        cand_short = active_label.split(":")[0].strip() if ":" in active_label else "Candidate Profile"
+        cand_archetype = "📂 Cosmos DB Profile"
+        cand_headline = "Verified Technical Talent"
+
+    candidate_apps = [app for app in st.session_state["jobseeker_applications"].values() if app.get("candidate_name") == cand_short]
+    applied_total = len(candidate_apps)
     saved_total = len(st.session_state["jobseeker_saved_jobs"])
 
     # Header with Live Metrics & Privacy Compliance Badge (Mirroring Employer View)
@@ -444,29 +478,15 @@ with tab_jobseeker:
             <span style="background: #EEF2FF; color: #4338CA; padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; border: 1px solid #C7D2FE;">
                 🇸🇪 1,248 JobTech Concepts Grounded
             </span>
+            <span style="background: #E0F2FE; color: #0369A1; padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; border: 1px solid #BAE6FD;">
+                📨 Applied: {applied_total}
+            </span>
             <span style="background: #FFFBEB; color: #B45309; padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; border: 1px solid #FDE68A;">
                 ⭐ Saved Roles: {saved_total}
             </span>
         </div>
     </div>
     """)
-
-    # Build Full Dropdown Options with 3 Heroes at the top
-    dropdown_options = list(HERO_PERSONAS.keys())
-    dropdown_options.append("──────────────── 📂 All 100 Official Microsoft Cosmos DB Profiles ────────────────")
-    for cand in all_db_candidates:
-        preview = cand.get("background_text", "")[:65].replace("\n", " ")
-        dropdown_options.append(f"{cand['id']}: {preview}...")
-    dropdown_options.append("✍️ Custom Candidate (Enter free-form CV text)")
-
-    # Manage selected candidate in session state
-    if "chosen_persona_label" not in st.session_state:
-        st.session_state["chosen_persona_label"] = dropdown_options[0]
-        st.session_state["chosen_cv"] = HERO_PERSONAS[dropdown_options[0]]["cv_text"]
-
-    current_idx = 0
-    if st.session_state["chosen_persona_label"] in dropdown_options:
-        current_idx = dropdown_options.index(st.session_state["chosen_persona_label"])
 
     selected_option = st.selectbox(
         "👤 Active Candidate Account (Select Demo Persona or 100 Cosmos DB Profiles):",
@@ -495,6 +515,92 @@ with tab_jobseeker:
 
     active_label = st.session_state.get("chosen_persona_label", "")
 
+    # Application & Career Tracker Dashboard (My Applications & Saved Roles)
+    with st.expander(f"📋 My Applications & Career Tracker ({applied_total} Applied · {saved_total} Saved)", expanded=(applied_total > 0 and st.session_state.get("show_tracker", False))):
+        track_tab_apps, track_tab_saved = st.tabs([f"📨 Applied Roles ({applied_total})", f"⭐ Saved Roles ({saved_total})"])
+        with track_tab_apps:
+            if applied_total == 0:
+                render_html("""
+                <div style="padding: 16px; text-align: center; color: #64748b; background: #F8FAFC; border-radius: 8px; border: 1px dashed #CBD5E1;">
+                    <div style="font-size: 0.95rem; font-weight: 600; color: #334155;">No applications submitted yet</div>
+                    <div style="font-size: 0.82rem; margin-top: 4px;">Explore matched opportunities below and click <strong>'🚀 Apply for this Job'</strong> to submit your verified competence profile.</div>
+                </div>
+                """)
+            else:
+                for app in candidate_apps:
+                    step = app.get("status_step", 1)
+                    s1_style = "font-weight: 700; color: #0B6B63;" if step >= 1 else "color: #94A3B8;"
+                    s2_style = "font-weight: 700; color: #0B6B63;" if step >= 2 else "color: #94A3B8;"
+                    s3_style = "font-weight: 700; color: #0B6B63;" if step >= 3 else "color: #94A3B8;"
+                    gem_badge = '<span style="background: #FDF2F8; color: #BE185D; font-size: 0.72rem; padding: 2px 7px; border-radius: 999px; font-weight: 600; border: 1px solid #FBCFE8;">💎 Hidden Gem Match</span>' if app.get("is_gem") else ''
+                    
+                    render_html(f"""
+                    <div style="background: white; border: 1px solid #DDE2E8; border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px;">
+                            <div>
+                                <div style="font-weight: 700; font-size: 1.05rem; color: #14212B;">{app['title']}</div>
+                                <div style="font-size: 0.82rem; color: #64748b; margin-top: 2px;">
+                                    {app['employer']} · {app['location']} · <span style="color: #0B6B63; font-weight: 600;">{app.get('sector', '')}</span>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 6px; align-items: center;">
+                                <span style="background: #E6F4F1; color: #0B6B63; font-size: 0.75rem; padding: 3px 8px; border-radius: 999px; font-weight: 700;">
+                                    {round(app['composite'] * 100)}% Match
+                                </span>
+                                {gem_badge}
+                            </div>
+                        </div>
+                        
+                        <!-- Status Stepper -->
+                        <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 10px 14px; margin: 10px 0;">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 6px;">
+                                <span style="{s1_style}">● 1. Application Submitted</span>
+                                <span style="{s2_style}">○ 2. Under Review by Recruiter</span>
+                                <span style="{s3_style}">○ 3. Interview Scheduled</span>
+                            </div>
+                            <div style="background: #E2E8F0; height: 6px; border-radius: 999px; overflow: hidden;">
+                                <div style="background: #0B6B63; width: {'33%' if step==1 else ('66%' if step==2 else '100%')}; height: 100%;"></div>
+                            </div>
+                            <div style="font-size: 0.78rem; color: #475569; margin-top: 6px;">
+                                <strong>Current Status:</strong> {app['status_desc']} (<em>Submitted: {app['applied_at']}</em>)
+                            </div>
+                        </div>
+                        
+                        <div style="font-size: 0.75rem; color: #64748b;">
+                            📎 Attached: <strong>Verified Competence Profile</strong> (JobTech official ontology aligned with verbatim quote verification).
+                        </div>
+                    </div>
+                    """)
+
+        with track_tab_saved:
+            if saved_total == 0:
+                render_html("""
+                <div style="padding: 16px; text-align: center; color: #64748b; background: #F8FAFC; border-radius: 8px; border: 1px dashed #CBD5E1;">
+                    <div style="font-size: 0.95rem; font-weight: 600; color: #334155;">No saved opportunities</div>
+                    <div style="font-size: 0.82rem; margin-top: 4px;">Click <strong>'⭐ Save'</strong> on any opportunity card below to save it for later review.</div>
+                </div>
+                """)
+            else:
+                for s_jid, s_job in list(st.session_state["jobseeker_saved_jobs"].items()):
+                    s_col1, s_col2 = st.columns([3, 1.4])
+                    with s_col1:
+                        render_html(f"""
+                        <div style="padding: 6px 0;">
+                            <div style="font-weight: 700; font-size: 0.95rem; color: #14212B;">{s_job['title']}</div>
+                            <div style="font-size: 0.8rem; color: #64748b;">{s_job['employer']} · {s_job['location']} · Match: {round(s_job['score'] * 100)}%</div>
+                        </div>
+                        """)
+                    with s_col2:
+                        act1, act2 = st.columns([1, 1])
+                        with act1:
+                            if st.button("Inspect", key=f"btn_inspect_saved_{s_jid}", use_container_width=True):
+                                st.session_state["jobseeker_active_job_id"] = s_jid
+                                st.rerun()
+                        with act2:
+                            if st.button("Remove", key=f"btn_rm_saved_{s_jid}", use_container_width=True):
+                                del st.session_state["jobseeker_saved_jobs"][s_jid]
+                                st.rerun()
+
     # Retrieve matched benchmark opportunities
     candidate_matches = get_candidate_benchmark_matches(active_label)
     if not candidate_matches:
@@ -508,24 +614,13 @@ with tab_jobseeker:
     active_job = next((m for m in candidate_matches if m["job_id"] == st.session_state["jobseeker_active_job_id"]), candidate_matches[0])
 
     # 3-Column Architecture Symmetric with Employer View
-    col_passport, col_matches, col_deepdive = st.columns([1.05, 1.35, 1.9])
+    col_profile, col_matches, col_deepdive = st.columns([1.05, 1.35, 1.9])
 
-    # ===== COLUMN 1: My Competence Passport =====
-    with col_passport:
-        render_html("<div style='font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;'>My Competence Passport</div>")
+    # ===== COLUMN 1: My Competence Profile =====
+    with col_profile:
+        render_html("<div style='font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;'>My Competence Profile</div>")
 
-        # Persona metadata lookup
-        if active_label in HERO_PERSONAS:
-            p_info = HERO_PERSONAS[active_label]
-            cand_short = p_info["short_name"]
-            cand_archetype = p_info["archetype"]
-            cand_headline = p_info["leap"].split("➔")[0].strip()
-        else:
-            cand_short = active_label.split(":")[0].strip() if ":" in active_label else "Candidate Profile"
-            cand_archetype = "📂 Cosmos DB Profile"
-            cand_headline = "Verified Technical Talent"
-
-        # Passport Card with Monogram
+        # Competence Profile Card with Monogram
         monogram = cand_short[:2].upper()
         render_html(f"""
         <div style="background: white; border: 1px solid #DDE2E8; border-radius: 10px; padding: 14px; margin-bottom: 12px;">
@@ -652,30 +747,77 @@ with tab_jobseeker:
     with col_deepdive:
         if active_job:
             job_key = active_job["job_id"]
+            app_id = f"{cand_short}:{job_key}"
             is_saved = job_key in st.session_state["jobseeker_saved_jobs"]
+            is_applied = app_id in st.session_state["jobseeker_applications"]
 
-            # Top Header & Save Button
-            top_c1, top_c2 = st.columns([1.6, 1.2])
+            # Top Header & Action Buttons (Save + Apply)
+            top_c1, top_c2 = st.columns([1.35, 1.45])
             with top_c1:
                 render_html(f"""
-                <h2 style="margin: 0; font-size: 1.4rem; font-weight: 700; color: #14212B;">{active_job['title']}</h2>
+                <h2 style="margin: 0; font-size: 1.35rem; font-weight: 700; color: #14212B;">{active_job['title']}</h2>
                 <div style="font-size: 0.85rem; color: #64748b; margin-top: 2px;">
                     {active_job['employer']} · {active_job['location']} · <span style="color: #0B6B63; font-weight: 600;">{active_job['sector']}</span>
                 </div>
                 """)
             with top_c2:
-                btn_save_label = "✓ Saved in Tracker" if is_saved else "⭐ Save Opportunity"
-                if st.button(btn_save_label, key=f"btn_js_save_{job_key}", use_container_width=True):
-                    if is_saved:
-                        del st.session_state["jobseeker_saved_jobs"][job_key]
+                sub_btn_save, sub_btn_apply = st.columns([1, 1.35])
+                with sub_btn_save:
+                    btn_save_label = "✓ Saved" if is_saved else "⭐ Save"
+                    if st.button(btn_save_label, key=f"btn_js_save_{job_key}", use_container_width=True):
+                        if is_saved:
+                            del st.session_state["jobseeker_saved_jobs"][job_key]
+                        else:
+                            st.session_state["jobseeker_saved_jobs"][job_key] = {
+                                "title": active_job["title"],
+                                "employer": active_job["employer"],
+                                "location": active_job["location"],
+                                "score": active_job["composite"],
+                                "job_id": job_key
+                            }
+                        st.rerun()
+                with sub_btn_apply:
+                    if is_applied:
+                        st.button("✓ Applied (Under Review)", key=f"btn_js_applied_{job_key}", disabled=True, use_container_width=True)
                     else:
-                        st.session_state["jobseeker_saved_jobs"][job_key] = {
-                            "title": active_job["title"],
-                            "employer": active_job["employer"],
-                            "location": active_job["location"],
-                            "score": active_job["composite"]
-                        }
-                    st.rerun()
+                        if st.button("🚀 Apply for this Job", key=f"btn_js_apply_{job_key}", type="primary", use_container_width=True):
+                            st.session_state["jobseeker_applications"][app_id] = {
+                                "job_id": job_key,
+                                "candidate_name": cand_short,
+                                "title": active_job["title"],
+                                "employer": active_job["employer"],
+                                "location": active_job["location"],
+                                "sector": active_job["sector"],
+                                "applied_at": "Today, Just Now",
+                                "composite": active_job["composite"],
+                                "cov": active_job["cov"],
+                                "is_gem": active_job.get("is_gem", False),
+                                "status": "Submitted",
+                                "status_step": 1,
+                                "status_desc": f"Application received by {active_job['employer']}. Verified Competence Profile attached with JobTech concept evidence."
+                            }
+                            st.session_state["show_tracker"] = True
+                            st.toast(f"✓ Applied to {active_job['title']} at {active_job['employer']}!")
+                            st.rerun()
+
+            # Applied status banner if applied
+            if is_applied:
+                app_info = st.session_state["jobseeker_applications"][app_id]
+                render_html(f"""
+                <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 10px 14px; margin-top: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px;">
+                        <span style="font-weight: 700; color: #166534; font-size: 0.85rem;">
+                            ✓ APPLICATION SUBMITTED · STATUS: {app_info['status'].upper()}
+                        </span>
+                        <span style="font-size: 0.75rem; color: #15803D; font-weight: 500;">
+                            {app_info['applied_at']}
+                        </span>
+                    </div>
+                    <div style="font-size: 0.8rem; color: #14532D; margin-top: 3px;">
+                        {app_info['status_desc']}
+                    </div>
+                </div>
+                """)
 
             # Transferable Bridge Story Banner
             render_html(f"""
