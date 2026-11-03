@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Traditional Keyword ATS vs. BridgeIQ Comparison Expander (illustrating why Amara is #94 in ATS vs #1 in BridgeIQ).
   - Dynamic Interview Probes Generator in Recruiter Tab with live Azure OpenAI `gpt-5-mini` support.
 - **#T4.13**: Added test coverage in `tests/test_benchmarks.py` covering deterministic composite scoring, hidden gem identification, and evidence quote structures (17 passing tests).
+- **#T4.16**: Documented UI Optimization **Path A** architectural roadmap in `README.md` (embedded force-directed competency graph, dual-layer ATS radar, zero-hallucination evidence drawer, judge presentation stepper).
 
 ### Fixed
 - **#T4.14**: Resolved raw HTML (`<div>` / `<span>`) code block rendering escape bug in Streamlit by creating `render_html` sanitizer. Eliminates leading indentation (>= 4 spaces) and internal blank lines that previously triggered CommonMark `<pre><code>` block parsing in candidate and evidence cards.

@@ -155,6 +155,27 @@ ruff check .
 
 ---
 
+## 🗺️ Product Roadmap & UI/UX Evolution
+
+While the core AI pipeline, Azure search indices, deterministic scoring engine, and 3-column decision cockpit are production-ready in v0.3.0, we have architected a phased UI/UX evolution strategy based on **AgentCore Platform UI Design Systems**:
+
+### 🎯 Path A: High-Fidelity Embedded Visual Engine (Zero-Infra Polish)
+To maximize hackathon agility and stability without altering Azure Container Apps deployment topography or CI/CD pipelines, we are incrementally adopting **Path A (Streamlit + Embedded Canvas/SVG Components)**:
+
+- **🕸️ Force-Directed Competency Bridge Graph**:
+  - Interactive D3/Canvas node-link diagram mapping candidate source skills (e.g., *Carrier Core Network Hardening*) through Swedish JobTech Taxonomy hubs (*Nätverkssäkerhet*) to target employer requirements.
+  - Dynamically demonstrates *how* cross-domain capabilities bridge into industrial vacancies.
+- **📊 Multi-Dimensional Competency Radar with ATS Blindspot Overlay**:
+  - Interactive dual-layer radar chart juxtaposing traditional ATS keyword collapse (15% match due to title mismatches) against BridgeIQ's true competence overlap (82%), providing immediate narrative clarity for hiring managers.
+- **🔍 Zero-Hallucination Evidence Drawer**:
+  - Slide-out contextual inspector lens highlighting verbatim CV sentences and JobTech definitions with instant confidence badges and verified groundings.
+- **🧭 Interactive Judge Presentation Stepper**:
+  - 1-click pitch navigation bar guiding evaluators through the 5-stage transformation lifecycle: *ATS Blindspot $\rightarrow$ PII Scrubbing $\rightarrow$ Taxonomy Grounding $\rightarrow$ Hidden Gem Match $\rightarrow$ Interview Probes*.
+
+> *Note: Path A maintains zero backend friction, allowing continuous, surgical UI polishing while keeping the Azure production container stable and responsive.*
+
+---
+
 ## 👥 Team 04 (AISpire Hackathon 2026)
 Built with ❤️ by Team 04 for Avanade · Accenture · Microsoft AISpire Hackathon.
 
