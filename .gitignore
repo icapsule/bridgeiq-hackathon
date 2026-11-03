@@ -20,6 +20,10 @@ Docs/Microsoft Login.md
 **/Microsoft Login.md
 *Login*.md
 
+# Internal Documentation & Drafts (Only hackathon-plan.md is public)
+Docs/*
+!Docs/hackathon-plan.md
+
 # OS generated
 .DS_Store
 .DS_Store?

@@ -27,6 +27,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - **#T4.14**: Resolved raw HTML (`<div>` / `<span>`) code block rendering escape bug in Streamlit by creating `render_html` sanitizer. Eliminates leading indentation (>= 4 spaces) and internal blank lines that previously triggered CommonMark `<pre><code>` block parsing in candidate and evidence cards.
 
+### Security
+- **#T4.15**: Restricted public documentation exposure in `.gitignore` to `Docs/hackathon-plan.md` only; untracked internal drafts, kickoff briefs, and brainstorm documents from Git before repository sharing.
+
 ---
 
 ## [0.2.0] - 2026-11-03
