@@ -774,6 +774,25 @@ with tab_jobseeker:
             is_saved = job_key in st.session_state["jobseeker_saved_jobs"]
             is_applied = app_id in st.session_state["jobseeker_applications"]
 
+            # Top Active Career Match Flow Banner (Connecting Col 1 ➔ Col 2 ➔ Col 3 in Emerald Flow)
+            js_comp_pct = f"{round(active_job['composite'] * 100)}%"
+            render_html(f"""
+            <div style="background: #F0F8F7; border: 2px solid #0B6B63; border-radius: 10px; padding: 10px 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    <span style="font-size: 0.72rem; font-weight: 700; color: #0B6B63; text-transform: uppercase; letter-spacing: 0.04em; display: inline-flex; align-items: center;">
+                        <span class="status-dot-pulse"></span> ACTIVE CAREER MATCH FLOW
+                    </span>
+                    <span style="color: #94A3B8;">·</span>
+                    <span style="font-size: 0.82rem; font-weight: 600; color: #14212B;">{cand_short}</span>
+                    <span style="color: #0B6B63; font-weight: 700;">➔</span>
+                    <span style="font-size: 0.85rem; font-weight: 700; color: #0B6B63;">{active_job['title']}</span>
+                </div>
+                <span style="font-family: monospace; font-size: 0.95rem; font-weight: 700; color: #0B6B63; background: #FFFFFF; border: 1px solid #B4DFD9; padding: 2px 8px; border-radius: 6px;">
+                    Match: {js_comp_pct}
+                </span>
+            </div>
+            """)
+
             # Top Header & Action Buttons (Save + Apply)
             top_c1, top_c2 = st.columns([1.35, 1.45])
             with top_c1:
@@ -1280,6 +1299,25 @@ with tab_recruiter:
                 # Shortlist Key
                 shortlist_key = f"{active_role['id']}|{active_cand['alias']}"
                 is_shortlisted = shortlist_key in st.session_state["employer_shortlist"]
+
+                # Active Evaluation Pipeline Breadcrumb (Connecting Col 1 ➔ Col 2 ➔ Col 3 in Emerald Flow)
+                cand_comp_pct = f"{round(compute_candidate_composite(active_cand['cov'], active_cand['sem']) * 100)}%"
+                render_html(f"""
+                <div style="background: #F0F8F7; border: 2px solid #0B6B63; border-radius: 10px; padding: 10px 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                        <span style="font-size: 0.72rem; font-weight: 700; color: #0B6B63; text-transform: uppercase; letter-spacing: 0.04em; display: inline-flex; align-items: center;">
+                            <span class="status-dot-pulse"></span> ACTIVE PIPELINE FLOW
+                        </span>
+                        <span style="color: #94A3B8;">·</span>
+                        <span style="font-size: 0.82rem; font-weight: 600; color: #14212B;">{active_role['title']}</span>
+                        <span style="color: #0B6B63; font-weight: 700;">➔</span>
+                        <span style="font-size: 0.85rem; font-weight: 700; color: #0B6B63;">{active_cand['alias']}</span>
+                    </div>
+                    <span style="font-family: monospace; font-size: 0.95rem; font-weight: 700; color: #0B6B63; background: #FFFFFF; border: 1px solid #B4DFD9; padding: 2px 8px; border-radius: 6px;">
+                        Match: {cand_comp_pct}
+                    </span>
+                </div>
+                """)
 
                 # Header & Shortlist Action Button
                 top_c1, top_c2 = st.columns([1.6, 1.2])
