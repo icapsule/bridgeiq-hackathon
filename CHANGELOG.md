@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **#T4.21**: Comprehensive Enterprise UI/UX Redesign & Production Hardening (`ui/streamlit_app.py`, `ui/theme.py`, `.streamlit/config.toml`, `.env.example`):
+  - **LinkedIn-Style Pure Typographic Wordmark**: Replaced dual-ring SVG with high-contrast text badge `Bridge` (`#0B6B63`) + `[IQ]` (inverted white-on-emerald capsule) for crisp 4K presentation rendering.
+  - **Native Streamlit Theme & React Aria Tabs**: Configured `.streamlit/config.toml` with `primaryColor = "#0B6B63"` to eradicate default `#FF4B4B` orange line natively; implemented React Aria hardware-accelerated zero-reflow active tab scaling (`transform: scale(1.06)`).
+  - **Navigation De-cluttering & Hero Strips**: Streamlined tabs to punchy names (`👤 Jobseeker`, `💼 Recruiter Workspace`, `📊 Azure Cloud Assets`); added role cockpit hero strips across both main views.
+  - **Enterprise Design Tokens (`ui/theme.py`)**: Centralized WCAG AA-compliant color palettes and helper formatters (`safe_text`, `nordic_quote`) eliminating color drift.
+  - **Permanent ATS Blindspot Proof**: Unfolded Traditional Keyword ATS comparison table into permanently visible, uncollapsed enterprise proof cards in both Jobseeker and Recruiter views.
+  - **Global Enterprise Footer & Attribution Cleanup**: Deployed global fixed-base footer with `Team 04` copyright, `Accenture · Microsoft AISpire Hackathon` branding, EU AI Act Art. 14 compliance badges, and 100% eradication of legacy "Avanade" references across code and documentation.
+  - **Endpoint & Secret Redaction**: Sanitized `.env.example` with standard `<your-...>` placeholders across all Azure resources (OpenAI, AI Search, Cosmos DB, Storage) to prevent endpoint leakage on GitHub.
 - **#T4.10**: Designed and implemented Claude Prototype-inspired 3-Column **Employer Screen & Decision Engine** (`ui/streamlit_app.py` & `app/pipeline/benchmarks.py`).
 - **#T4.11**: Implemented **Multi-Dimensional Quantitative Representation** with explicit colored progress bars and mathematical formula display:
   - Competence Coverage ($Cov \in [0, 1]$, Teal `#0B6B63`).

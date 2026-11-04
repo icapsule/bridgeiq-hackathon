@@ -1,6 +1,6 @@
 # 💎 BridgeIQ — Hidden Talent Intelligence Box
 
-> **AISpire Hackathon (Avanade · Accenture · Microsoft)**  
+> **AISpire Hackathon (Accenture · Microsoft)**  
 > **Challenge:** Bridging the gap between hidden international/cross-domain talent and Swedish employers.  
 > **Live Deployment:** [BridgeIQ on Azure Container Apps](https://aispire-t04-smoke.icyglacier-c95b0396.swedencentral.azurecontainerapps.io)  
 > **Region:** Sweden Central / North Europe (Strict EU Data Zone)
@@ -177,5 +177,5 @@ To maximize hackathon agility and stability without altering Azure Container App
 ---
 
 ## 👥 Team 04 (AISpire Hackathon 2026)
-Built with ❤️ by Team 04 for Avanade · Accenture · Microsoft AISpire Hackathon.
+Built with ❤️ by Team 04 for Accenture · Microsoft AISpire Hackathon.
 

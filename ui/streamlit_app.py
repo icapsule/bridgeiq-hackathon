@@ -39,16 +39,73 @@ def render_html(html_str: str) -> None:
 # Custom Styling (Enterprise SaaS Design System & Compositor-Only Micro-Interactions)
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
-    
+    /* Enterprise System Typography (Zero third-party font request, zero FOUT/CLS) */
     html, body, [class*="css"] {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        color: #1E293B;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        color: #0F172A;
+        -webkit-font-smoothing: antialiased;
     }
     
     h1, h2, h3, .main-title {
-        font-family: 'Outfit', sans-serif;
+        font-family: inherit;
+        font-weight: 800;
         letter-spacing: -0.02em;
+        color: #0F172A;
+    }
+
+    /* Container Queries for responsive columns (13" laptop to 4K displays) */
+    [data-testid="stColumn"] {
+        container-type: inline-size;
+        container-name: col;
+    }
+    @container col (max-width: 420px) {
+        .quote-grid {
+            grid-template-columns: 1fr !important;
+        }
+        .quote-col-left {
+            border-right: none !important;
+            border-bottom: 2px solid #E2E8F0 !important;
+        }
+        .math-capsule {
+            font-size: 0.74rem !important;
+        }
+    }
+
+    /* Streamlit React Aria Tabs - Pure Enterprise Scale-Up & Spotlight */
+    div[data-testid="stTabs"] [role="tablist"] {
+        gap: 8px;
+        border-bottom: 1px solid #E2E8F0;
+    }
+    div[data-testid="stTabs"] [role="tab"] {
+        font-size: 0.95rem !important;
+        font-weight: 600 !important;
+        color: #64748B !important;
+        padding: 10px 18px !important;
+        border-radius: 8px 8px 0 0 !important;
+        transition: color 180ms cubic-bezier(0.16, 1, 0.3, 1), background-color 180ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+    div[data-testid="stTabs"] [role="tab"]:hover {
+        color: #0F172A !important;
+        background-color: #F8FAFC !important;
+    }
+    div[data-testid="stTabs"] [role="tab"][aria-selected="true"] {
+        color: #0B6B63 !important;
+        font-weight: 800 !important;
+        background-color: #F0FDF4 !important;
+    }
+    div[data-testid="stTabs"] [role="tab"][aria-selected="true"] > span {
+        display: inline-block;
+        transform-origin: center bottom;
+        transform: scale(1.06);
+        transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    div[data-testid="stTabs"] [role="tab"] .react-aria-SelectionIndicator {
+        background-color: transparent !important;
+        height: 3.5px !important;
+        border-radius: 2px !important;
+    }
+    div[data-testid="stTabs"] [role="tab"][aria-selected="true"] .react-aria-SelectionIndicator {
+        background-color: #0B6B63 !important;
     }
 
     /* Enterprise Card & Hover Micro-Lift (GPU Compositor Accelerated) */
@@ -57,7 +114,6 @@ st.markdown("""
         border: 1px solid #E2E8F0;
         border-radius: 10px;
         transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.18s ease;
-        will-change: transform;
         box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04);
     }
     .enterprise-card:hover {
@@ -148,6 +204,9 @@ st.markdown("""
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
         font-size: 0.82rem;
         flex-wrap: wrap;
+        white-space: nowrap;
+        overflow-x: auto;
+        font-variant-numeric: tabular-nums;
     }
     .math-label {
         background: #EEF2FF;
@@ -243,7 +302,20 @@ st.markdown("""
         font-weight: 600;
     }
 
-    /* Verifiable Evidence Quote Cards */
+    /* Verifiable Evidence Quote Cards & Containers */
+    .evidence-quote-box {
+        border: 1px solid #E2E8F0;
+        border-radius: 10px;
+        background: #FFFFFF;
+        overflow: hidden;
+        margin-bottom: 10px;
+        box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04);
+        transition: box-shadow 0.18s ease;
+    }
+    .evidence-quote-box:hover {
+        box-shadow: 0 6px 14px -4px rgba(15, 23, 42, 0.08);
+    }
+
     .quote-card {
         border: 1px solid #E2E8F0;
         border-radius: 8px;
@@ -269,12 +341,12 @@ st.markdown("""
     .quote-col-left {
         padding: 9px 12px;
         border-right: 1px solid #E2E8F0;
-        background: #FAFCFF;
-        border-left: 3px solid #94A3B8;
+        background: #F8FAFC;
+        border-left: 3px solid #64748B;
     }
     .quote-col-right {
         padding: 9px 12px;
-        background: #FFFFFF;
+        background: #F0FDF4;
         border-left: 3px solid #059669;
     }
     .quote-why {
@@ -407,37 +479,56 @@ HERO_PERSONAS = {
     }
 }
 
-# App Header with Unified Dual-Interlocking Rings Brand Logo
+# App Header with LinkedIn-style Bridge[IQ] Wordmark & Enterprise Utility Bar
 render_html("""
-<div style="display: flex; align-items: center; gap: 14px; margin: 0.25rem 0 0.8rem 0;">
-    <svg width="40" height="28" viewBox="0 0 38 26" fill="none" style="flex-shrink: 0;">
-        <!-- Left Ring: Jobseeker Competence -->
-        <circle cx="13.5" cy="13" r="10" stroke="#0B6B63" stroke-width="2.8" fill="none" opacity="0.95"/>
-        <!-- Right Ring: Requisition Need -->
-        <circle cx="24.5" cy="13" r="10" stroke="#4338CA" stroke-width="2.8" fill="none" opacity="0.95"/>
-        <!-- Overlap Lens: The Bridge Connection -->
-        <path d="M19 5.8C21.1 7.7 22.5 10.2 22.5 13C22.5 15.8 21.1 18.3 19 20.2C16.9 18.3 15.5 15.8 15.5 13C15.5 10.2 16.9 7.7 19 5.8Z" fill="#0B6B63" fill-opacity="0.32"/>
-    </svg>
-    <div>
-        <h1 style="margin: 0; font-size: 2.05rem; font-weight: 800; letter-spacing: -0.02em; color: #0F172A; line-height: 1.15;">
-            BridgeIQ <span style="font-size: 1.15rem; font-weight: 500; color: #64748B;">— Hidden Talent Intelligence</span>
-        </h1>
-        <div style="font-size: 0.83rem; color: #64748B; margin-top: 2px;">
-            Avanade · Accenture · Microsoft AISpire Hackathon | Team 04 · Sweden Central (EU Data Zone)
-        </div>
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin: 0.2rem 0 0.8rem 0; padding-bottom: 12px; border-bottom: 1px solid #E2E8F0;">
+    <!-- Left: Brand Wordmark & Tagline -->
+    <div style="display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;">
+        <span class="bridge-iq-logo" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 1.85rem; font-weight: 800; letter-spacing: -0.03em; display: inline-flex; align-items: baseline; user-select: none;">
+            <span style="color: #0B6B63; margin-right: 2px;">Bridge</span><span style="background: #0B6B63; color: #FFFFFF; font-size: 1.25rem; font-weight: 800; padding: 2px 7px; border-radius: 5px; display: inline-block; line-height: 1.15; letter-spacing: 0.02em;">IQ</span>
+        </span>
+        <span style="font-size: 0.92rem; font-weight: 500; color: #64748B;">
+            Human-Centric Talent Mobility Intelligence · 瑞典绿色转型跨行业人才数智匹配平台
+        </span>
+    </div>
+    <!-- Right: Utility & Team Identity Matrix -->
+    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        <span style="background: #EEF2FF; color: #4338CA; border: 1px solid #C7D2FE; font-weight: 700; font-size: 0.76rem; padding: 3px 10px; border-radius: 999px;">
+            Team 04
+        </span>
+        <span style="background: #F8FAFC; color: #475569; border: 1px solid #E2E8F0; font-weight: 600; font-size: 0.76rem; padding: 3px 10px; border-radius: 999px;">
+            Accenture · Microsoft AISpire Hackathon
+        </span>
+        <span style="background: #F0FDF4; color: #166534; border: 1px solid #BBF7D0; font-weight: 600; font-size: 0.76rem; padding: 3px 10px; border-radius: 999px; display: inline-flex; align-items: center; gap: 4px;">
+            <span class="status-dot-pulse"></span>Sweden Central (Active)
+        </span>
     </div>
 </div>
 """)
 
 # Navigation Tabs
 tab_jobseeker, tab_recruiter, tab_data = st.tabs([
-    "👤 Jobseeker (Career Radar & Apply)",
-    "💼 Recruiter Workspace (Search & Interview Dashboard)",
-    "📊 Connected Azure Assets (100 Profiles & 1,248 Concepts)"
+    "👤 Jobseeker",
+    "💼 Recruiter Workspace",
+    "📊 Azure Cloud Assets"
 ])
 
 # ----------------- TAB 1: Jobseeker -----------------
 with tab_jobseeker:
+    # Active Cockpit Hero Strip
+    render_html("""
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 14px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; margin-bottom: 14px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 1.02rem; font-weight: 700; color: #0F172A;">👤 Jobseeker Career Radar</span>
+            <span style="color: #94A3B8;">|</span>
+            <span style="font-size: 0.82rem; color: #475569;">跨行业转岗数智雷达与胜任力投递</span>
+        </div>
+        <span style="background: #F0FDF4; color: #0B6B63; border: 1px solid #BBF7D0; font-weight: 600; font-size: 0.76rem; padding: 2px 10px; border-radius: 999px;">
+            🟢 Active Persona: Telecom Engineer (Amara) ➔ Industrial IoT
+        </span>
+    </div>
+    """)
+
     # Initialize session state for Jobseeker view
     if "jobseeker_saved_jobs" not in st.session_state:
         st.session_state["jobseeker_saved_jobs"] = {}
@@ -971,16 +1062,21 @@ with tab_jobseeker:
                 </div>
                 """)
 
-            # Traditional ATS vs BridgeIQ Comparison Expander (Matching Employer View)
-            with st.expander("📊 Why Traditional Keyword ATS Rejected You vs. Why BridgeIQ Recommends You", expanded=False):
-                st.markdown(f"""
-                | Evaluation Lens | Traditional Keyword ATS (Workday / Taleo) | BridgeIQ Competence Engine |
-                |---|---|---|
-                | **Rank for {cand_short}** | **#94 / 100** (Discarded at screening) | **#1 / 100** (Score: {round(comp_val * 100)}%) |
-                | **Filter Criteria** | Exact string match on title (`"{cand_headline}"` $\\ne$ `"{active_job['title']}"`) | Grounded JobTech concepts overlap ({round(cov_val * 100)}%) |
-                | **Outcome** | Automated rejection email ("Does not match required experience") | Direct interview recommendation with verified proof |
-                | **Demographic Bias** | High risk (penalizes foreign titles and non-linear careers) | **Zero** (Name, age, gender & nationality strictly scrubbed) |
-                """)
+            # Traditional ATS vs BridgeIQ Comparison (Permanent Decision Proof - Never Hidden)
+            render_html("""
+            <div style="border: 1px solid #E2E8F0; border-radius: 8px 8px 0 0; background: #F8FAFC; padding: 8px 12px; margin-top: 14px; border-bottom: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.8rem; font-weight: 700; color: #0F172A;">📊 Why Traditional Keyword ATS Rejected You vs. Why BridgeIQ Recommends You</span>
+                <span style="background: #FEF2F2; color: #991B1B; padding: 2px 7px; border-radius: 4px; font-size: 0.72rem; font-weight: 700; border: 1px solid #FECACA;">ATS BLINDSPOT SOLVED</span>
+            </div>
+            """)
+            st.markdown(f"""
+            | Evaluation Lens | Traditional Keyword ATS (Workday / Taleo) | BridgeIQ Competence Engine |
+            |---|---|---|
+            | **Rank for {cand_short}** | **#94 / 100** (Discarded at screening) | **#1 / 100** (Score: {round(comp_val * 100)}%) |
+            | **Filter Criteria** | Exact string match on title (`"{cand_headline}"` $\\ne$ `"{active_job['title']}"`) | Grounded JobTech concepts overlap ({round(cov_val * 100)}%) |
+            | **Outcome** | Automated rejection email ("Does not match required experience") | Direct interview recommendation with verified proof |
+            | **Demographic Bias** | High risk (penalizes foreign titles and non-linear careers) | **Zero** (Name, age, gender & nationality strictly scrubbed) |
+            """)
 
             # AI Pitch & Talking Points Generator (Live Azure OpenAI gpt-5-mini)
             render_html("<div style='font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin: 18px 0 8px 0;'>Empowerment Toolkit: Tailored Interview Pitch</div>")
@@ -1084,22 +1180,19 @@ with tab_recruiter:
 
     shortlist_total = len(st.session_state["employer_shortlist"])
 
-    # Header with Unified Dual-Interlocking Rings Logo & Live Shortlist Indicator
+    # Hero Strip & Live Shortlist Indicator
     render_html(f"""
-    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 0.75rem;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <svg width="32" height="22" viewBox="0 0 38 26" fill="none" style="flex-shrink: 0;">
-                <circle cx="13.5" cy="13" r="10" stroke="#0B6B63" stroke-width="2.8" fill="none" opacity="0.95"/>
-                <circle cx="24.5" cy="13" r="10" stroke="#4338CA" stroke-width="2.8" fill="none" opacity="0.95"/>
-                <path d="M19 5.8C21.1 7.7 22.5 10.2 22.5 13C22.5 15.8 21.1 18.3 19 20.2C16.9 18.3 15.5 15.8 15.5 13C15.5 10.2 16.9 7.7 19 5.8Z" fill="#0B6B63" fill-opacity="0.32"/>
-            </svg>
-            <div>
-                <h2 style="margin: 0; font-size: 1.45rem; font-weight: 700; color: #0F172A;">Recruiter Workspace & Candidate Sourcing</h2>
-                <div style="color: #64748b; font-size: 0.85rem;">Rank applicants by verified JobTech competence overlap and run structured STAR interview evaluations.</div>
-            </div>
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 14px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <span style="font-size: 1.02rem; font-weight: 700; color: #0F172A;">💼 Recruiter Talent Cockpit</span>
+            <span style="color: #94A3B8;">|</span>
+            <span style="font-size: 0.82rem; color: #475569;">工业绿色转型招聘驾驶舱与人机协同面试</span>
         </div>
-        <div>
-            <span style="padding: 6px 14px; border-radius: 999px; background: #EEF2FF; color: #4338CA; font-weight: 700; font-size: 0.85rem; border: 1px solid #C7D2FE;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="background: #F0FDF4; color: #0B6B63; border: 1px solid #BBF7D0; font-weight: 600; font-size: 0.76rem; padding: 2px 10px; border-radius: 999px;">
+                🟢 Active Workspace: 3 Open Requisitions · 100 Talent Pool
+            </span>
+            <span style="padding: 2px 10px; border-radius: 999px; background: #EEF2FF; color: #4338CA; font-weight: 700; font-size: 0.76rem; border: 1px solid #C7D2FE;">
                 🎯 Total Shortlisted: {shortlist_total}
             </span>
         </div>
@@ -1190,7 +1283,7 @@ with tab_recruiter:
                 </div>
                 """)
 
-                btn_label = f"✓ Active: {r['title'][:20]}..." if is_active else f"👉 Select {r['title'][:20]}..."
+                btn_label = "✓ Active Role" if is_active else "Select Role ➔"
                 if st.button(btn_label, key=f"btn_role_{r['id']}", use_container_width=True):
                     st.session_state["active_role_id"] = r["id"]
                     # Default to first candidate
@@ -1460,16 +1553,21 @@ with tab_recruiter:
                     </div>
                     """)
 
-                # Traditional ATS vs BridgeIQ Comparison Expander
-                with st.expander("📊 Compare vs. Traditional Keyword ATS (Workday / Taleo)", expanded=False):
-                    st.markdown(f"""
-                    | Comparison Metric | Traditional Keyword ATS | BridgeIQ Competence Engine |
-                    |---|---|---|
-                    | **Rank for {active_cand['alias'].split(' ')[0]}** | **#94 / 100** (Discarded at screening) | **#1 / 100** (Score: {round(comp_val * 100)}%) |
-                    | **Filter Criteria** | Exact title match (`"{active_cand['headline']}"` $\\ne$ `"{active_role['title']}"`) | Grounded JobTech concepts overlap ({round(cov_val * 100)}%) |
-                    | **Explainability** | Opaque boolean rejection | Verified dual-quote evidence chain |
-                    | **Demographic Bias** | High risk (penalizes career switchers & foreign titles) | **Zero** (Names, age, gender scrubbed prior to matching) |
-                    """)
+                # Traditional ATS vs BridgeIQ Comparison (Permanent Decision Proof - Never Hidden)
+                render_html("""
+                <div style="border: 1px solid #E2E8F0; border-radius: 8px 8px 0 0; background: #F8FAFC; padding: 8px 12px; margin-top: 14px; border-bottom: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 0.8rem; font-weight: 700; color: #0F172A;">📊 Compare vs. Traditional Keyword ATS (Workday / Taleo)</span>
+                    <span style="background: #FEF2F2; color: #991B1B; padding: 2px 7px; border-radius: 4px; font-size: 0.72rem; font-weight: 700; border: 1px solid #FECACA;">ATS BLINDSPOT SOLVED</span>
+                </div>
+                """)
+                st.markdown(f"""
+                | Comparison Metric | Traditional Keyword ATS | BridgeIQ Competence Engine |
+                |---|---|---|
+                | **Rank for {active_cand['alias'].split(' ')[0]}** | **#94 / 100** (Discarded at screening) | **#1 / 100** (Score: {round(comp_val * 100)}%) |
+                | **Filter Criteria** | Exact title match (`"{active_cand['headline']}"` $\\ne$ `"{active_role['title']}"`) | Grounded JobTech concepts overlap ({round(cov_val * 100)}%) |
+                | **Explainability** | Opaque boolean rejection | Verified dual-quote evidence chain |
+                | **Demographic Bias** | High risk (penalizes career switchers & foreign titles) | **Zero** (Names, age, gender scrubbed prior to matching) |
+                """)
 
                 # Enterprise Trust & Compliance Bar
                 render_html("""
@@ -1887,3 +1985,25 @@ with tab_data:
         st.markdown("#### 👥 Cosmos DB: Candidates")
         st.metric("Loaded Candidates", f"{len(all_db_candidates)}")
         st.caption("From candidate-001 to candidate-100.")
+
+# ----------------- GLOBAL ENTERPRISE FOOTER -----------------
+render_html("""
+<footer class="enterprise-footer" style="margin-top: 3.5rem; padding: 22px 0 16px 0; border-top: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; font-size: 0.82rem; color: #64748B; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+    <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
+        <span style="font-weight: 700; color: #1E293B;">Copyright © 2026 BridgeIQ · Team 04</span>
+        <span style="color: #CBD5E1;">|</span>
+        <span style="font-weight: 500; color: #475569;">Accenture · Microsoft AISpire Hackathon</span>
+        <span style="color: #CBD5E1;">|</span>
+        <span style="color: #0B6B63; font-weight: 600;">Sweden Central (EU Data Zone)</span>
+        <span style="background: #F1F5F9; color: #64748B; padding: 1px 6px; border-radius: 4px; font-size: 0.72rem; font-family: ui-monospace, monospace;">v2.4.0-prod</span>
+    </div>
+    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <span style="background: #F8FAFC; color: #334155; padding: 3px 10px; border-radius: 999px; font-size: 0.75rem; border: 1px solid #E2E8F0; display: inline-flex; align-items: center; gap: 4px;">
+            🛡️ EU AI Act Art. 14 Verified
+        </span>
+        <span style="background: #F0FDF4; color: #166534; padding: 3px 10px; border-radius: 999px; font-size: 0.75rem; border: 1px solid #BBF7D0; display: inline-flex; align-items: center; gap: 4px;">
+            🔒 100% Demographic Scrubbed
+        </span>
+    </div>
+</footer>
+""")

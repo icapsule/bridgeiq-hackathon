@@ -1,6 +1,6 @@
 # BridgeIQ: Hackathon Technical Implementation Plan
 
-> **Challenge:** AI-powered Hidden Talent tool bridging the gap between talent and jobs (AISpire · Avanade · Accenture · Microsoft)
+> **Challenge:** AI-powered Hidden Talent tool bridging the gap between talent and jobs (AISpire · Accenture · Microsoft)
 > **Working title:** BridgeIQ, the Hidden Talent Intelligence Box
 > **Deadline:** Friday EOD (ephemeral Azure sandbox). **Day 1 = build (under one day), Day 2 = presentation.** The plan assumes about 12 working hours on Day 1 (H0–H12), with a demoable path by H8 and a deployed, frozen build by end of Day 1. Day 2 is pitch prep and rehearsal only, with no new features.
 > **Source:** Hackathon Kickoff Brief. This document turns that brief into an execution guide engineers can build from directly.
