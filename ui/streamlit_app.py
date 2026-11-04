@@ -36,127 +36,151 @@ def render_html(html_str: str) -> None:
     st.markdown("\n".join(lines), unsafe_allow_html=True)
 
 
-# Custom Styling (Glassmorphism & Clean Typography)
+# Custom Styling (Enterprise SaaS Design System & Compositor-Only Micro-Interactions)
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
     
     html, body, [class*="css"] {
-        font-family: 'Inter', sans-serif;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        color: #1E293B;
     }
     
     h1, h2, h3, .main-title {
         font-family: 'Outfit', sans-serif;
         letter-spacing: -0.02em;
     }
-    
-    .demo-hero-box {
-        background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
-        border: 1.5px solid #c7d2fe;
-        border-radius: 14px;
-        padding: 1.25rem 1.5rem;
-        margin-bottom: 1.5rem;
-        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.08);
-    }
 
-    .persona-card {
-        background: white;
-        border: 1px solid #e2e8f0;
+    /* Enterprise Card & Hover Micro-Lift (GPU Compositor Accelerated) */
+    .enterprise-card {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
         border-radius: 10px;
-        padding: 1rem;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-        transition: transform 0.2s, border-color 0.2s;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
+        transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.18s ease;
+        will-change: transform;
+        box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04);
     }
-    .persona-card:hover {
-        border-color: #6366f1;
+    .enterprise-card:hover {
         transform: translateY(-2px);
+        box-shadow: 0 8px 16px -4px rgba(15, 23, 42, 0.08), 0 3px 6px -2px rgba(15, 23, 42, 0.04);
+        border-color: #CBD5E1;
     }
 
-    .briefing-card {
-        background: #ffffff;
-        border-left: 5px solid #4f46e5;
+    /* Zero-Lag CSS Tooltip (Zero JS overhead) */
+    .enterprise-tooltip {
+        position: relative;
+        cursor: help;
+        display: inline-flex;
+        align-items: center;
+    }
+    .enterprise-tooltip::after {
+        content: attr(data-tip);
+        position: absolute;
+        bottom: 125%;
+        left: 50%;
+        transform: translateX(-50%) translateY(4px);
+        background: #0F172A;
+        color: #F8FAFC;
+        padding: 6px 10px;
+        border-radius: 6px;
+        font-size: 0.72rem;
+        line-height: 1.35;
+        white-space: normal;
+        width: max-content;
+        max-width: 260px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.15s ease, transform 0.15s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        z-index: 99;
+        font-weight: 400;
+        text-align: left;
+    }
+    .enterprise-tooltip:hover::after {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    /* GPU Progress Bar Glide Animation */
+    @keyframes meter-glide {
+        from { transform: scaleX(0); opacity: 0.7; }
+        to { transform: scaleX(1); opacity: 1; }
+    }
+    .metric-bar-bg {
+        height: 8px;
+        background: #F1F5F9;
+        border-radius: 4px;
+        margin-top: 5px;
+        overflow: hidden;
+        border: 1px solid #E2E8F0;
+    }
+    .metric-bar-fill {
+        height: 100%;
+        border-radius: 4px;
+        transform-origin: left center;
+        animation: meter-glide 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Verified Grounded Status Pulse */
+    @keyframes subtle-pulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(0.85); opacity: 0.6; }
+    }
+    .status-dot-pulse {
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background-color: #059669;
+        animation: subtle-pulse 3s infinite ease-in-out;
+        margin-right: 4px;
+    }
+
+    /* Math Formula Capsule (Clean Monospace Typography) */
+    .math-capsule {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #F8FAFC;
+        border: 1px solid #E2E8F0;
         border-radius: 8px;
-        padding: 1rem 1.25rem;
-        margin-bottom: 1.25rem;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-
-    .gem-card {
-        background: linear-gradient(135deg, rgba(238, 242, 255, 0.95) 0%, rgba(224, 231, 255, 0.75) 100%);
-        border: 1.5px solid rgba(199, 210, 254, 0.9);
-        border-radius: 12px;
-        padding: 1.25rem;
-        margin-bottom: 1rem;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    }
-
-    .badge-gem {
-        background-color: #4f46e5;
-        color: white;
-        padding: 0.25rem 0.75rem;
-        border-radius: 9999px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        display: inline-block;
-        margin-bottom: 0.5rem;
-    }
-
-    .badge-archetype {
-        background-color: #f1f5f9;
-        color: #334155;
-        border: 1px solid #cbd5e1;
-        padding: 0.2rem 0.5rem;
-        border-radius: 6px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        display: inline-block;
-        margin-bottom: 0.4rem;
-    }
-    
-    .concept-tag {
-        background-color: #e0e7ff;
-        color: #3730a3;
-        border: 1px solid #c7d2fe;
-        padding: 0.2rem 0.6rem;
-        border-radius: 6px;
+        padding: 8px 12px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
         font-size: 0.82rem;
-        font-weight: 500;
-        display: inline-block;
-        margin: 0.2rem 0.2rem 0.2rem 0;
+        flex-wrap: wrap;
+    }
+    .math-label {
+        background: #EEF2FF;
+        color: #4338CA;
+        font-weight: 700;
+        font-size: 0.7rem;
+        padding: 2px 7px;
+        border-radius: 4px;
+        border: 1px solid #C7D2FE;
+        letter-spacing: 0.04em;
     }
 
-    .evidence-box {
-        background: white;
-        border-left: 4px solid #4f46e5;
-        padding: 0.75rem 1rem;
-        margin: 0.5rem 0;
-        border-radius: 0 8px 8px 0;
-    }
-
-    /* Claude Prototype-Inspired Employer Screen CSS */
+    /* Roles & Candidate Navigation Cards */
     .role-card-active {
         background-color: #F0F8F7;
         border: 2px solid #0B6B63;
         border-radius: 10px;
         padding: 12px 14px;
         margin-bottom: 8px;
-        transition: all 0.2s;
+        transition: transform 0.15s ease;
     }
     .role-card-inactive {
         background-color: #FFFFFF;
-        border: 1px solid #DDE2E8;
+        border: 1px solid #E2E8F0;
         border-radius: 10px;
         padding: 12px 14px;
         margin-bottom: 8px;
-        transition: all 0.2s;
+        transition: all 0.15s ease;
     }
     .role-card-inactive:hover {
         border-color: #0B6B63;
         background-color: #FAFCFC;
+        transform: translateY(-1px);
     }
 
     .cand-card-active {
@@ -168,24 +192,25 @@ st.markdown("""
     }
     .cand-card-inactive {
         background-color: #FFFFFF;
-        border: 1px solid #DDE2E8;
+        border: 1px solid #E2E8F0;
         border-radius: 10px;
         padding: 12px 14px;
         margin-bottom: 10px;
-        transition: all 0.15s;
+        transition: all 0.15s ease;
     }
     .cand-card-inactive:hover {
         border-color: #0B6B63;
-        box-shadow: 0 2px 6px rgba(11, 107, 99, 0.08);
+        box-shadow: 0 4px 10px rgba(11, 107, 99, 0.06);
+        transform: translateY(-1px);
     }
 
     .rank-circle {
-        width: 26px;
-        height: 26px;
+        width: 24px;
+        height: 24px;
         border-radius: 50%;
-        background: #14212B;
+        background: #0F172A;
         color: #FFFFFF;
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 700;
         display: inline-flex;
         align-items: center;
@@ -198,41 +223,13 @@ st.markdown("""
         display: inline-flex;
         align-items: center;
         gap: 5px;
-        padding: 3px 9px;
+        padding: 2px 8px;
         border-radius: 999px;
-        background: #FCEFD9;
-        color: #8A4B00;
+        background: #FEF3C7;
+        color: #92400E;
         font-size: 11px;
         font-weight: 700;
-        margin-top: 6px;
-    }
-
-    .ats-warning-text {
-        font-size: 11px;
-        color: #78350F;
-        background: #FEF3C7;
-        padding: 2px 8px;
-        border-radius: 4px;
-        display: inline-block;
-        margin-top: 4px;
-    }
-    .ats-normal-text {
-        font-size: 11px;
-        color: #475569;
-        display: inline-block;
-        margin-top: 4px;
-    }
-
-    .metric-bar-bg {
-        height: 8px;
-        background: #E4E8EE;
-        border-radius: 4px;
-        margin-top: 5px;
-        overflow: hidden;
-    }
-    .metric-bar-fill {
-        height: 100%;
-        border-radius: 4px;
+        border: 1px solid #FDE68A;
     }
 
     .story-banner {
@@ -240,24 +237,26 @@ st.markdown("""
         border-left: 4px solid #0B6B63;
         border-radius: 0 8px 8px 0;
         padding: 10px 14px;
-        margin: 12px 0;
-        font-size: 14px;
+        margin: 10px 0;
+        font-size: 13.5px;
         color: #0B6B63;
         font-weight: 600;
     }
 
+    /* Verifiable Evidence Quote Cards */
     .quote-card {
-        border: 1px solid #DDE2E8;
-        border-radius: 10px;
+        border: 1px solid #E2E8F0;
+        border-radius: 8px;
         overflow: hidden;
-        margin-bottom: 12px;
+        margin-bottom: 10px;
         background: #FFFFFF;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
     }
     .quote-card-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 8px 12px;
+        padding: 7px 12px;
         background: #F8FAFC;
         border-bottom: 1px solid #E2E8F0;
         font-size: 12px;
@@ -268,35 +267,39 @@ st.markdown("""
         border-bottom: 1px solid #E2E8F0;
     }
     .quote-col-left {
-        padding: 10px 12px;
+        padding: 9px 12px;
         border-right: 1px solid #E2E8F0;
-        background: #FAFAFA;
+        background: #FAFCFF;
+        border-left: 3px solid #94A3B8;
     }
     .quote-col-right {
-        padding: 10px 12px;
+        padding: 9px 12px;
         background: #FFFFFF;
+        border-left: 3px solid #059669;
     }
     .quote-why {
         padding: 8px 12px;
         font-size: 12px;
         color: #334155;
         background: #F8FAFC;
+        line-height: 1.4;
     }
 
     .gap-card-box {
         display: flex;
         flex-wrap: wrap;
-        gap: 8px;
-        align-items: flex-start;
-        padding: 10px 12px;
-        border-radius: 8px;
-        background: #FFF8EC;
-        border: 1px solid #F1DDB8;
-        margin-bottom: 8px;
+        gap: 6px;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 6px;
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-left: 3px solid #D97706;
+        margin-bottom: 6px;
     }
     .effort-pill-days {
         font-size: 11px;
-        padding: 2px 8px;
+        padding: 2px 7px;
         border-radius: 999px;
         background: #DCFCE7;
         color: #166534;
@@ -305,7 +308,7 @@ st.markdown("""
     }
     .effort-pill-weeks {
         font-size: 11px;
-        padding: 2px 8px;
+        padding: 2px 7px;
         border-radius: 999px;
         background: #DBEAFE;
         color: #1E40AF;
@@ -314,7 +317,7 @@ st.markdown("""
     }
     .effort-pill-months {
         font-size: 11px;
-        padding: 2px 8px;
+        padding: 2px 7px;
         border-radius: 999px;
         background: #F3E8FF;
         color: #6B21A8;
@@ -404,9 +407,27 @@ HERO_PERSONAS = {
     }
 }
 
-# App Header
-st.title("💎 BridgeIQ — Hidden Talent Intelligence")
-st.caption("Avanade · Accenture · Microsoft AISpire Hackathon | Team 04 · Sweden Central (EU Data Zone)")
+# App Header with Unified Dual-Interlocking Rings Brand Logo
+render_html("""
+<div style="display: flex; align-items: center; gap: 14px; margin: 0.25rem 0 0.8rem 0;">
+    <svg width="40" height="28" viewBox="0 0 38 26" fill="none" style="flex-shrink: 0;">
+        <!-- Left Ring: Jobseeker Competence -->
+        <circle cx="13.5" cy="13" r="10" stroke="#0B6B63" stroke-width="2.8" fill="none" opacity="0.95"/>
+        <!-- Right Ring: Requisition Need -->
+        <circle cx="24.5" cy="13" r="10" stroke="#4338CA" stroke-width="2.8" fill="none" opacity="0.95"/>
+        <!-- Overlap Lens: The Bridge Connection -->
+        <path d="M19 5.8C21.1 7.7 22.5 10.2 22.5 13C22.5 15.8 21.1 18.3 19 20.2C16.9 18.3 15.5 15.8 15.5 13C15.5 10.2 16.9 7.7 19 5.8Z" fill="#0B6B63" fill-opacity="0.32"/>
+    </svg>
+    <div>
+        <h1 style="margin: 0; font-size: 2.05rem; font-weight: 800; letter-spacing: -0.02em; color: #0F172A; line-height: 1.15;">
+            BridgeIQ <span style="font-size: 1.15rem; font-weight: 500; color: #64748B;">— Hidden Talent Intelligence</span>
+        </h1>
+        <div style="font-size: 0.83rem; color: #64748B; margin-top: 2px;">
+            Avanade · Accenture · Microsoft AISpire Hackathon | Team 04 · Sweden Central (EU Data Zone)
+        </div>
+    </div>
+</div>
+""")
 
 # Navigation Tabs
 tab_jobseeker, tab_recruiter, tab_data = st.tabs([
@@ -635,8 +656,8 @@ with tab_jobseeker:
             <div style="margin-top: 10px;">
                 <span style="font-size: 0.72rem; padding: 2px 8px; border-radius: 999px; background: #EEF2FF; color: #4338CA; font-weight: 600;">{cand_archetype}</span>
             </div>
-            <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 8px 10px; margin-top: 10px; font-size: 0.75rem; color: #166534; line-height: 1.35;">
-                <strong>🛡️ Privacy Shield Active:</strong> Your name, age, gender, and nationality are strictly hidden from employer algorithms to ensure 100% objective, merit-based matching.
+            <div class="enterprise-tooltip" data-tip="Demographic Scrubbing: Name, age, gender, and nationality are strictly hidden from employer algorithms to guarantee 100% merit-based matching." style="margin-top: 10px; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: #F0FDF4; border: 1px solid #BBF7D0; font-size: 0.72rem; color: #166534; font-weight: 600;">
+                <span class="status-dot-pulse"></span> 🛡️ Privacy Shield Active · Zero Demographic Bias
             </div>
         </div>
         """)
@@ -704,8 +725,11 @@ with tab_jobseeker:
                 card_border = "#0B6B63" if is_selected else "#DDE2E8"
                 card_bg = "#F0F8F7" if is_selected else "#FFFFFF"
 
-                badge_html = f'<div class="badge-gem-amber"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 3h12l4 6-10 12L2 9z"></path></svg> Untapped Career Pivot: {cov_pct} Competence Overlap</div>' if gem else ""
-                ats_text = f"<div class='ats-warning-text'>⚠️ Missed by keyword ATS: title match only {tsim_pct}</div>" if gem else f"<div class='ats-normal-text'>✓ Matched by conventional title search (sim {tsim_pct})</div>"
+                if gem:
+                    badge_html = f'<div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px;"><span class="badge-gem-amber"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 3h12l4 6-10 12L2 9z"></path></svg> Career Pivot: {cov_pct}</span><span class="enterprise-tooltip" data-tip="Conventional keyword ATS filters discard this CV due to title mismatch ({tsim_pct}). BridgeIQ recovers it via JobTech competence overlap." style="font-size: 11px; color: #78350F; background: #FEF3C7; padding: 2px 7px; border-radius: 4px; border: 1px solid #FDE68A;">⚠️ Missed by ATS ({tsim_pct})</span></div>'
+                else:
+                    badge_html = f'<div style="margin-top: 6px;"><span style="font-size: 11px; color: #475569; background: #F1F5F9; padding: 2px 7px; border-radius: 4px;">✓ Conventional Title Match ({tsim_pct})</span></div>'
+                ats_text = ""
 
                 render_html(f"""
                 <div style="background: {card_bg}; border: {2 if is_selected else 1}px solid {card_border}; border-radius: 10px; padding: 12px; margin-bottom: 8px;">
@@ -866,8 +890,13 @@ with tab_jobseeker:
                 """)
 
             render_html(f"""
-            <div style="background: #F8FAFC; border: 1px dashed #CBD5E1; border-radius: 6px; padding: 6px 12px; margin-top: 10px; font-family: monospace; font-size: 0.82rem; color: #475569;">
-                formula: composite = 0.60 × overlap ({round(cov_val * 100)}%) + 0.40 × semantic ({round(sem_val * 100)}%) = <strong style="color: #0B6B63;">{round(comp_val * 100)}%</strong>
+            <div class="math-capsule" style="margin-top: 10px;">
+                <span class="math-label">ALGORITHM</span>
+                <span style="color: #334155;">
+                    composite = <strong style="color: #0B6B63;">0.60</strong> × overlap ({round(cov_val * 100)}%) + 
+                                <strong style="color: #1E40AF;">0.40</strong> × semantic ({round(sem_val * 100)}%) = 
+                                <strong style="color: #0B6B63; font-size: 0.95rem;">{round(comp_val * 100)}%</strong>
+                </span>
             </div>
             """)
 
@@ -886,7 +915,7 @@ with tab_jobseeker:
                             {hidden_badge}
                         </div>
                         <span style="color: #0B6B63; font-weight: 600; font-size: 0.75rem; display: flex; align-items: center; gap: 4px;">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"></path></svg>
+                            <span class="status-dot-pulse"></span>
                             Verified Grounded
                         </span>
                     </div>
@@ -974,8 +1003,23 @@ Generate 3 concise, highly convincing interview talking points (1 sentence each)
                 for idx, pt in enumerate(st.session_state[pitch_key], start=1):
                     st.markdown(f"**Point {idx}:** *\"{pt}\"*")
 
-            render_html("<hr style='margin: 1rem 0;'/>")
-            st.caption("⚖️ *BridgeIQ empowers candidates with transparent proof. A human hiring team makes final recruitment decisions. Your personal demographics remain protected at all times.*")
+            render_html("""
+            <div style="display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-top: 1.2rem; padding: 8px 12px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; font-size: 0.75rem; color: #64748B;">
+                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                    <span style="display: inline-flex; align-items: center; gap: 4px; font-weight: 600; color: #0F172A;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0B6B63" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                        EU AI Act Art. 14 (Human-in-the-Loop)
+                    </span>
+                    <span>·</span>
+                    <span class="enterprise-tooltip" data-tip="All demographic indicators (name, gender, nationality, age) are scrubbed before matching.">
+                        🇸🇪 Demographic Scrubbing Active
+                    </span>
+                    <span>·</span>
+                    <span>Human Hiring Decision Authority</span>
+                </div>
+                <span style="font-size: 0.72rem; color: #94A3B8;">Sweden Central (EU Data Zone)</span>
+            </div>
+            """)
         else:
             st.info("👈 Pick an opportunity from the list to inspect your transparent score breakdown and evidence chain.")
 
@@ -1021,12 +1065,19 @@ with tab_recruiter:
 
     shortlist_total = len(st.session_state["employer_shortlist"])
 
-    # Header with Live Shortlist Indicator (Regulatory badges moved to Tab 3 per UX optimization)
+    # Header with Unified Dual-Interlocking Rings Logo & Live Shortlist Indicator
     render_html(f"""
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 0.75rem;">
-        <div>
-            <h2 style="margin: 0; font-size: 1.5rem; font-weight: 700; color: #0F172A;">💼 Recruiter Workspace & Candidate Sourcing</h2>
-            <div style="color: #64748b; font-size: 0.9rem;">Rank applicants by verified JobTech competence overlap and run structured STAR interview evaluations.</div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <svg width="32" height="22" viewBox="0 0 38 26" fill="none" style="flex-shrink: 0;">
+                <circle cx="13.5" cy="13" r="10" stroke="#0B6B63" stroke-width="2.8" fill="none" opacity="0.95"/>
+                <circle cx="24.5" cy="13" r="10" stroke="#4338CA" stroke-width="2.8" fill="none" opacity="0.95"/>
+                <path d="M19 5.8C21.1 7.7 22.5 10.2 22.5 13C22.5 15.8 21.1 18.3 19 20.2C16.9 18.3 15.5 15.8 15.5 13C15.5 10.2 16.9 7.7 19 5.8Z" fill="#0B6B63" fill-opacity="0.32"/>
+            </svg>
+            <div>
+                <h2 style="margin: 0; font-size: 1.45rem; font-weight: 700; color: #0F172A;">Recruiter Workspace & Candidate Sourcing</h2>
+                <div style="color: #64748b; font-size: 0.85rem;">Rank applicants by verified JobTech competence overlap and run structured STAR interview evaluations.</div>
+            </div>
         </div>
         <div>
             <span style="padding: 6px 14px; border-radius: 999px; background: #EEF2FF; color: #4338CA; font-weight: 700; font-size: 0.85rem; border: 1px solid #C7D2FE;">
@@ -1189,8 +1240,11 @@ with tab_recruiter:
                     card_border = "#0B6B63" if is_selected else "#DDE2E8"
                     card_bg = "#F0F8F7" if is_selected else "#FFFFFF"
 
-                    badge_html = f'<div class="badge-gem-amber"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 3h12l4 6-10 12L2 9z"></path></svg> Hidden Gem: {cov_pct} Competence Overlap</div>' if gem else ""
-                    ats_text = f"<div class='ats-warning-text'>⚠️ Missed by keyword ATS: title similarity {tsim_pct}</div>" if gem else f"<div class='ats-normal-text'>✓ Found by conventional title search (sim {tsim_pct})</div>"
+                    if gem:
+                        badge_html = f'<div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px;"><span class="badge-gem-amber"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 3h12l4 6-10 12L2 9z"></path></svg> Hidden Gem: {cov_pct}</span><span class="enterprise-tooltip" data-tip="Conventional keyword ATS filters discard this CV due to title mismatch ({tsim_pct}). BridgeIQ recovers it via JobTech competence overlap." style="font-size: 11px; color: #78350F; background: #FEF3C7; padding: 2px 7px; border-radius: 4px; border: 1px solid #FDE68A;">⚠️ Missed by ATS ({tsim_pct})</span></div>'
+                    else:
+                        badge_html = f'<div style="margin-top: 6px;"><span style="font-size: 11px; color: #475569; background: #F1F5F9; padding: 2px 7px; border-radius: 4px;">✓ Conventional Title Match ({tsim_pct})</span></div>'
+                    ats_text = ""
 
                     render_html(f"""
                     <div style="background: {card_bg}; border: {2 if is_selected else 1}px solid {card_border}; border-radius: 10px; padding: 12px; margin-bottom: 8px;">
@@ -1304,11 +1358,15 @@ with tab_recruiter:
                     <div style="font-size: 0.72rem; color: {'#991B1B' if tsim_val < 0.45 else '#64748b'}; margin-top: 4px;">{'Low = Untapped Career Pivot!' if tsim_val < 0.45 else 'Conventional match'}</div>
                     """)
 
-                # Exact Formula display
-                formula_str = f"formula: composite = 0.60 * overlap ({round(cov_val*100)}%) + 0.40 * semantic ({round(sem_val*100)}%) = {round(comp_val*100)}%"
+                # Exact Formula display as Math Capsule
                 render_html(f"""
-                <div class="formula-box">
-                    <code>{formula_str}</code>
+                <div class="math-capsule" style="margin-top: 10px;">
+                    <span class="math-label">ALGORITHM</span>
+                    <span style="color: #334155;">
+                        composite = <strong style="color: #0B6B63;">0.60</strong> × overlap ({round(cov_val * 100)}%) + 
+                                    <strong style="color: #1E40AF;">0.40</strong> × semantic ({round(sem_val * 100)}%) = 
+                                    <strong style="color: #0B6B63; font-size: 0.95rem;">{round(comp_val * 100)}%</strong>
+                    </span>
                 </div>
                 """)
 
@@ -1375,9 +1433,24 @@ with tab_recruiter:
                     | **Demographic Bias** | High risk (penalizes career switchers & foreign titles) | **Zero** (Names, age, gender scrubbed prior to matching) |
                     """)
 
-                # Handoff Action
-                render_html("<hr style='margin: 1rem 0;'/>")
-                st.caption("⚖️ *BridgeIQ recommends and explains. A human decision-maker retains full authority over hiring decisions. Names, age, gender, and nationality are strictly hidden from matching algorithms to prevent demographic bias.*")
+                # Enterprise Trust & Compliance Bar
+                render_html("""
+                <div style="display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-top: 1.2rem; padding: 8px 12px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; font-size: 0.75rem; color: #64748B;">
+                    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                        <span style="display: inline-flex; align-items: center; gap: 4px; font-weight: 600; color: #0F172A;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0B6B63" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                            EU AI Act Art. 14 (Human-in-the-Loop)
+                        </span>
+                        <span>·</span>
+                        <span class="enterprise-tooltip" data-tip="All demographic indicators (name, gender, nationality, age) are scrubbed before matching.">
+                            🇸🇪 Demographic Scrubbing Active
+                        </span>
+                        <span>·</span>
+                        <span>Human Hiring Decision Authority</span>
+                    </div>
+                    <span style="font-size: 0.72rem; color: #94A3B8;">Sweden Central (EU Data Zone)</span>
+                </div>
+                """)
             else:
                 st.info("👈 Pick a candidate from the list to inspect their transparent score breakdown and evidence chain.")
 
