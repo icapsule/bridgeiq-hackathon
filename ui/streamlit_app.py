@@ -488,7 +488,7 @@ render_html("""
             <span style="color: #0B6B63; margin-right: 2px;">Bridge</span><span style="background: #0B6B63; color: #FFFFFF; font-size: 1.25rem; font-weight: 800; padding: 2px 7px; border-radius: 5px; display: inline-block; line-height: 1.15; letter-spacing: 0.02em;">IQ</span>
         </span>
         <span style="font-size: 0.92rem; font-weight: 500; color: #64748B;">
-            Human-Centric Talent Mobility Intelligence · 瑞典绿色转型跨行业人才数智匹配平台
+            Human-Centric Talent Mobility Intelligence · Cross-Domain Matching for Sweden's Green Transition
         </span>
     </div>
     <!-- Right: Utility & Team Identity Matrix -->
@@ -521,7 +521,7 @@ with tab_jobseeker:
         <div style="display: flex; align-items: center; gap: 8px;">
             <span style="font-size: 1.02rem; font-weight: 700; color: #0F172A;">👤 Jobseeker Career Radar</span>
             <span style="color: #94A3B8;">|</span>
-            <span style="font-size: 0.82rem; color: #475569;">跨行业转岗数智雷达与胜任力投递</span>
+            <span style="font-size: 0.82rem; color: #475569;">Cross-Sector Career Radar & Competence-Based Applications</span>
         </div>
         <span style="background: #F0FDF4; color: #0B6B63; border: 1px solid #BBF7D0; font-weight: 600; font-size: 0.76rem; padding: 2px 10px; border-radius: 999px;">
             🟢 Active Persona: Telecom Engineer (Amara) ➔ Industrial IoT
@@ -1186,7 +1186,7 @@ with tab_recruiter:
         <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
             <span style="font-size: 1.02rem; font-weight: 700; color: #0F172A;">💼 Recruiter Talent Cockpit</span>
             <span style="color: #94A3B8;">|</span>
-            <span style="font-size: 0.82rem; color: #475569;">工业绿色转型招聘驾驶舱与人机协同面试</span>
+            <span style="font-size: 0.82rem; color: #475569;">Green Industrial Talent Cockpit & Human-in-the-Loop Copilot</span>
         </div>
         <div style="display: flex; align-items: center; gap: 8px;">
             <span style="background: #F0FDF4; color: #0B6B63; border: 1px solid #BBF7D0; font-weight: 600; font-size: 0.76rem; padding: 2px 10px; border-radius: 999px;">

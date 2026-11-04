@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **#T4.21**: Comprehensive Enterprise UI/UX Redesign & Production Hardening (`ui/streamlit_app.py`, `ui/theme.py`, `.streamlit/config.toml`, `.env.example`):
+  - **100% Pure English Internationalization (i18n)**: Replaced all lingering Chinese subtitle and hero strip strings with professional English terminology (`Cross-Domain Matching for Sweden's Green Transition`, `Cross-Sector Career Radar & Competence-Based Applications`, `Green Industrial Talent Cockpit & Human-in-the-Loop Copilot`).
   - **LinkedIn-Style Pure Typographic Wordmark**: Replaced dual-ring SVG with high-contrast text badge `Bridge` (`#0B6B63`) + `[IQ]` (inverted white-on-emerald capsule) for crisp 4K presentation rendering.
   - **Native Streamlit Theme & React Aria Tabs**: Configured `.streamlit/config.toml` with `primaryColor = "#0B6B63"` to eradicate default `#FF4B4B` orange line natively; implemented React Aria hardware-accelerated zero-reflow active tab scaling (`transform: scale(1.06)`).
   - **Navigation De-cluttering & Hero Strips**: Streamlined tabs to punchy names (`👤 Jobseeker`, `💼 Recruiter Workspace`, `📊 Azure Cloud Assets`); added role cockpit hero strips across both main views.

@@ -43,3 +43,4 @@ def nordic_quote(text: str) -> str:
     """Format quote using Nordic/standard double quotes rather than Chinese curly quotes."""
     clean = str(text).strip(" \t\n\r\"'“”")
     return f'"{clean}"'
+

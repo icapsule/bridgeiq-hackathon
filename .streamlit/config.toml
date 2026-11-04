@@ -11,3 +11,4 @@ fileWatcherType = "auto"
 
 [browser]
 gatherUsageStats = false
+
