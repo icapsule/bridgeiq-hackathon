@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **#T4.22**: Recruiter View Decoupling, Unified Decision Bounding Box, and Direct Clickable Cards (`ui/streamlit_app.py`, `Docs/Final update.md`):
+  - **Sourcing Workspace Isolation**: Removed legacy shortlisted profiles expander from default sourcing mode; shortlist pipeline renders strictly on-demand when switching to `📋 Shortlist & Interview Dashboard`.
+  - **Column 3 Unified Decision Dossier**: Enclosed Column 3 (Decision & Evidence Center) inside `st.container(border=True)` with soft Nordic mint tint (`#FAFDFB`), emerald border (`#0B6B63`), and integrated flow banner.
+  - **Direct Full-Box Clickable Cards**: Eliminated disjointed bottom buttons (`Inspect...` / `✓ Selected`) across Recruiter Roles, Candidates, and Jobseeker Opportunities; entire card boxes are now transparent hitbox surfaces with embedded status badges.
 - **#T4.21**: Comprehensive Enterprise UI/UX Redesign & Production Hardening (`ui/streamlit_app.py`, `ui/theme.py`, `.streamlit/config.toml`, `.env.example`):
   - **100% Pure English Internationalization (i18n)**: Replaced all lingering Chinese subtitle and hero strip strings with professional English terminology (`Cross-Domain Matching for Sweden's Green Transition`, `Cross-Sector Career Radar & Competence-Based Applications`, `Green Industrial Talent Cockpit & Human-in-the-Loop Copilot`).
   - **LinkedIn-Style Pure Typographic Wordmark**: Replaced dual-ring SVG with high-contrast text badge `Bridge` (`#0B6B63`) + `[IQ]` (inverted white-on-emerald capsule) for crisp 4K presentation rendering.
