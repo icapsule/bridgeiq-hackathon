@@ -412,17 +412,39 @@ st.markdown("""
         transform: translateY(-2px) !important;
         box-shadow: 0 4px 12px -2px rgba(11, 107, 99, 0.12) !important;
     }
-    div[class*="st-key-card_container_"] div[data-testid="stButton"] {
+    div[class*="st-key-card_container_"]:active .enterprise-card {
+        transform: translateY(0px) !important;
+    }
+    /* Stretch the button element wrapper across the entire card boundary */
+    div[class*="st-key-card_container_"] > div:nth-child(2),
+    div[class*="st-key-card_container_"] > div:last-child {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 5 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    div[class*="st-key-card_container_"] div[data-testid="stButton"],
+    div[class*="st-key-card_container_"] .stButton {
         position: absolute !important;
         top: 0 !important;
         left: 0 !important;
         width: 100% !important;
         height: 100% !important;
-        z-index: 10 !important;
         margin: 0 !important;
         padding: 0 !important;
     }
-    div[class*="st-key-card_container_"] div[data-testid="stButton"] button {
+    div[class*="st-key-card_container_"] div[data-testid="stButton"] button,
+    div[class*="st-key-card_container_"] .stButton button,
+    div[class*="st-key-card_container_"] button {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
         width: 100% !important;
         height: 100% !important;
         opacity: 0 !important;

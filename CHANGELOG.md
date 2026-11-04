@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **#T4.23**: Fixed Clickable Card Hitbox Wrapper in Streamlit 1.66 (`ui/streamlit_app.py`):
+  - **Surgical CSS Hitbox Expansion**: Resolved issue where clicking Card 2 (`OT Security Specialist`) had no reaction. Expanded the immediate element wrapper (`> div:nth-child(2)`, `> div:last-child`) and `.stButton` button directly to `position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%`, preventing button height collapse inside Streamlit's container flex blocks.
+  - **Tactile Active Micro-Interaction**: Added `:active` press feedback (`transform: translateY(0px)`) and preserved tooltip z-index layering (`z-index: 20`).
+
+
 ### Added
 - **#T4.22**: Recruiter View Decoupling, Unified Decision Bounding Box, and Direct Clickable Cards (`ui/streamlit_app.py`, `Docs/Final update.md`):
   - **Sourcing Workspace Isolation**: Removed legacy shortlisted profiles expander from default sourcing mode; shortlist pipeline renders strictly on-demand when switching to `📋 Shortlist & Interview Dashboard`.
